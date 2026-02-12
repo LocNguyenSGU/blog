@@ -1,0 +1,15 @@
+---
+import type { CategoryKey } from '../utils/categories';
+import { getCategoryInfo } from '../utils/categories';
+
+interface Props {
+  category: CategoryKey;
+}
+
+const { category } = Astro.props;
+const categoryInfo = getCategoryInfo(category);
+---
+
+<span class={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${categoryInfo.bgClass} backdrop-blur-sm`}>
+  {categoryInfo.name}
+</span>

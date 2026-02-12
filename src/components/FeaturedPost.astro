@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import CategoryBadge from './CategoryBadge.astro';
+import { getReadingTime, formatReadingTime } from '../utils/readingTime';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const readingTime = getReadingTime(post.body);
+const formattedDate = new Date(post.data.pubDate).toLocaleDateString('vi-VN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<article class="group relative h-96 md:h-[500px] rounded-2xl overflow-hidden">
+  <a href={`/blog/${post.slug}?lang=${post.data.lang}`} class="block h-full">
+    {/* Background Image */}
+    <div class="absolute inset-0">
+      <img 
+        src={post.data.coverImage} 
+        alt={post.data.coverAlt}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+      {/* Gradient Overlay */}
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+    </div>
+    
+    {/* Content */}
+    <div class="relative h-full flex flex-col justify-end p-8 md:p-12">
+      <div class="mb-4">
+        <CategoryBadge category={post.data.category} />
+      </div>
+      
+      <h2 class="font-sans text-3xl md:text-5xl font-bold text-white mb-4 max-w-3xl group-hover:text-blue-300 transition-colors">
+        {post.data.title}
+      </h2>
+      
+      {post.data.description && (
+        <p class="text-gray-200 text-lg mb-6 max-w-2xl line-clamp-2">
+          {post.data.description}
+        </p>
+      )}
+      
+      <div class="flex items-center gap-4 text-sm text-gray-300">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formattedDate}
+        </time>
+        <span>•</span>
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          {formatReadingTime(readingTime)}
+        </span>
+        <span>•</span>
+        <span>{post.data.author}</span>
+      </div>
+    </div>
+  </a>
+</article>

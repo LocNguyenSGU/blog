@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import type { Locale } from '../../utils/i18n';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+// Get slug from URL params
+const { slug } = Astro.params;
+
+// Get language preference from URL param or default to Vietnamese
+const urlParams = Astro.url.searchParams;
+const locale: Locale = (urlParams.get('lang') as Locale) || 'vi';
+
+// Find the post by slug
+const allPosts = await getCollection('blog');
+const entry = allPosts.find(post => post.slug === slug);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await entry.render();
+---
+
+<BlogPost {...entry.data} slug={entry.slug} body={entry.body} lang={entry.data.lang}>
+  <Content />
+</BlogPost>

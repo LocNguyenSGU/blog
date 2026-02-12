@@ -1,0 +1,85 @@
+---
+import type { Locale } from '../utils/i18n';
+import { t } from '../utils/i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale?: Locale;
+}
+
+const { title, description = 'My personal blog', locale = 'vi' } = Astro.props;
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+---
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    
+    <!-- Prevent flash of wrong theme -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return 'sepia'; // Default to sepia
+      })();
+      
+      document.documentElement.classList.remove('light', 'sepia', 'dark');
+      document.documentElement.classList.add(theme);
+    </script>
+    
+    <!-- Auto-redirect to saved language preference if no lang param -->
+    <script is:inline>
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const savedLocale = localStorage.getItem('locale');
+        
+        // If no lang param but we have saved preference, redirect
+        if (!urlParams.has('lang') && savedLocale) {
+          const url = new URL(window.location.href);
+          url.searchParams.set('lang', savedLocale);
+          window.location.replace(url.toString());
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen transition-colors">
+    <header class="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700 sepia:border-sepia-300 bg-white/80 dark:bg-gray-900/80 sepia:bg-sepia-100/80 backdrop-blur-md transition-colors">
+      <nav class="max-w-6xl mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <a href="/" class="text-2xl font-sans font-bold hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">
+            My Blog
+          </a>
+          <div class="flex items-center gap-4">
+            <div class="flex gap-6">
+              <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.home', locale)}</a>
+              <a href="/blog" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.blog', locale)}</a>
+              <a href="/about" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.about', locale)}</a>
+            </div>
+            <LanguageSwitcher currentLocale={locale} />
+            <ThemeToggle />
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <slot />
+    </main>
+
+    <footer class="border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300 mt-20">
+      <div class="max-w-6xl mx-auto px-4 py-8 text-center text-gray-600 dark:text-gray-400 sepia:text-sepia-700">
+        <p>&copy; {new Date().getFullYear()} {t('footer.copyright', locale)}</p>
+      </div>
+    </footer>
+  </body>
+</html>

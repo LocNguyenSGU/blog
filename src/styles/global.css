@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-sans text-gray-900 bg-white transition-colors duration-200;
+  }
+  
+  /* Sepia theme */
+  html.sepia body {
+    @apply bg-sepia-100 text-sepia-900;
+  }
+  
+  /* Dark theme */
+  html.dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}

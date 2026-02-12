@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import CategoryBadge from './CategoryBadge.astro';
+import { getReadingTime, formatReadingTime } from '../utils/readingTime';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const readingTime = getReadingTime(post.body);
+const formattedDate = new Date(post.data.pubDate).toLocaleDateString('vi-VN', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric'
+});
+---
+
+<article class="group bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+  <a href={`/blog/${post.slug}?lang=${post.data.lang}`} class="block">
+    <div class="relative aspect-[4/3] overflow-hidden">
+      <img 
+        src={post.data.coverImage} 
+        alt={post.data.coverAlt}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+      <div class="absolute top-3 left-3">
+        <CategoryBadge category={post.data.category} />
+      </div>
+    </div>
+    
+    <div class="p-6">
+      <h3 class="font-sans text-xl font-bold mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 sepia:group-hover:text-sepia-700 transition-colors">
+        {post.data.title}
+      </h3>
+      
+      {post.data.description && (
+        <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 text-sm mb-4 line-clamp-3">
+          {post.data.description}
+        </p>
+      )}
+      
+      <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 sepia:text-sepia-600">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formattedDate}
+        </time>
+        <span>•</span>
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          {formatReadingTime(readingTime)}
+        </span>
+      </div>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,81 @@
+---
+import type { Locale } from '../utils/i18n';
+
+interface Props {
+  currentLocale?: Locale;
+}
+
+const { currentLocale = 'vi' } = Astro.props;
+---
+
+<div class="relative">
+  <button
+    id="lang-toggle"
+    type="button"
+    class="px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors text-sm font-medium uppercase flex items-center gap-1"
+    aria-label="Switch language"
+  >
+    <span id="current-lang-icon">{currentLocale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+    <span id="current-lang-text">{currentLocale}</span>
+  </button>
+  
+  <div id="lang-menu" class="hidden absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 z-50">
+    <button data-lang="vi" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-t-lg">
+      🇻🇳 Tiếng Việt
+    </button>
+    <button data-lang="en" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-b-lg">
+      🇬🇧 English
+    </button>
+  </div>
+</div>
+
+<script>
+  function updateLanguageUI() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentLang = urlParams.get('lang') || localStorage.getItem('locale') || 'vi';
+    
+    const icon = document.getElementById('current-lang-icon');
+    const text = document.getElementById('current-lang-text');
+    
+    if (icon && text) {
+      icon.textContent = currentLang === 'vi' ? '🇻🇳' : '🇬🇧';
+      text.textContent = currentLang.toUpperCase();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('lang-toggle');
+    const menu = document.getElementById('lang-menu');
+    const langButtons = document.querySelectorAll('[data-lang]');
+    
+    // Update UI on page load
+    updateLanguageUI();
+    
+    // Toggle menu
+    toggleBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu?.classList.toggle('hidden');
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', () => {
+      menu?.classList.add('hidden');
+    });
+    
+    // Switch language
+    langButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const lang = (e.currentTarget as HTMLElement).getAttribute('data-lang');
+        if (lang) {
+          // Save to localStorage
+          localStorage.setItem('locale', lang);
+          
+          // Update URL with new language parameter
+          const url = new URL(window.location.href);
+          url.searchParams.set('lang', lang);
+          window.location.href = url.toString();
+        }
+      });
+    });
+  });
+</script>

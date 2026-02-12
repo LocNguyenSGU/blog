@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import type { Locale } from '../../utils/i18n';
+import { t } from '../../utils/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeaturedPost from '../../components/FeaturedPost.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const urlParams = Astro.url.searchParams;
+const locale: Locale = (urlParams.get('lang') as Locale) || 'vi';
+
+const allPosts = await getCollection('blog');
+const publishedPosts = allPosts
+  .filter(post => !post.data.draft && post.data.lang === locale)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featuredPost = publishedPosts[0];
+const otherPosts = publishedPosts.slice(1);
+---
+
+<BaseLayout title="Blog" description="All blog posts" locale={locale}>
+  <div class="space-y-12">
+    <div>
+      <h1 class="font-sans text-4xl md:text-5xl font-bold mb-2">{t('blog.title', locale)}</h1>
+      <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 text-lg">{t('blog.subtitle', locale)}</p>
+    </div>
+    
+    {featuredPost && (
+      <section>
+        <FeaturedPost post={featuredPost} />
+      </section>
+    )}
+    
+    {otherPosts.length > 0 && (
+      <section>
+        <h2 class="font-sans text-2xl font-bold mb-6">{t('blog.allPosts', locale)}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {otherPosts.map(post => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

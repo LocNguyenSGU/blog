@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import type { Locale } from '../utils/i18n';
+import { t } from '../utils/i18n';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FeaturedPost from '../components/FeaturedPost.astro';
+import PostCard from '../components/PostCard.astro';
+
+const urlParams = Astro.url.searchParams;
+const locale: Locale = (urlParams.get('lang') as Locale) || 'vi';
+
+const allPosts = await getCollection('blog');
+const publishedPosts = allPosts
+  .filter(post => !post.data.draft && post.data.lang === locale)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featuredPost = publishedPosts[0];
+const recentPosts = publishedPosts.slice(1, 4); // Show 3 recent posts
+---
+
+<BaseLayout title="My Blog - Home" locale={locale}>
+  <div class="space-y-16">
+    {/* Hero Section */}
+    <section class="text-center space-y-6 py-12">
+      <h1 class="font-sans text-5xl md:text-7xl font-bold">
+        {t('home.title', locale)}
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-2xl mx-auto">
+        {t('home.subtitle', locale)}
+      </p>
+
+      <div class="flex gap-4 justify-center pt-4">
+        <a 
+          href="/blog" 
+          class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+        >
+          {t('home.readBlog', locale)}
+        </a>
+        <a 
+          href="/about" 
+          class="px-8 py-3 border-2 border-gray-300 dark:border-gray-700 sepia:border-sepia-400 rounded-lg hover:border-blue-600 dark:hover:border-blue-400 transition font-medium"
+        >
+          {t('home.aboutMe', locale)}
+        </a>
+      </div>
+    </section>
+
+    {/* Featured Post */}
+    {featuredPost && (
+      <section>
+        <h2 class="font-sans text-3xl font-bold mb-6">{t('home.featured', locale)}</h2>
+        <FeaturedPost post={featuredPost} />
+      </section>
+    )}
+
+    {/* Recent Posts */}
+    {recentPosts.length > 0 && (
+      <section>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="font-sans text-3xl font-bold">{t('home.recent', locale)}</h2>
+          <a 
+            href="/blog" 
+            class="text-blue-600 dark:text-blue-400 sepia:text-sepia-700 hover:underline font-medium"
+          >
+            {t('home.viewAll', locale)}
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recentPosts.map(post => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>
