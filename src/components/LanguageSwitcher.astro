@@ -65,38 +65,57 @@ const { currentLocale = 'vi' } = Astro.props;
     // Switch language
     langButtons.forEach(button => {
       button.addEventListener('click', (e) => {
-        const lang = (e.currentTarget as HTMLElement).getAttribute('data-lang');
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const lang = button.getAttribute('data-lang');
+        
+        console.log('Language switch clicked:', lang);
+        
         if (lang) {
           // Save to localStorage
           localStorage.setItem('locale', lang);
           
           // Check if we're on a blog post page
           const path = window.location.pathname;
+          console.log('Current path:', path);
+          
           const isBlogPost = path.startsWith('/blog/') && path !== '/blog' && path !== '/blog/';
           
           if (isBlogPost) {
-            // Extract current slug from path  
-            const currentSlug = path.replace('/blog/', '');
+            // Extract current slug from path (remove trailing slash if present)
+            let currentSlug = path.replace('/blog/', '').replace(/\/$/, '');
+            console.log('Current slug:', currentSlug);
             
-            // Posts follow pattern: slug.en or slug.vi
-            // Try to find translation by swapping language suffix
+            // Posts follow pattern: slug.en/slug.vi OR slugen/slugvi (Astro may remove dots)
             let translatedSlug = currentSlug;
             
-            if (currentSlug.endsWith('.en') || currentSlug.endsWith('.vi')) {
-              // Remove current language suffix
-              const baseSlug = currentSlug.replace(/\.(en|vi)$/, '');
-              // Add new language suffix
-              translatedSlug = `${baseSlug}.${lang}`;
+            // Check both formats: with dot (.en, .vi) or without dot (en, vi at end)
+            if (currentSlug.endsWith('.en')) {
+              translatedSlug = currentSlug.replace(/\.en$/, '.' + lang);
+            } else if (currentSlug.endsWith('.vi')) {
+              translatedSlug = currentSlug.replace(/\.vi$/, '.' + lang);
+            } else if (currentSlug.endsWith('en')) {
+              // Without dot format (e.g., building-blog-with-aien)
+              translatedSlug = currentSlug.replace(/en$/, lang);
+            } else if (currentSlug.endsWith('vi')) {
+              // Without dot format (e.g., building-blog-with-aivi)
+              translatedSlug = currentSlug.replace(/vi$/, lang);
             }
             
-            // Redirect to translated post (it may or may not exist)
-            window.location.href = `/blog/${translatedSlug}?lang=${lang}`;
+            console.log('Translated slug:', translatedSlug);
+            
+            // Redirect to translated post
+            const newUrl = '/blog/' + translatedSlug + '?lang=' + lang;
+            console.log('Redirecting to:', newUrl);
+            window.location.href = newUrl;
             return;
           }
           
           // Default behavior: just update language parameter
           const url = new URL(window.location.href);
           url.searchParams.set('lang', lang);
+          console.log('Redirecting to:', url.toString());
           window.location.href = url.toString();
         }
       });

@@ -1,0 +1,225 @@
+---
+title: "Từ Ý Tưởng Đến Production Trong 2 Giờ: Làm Blog Với AI"
+description: "Ý tưởng làm blog nằm trong đầu tôi hơn một năm. Đến đêm qua, 12h khuya, tôi quyết định để AI làm 95%. 2 tiếng sau, blog đã live."
+coverImage: "/images/posts/building-blog-with-ai-gemini.jpg"
+pubDate: 2026-02-13
+category: "programming"
+author: "Loc Nguyen"
+lang: "vi"
+translationKey: "building-blog-with-ai"
+---
+
+Ý tưởng làm blog cá nhân nằm trong đầu tôi hơn một năm.
+
+Mỗi lần nghĩ tới việc setup Astro, config Tailwind, viết components, làm responsive design... tôi lại đóng laptop và bật YouTube. "Để tuần sau vậy," tôi nói với bản thân. Tuần sau thành tháng sau. Tháng sau thành... bạn hiểu rồi đấy.
+
+Đến đêm qua, 12h khuya, tôi quyết định thử một approach hoàn toàn khác: **Để AI làm 95%, tôi chỉ review thôi.**
+
+2 tiếng sau, blog đã live trên Vercel.
+
+Đây không phải câu chuyện về ma thuật. Đây là câu chuyện về một workflow chuẩn để làm project với AI - workflow mà bất kỳ ai cũng có thể replicate.
+
+## The Shift: Từ Coder Thành Orchestra Conductor
+
+Traditional way tôi code một blog:
+1. Research framework (1-2 ngày)
+2. Setup boilerplate (nửa ngày)
+3. Viết components từng cái (2-3 ngày)
+4. Styling, responsive (1-2 ngày)
+5. Deploy, fix bugs (1 ngày)
+
+**Tổng: Khoảng 1 tuần**, nếu làm fulltime. Thực tế sẽ kéo dài hơn vì có công việc khác.
+
+AI way:
+1. AI research và suggest tech stack (5 phút)
+2. AI viết toàn bộ code (1.5 tiếng)
+3. Human review và adjust (30 phút)
+
+**Tổng: 2 tiếng.**
+
+Mindset shift ở đây không phải "AI thay thế dev." Mindset là: **Human = Product Manager + Architect, AI = Development Team.**
+
+## The 2-Hour Timeline: Workflow Chi Tiết
+
+### 00:00 - Tech Stack Decision
+
+Tôi mở Google Gemini:
+
+> "Tôi muốn làm blog cá nhân, bilingual (EN/VI), cần fast, SEO-friendly, dễ viết content. Suggest tech stack?"
+
+Gemini gợi ý:
+- **Astro** (best SEO, fast SSG)
+- **Tailwind CSS** (rapid styling)
+- **MDX** (write content với React components)
+- **Vercel** (free hosting, zero config)
+
+![Chat với Gemini về tech stack](/images/posts/building-blog-with-ai-gemini.jpg)
+
+5 phút. Done. Không cần đọc 10 blog posts so sánh Next vs Astro vs Gatsby.
+
+### 00:15 - Brainstorming Với Claude
+
+Tôi chuyển sang Claude với workspace skills (tôi đã setup sẵn skills framework - bộ prompts có cấu trúc).
+
+Dùng **brainstorming skill:**
+
+> "Tôi cần làm bilingual blog với Astro. Features cần có: dark mode, categories, reading time, language switcher."
+
+Claude phân tích:
+- Bilingual strategy: URL params (`?lang=en`) hay separate routes?
+- Content structure: How to link EN/VI posts?
+- Components cần build: `PostCard`, `LanguageSwitcher`, `CategoryBadge`
+- Edge cases: 404 page bilingual, SEO meta tags cho 2 languages
+
+![Claude brainstorming với skills](/images/posts/building-blog-with-ai-claude.png)
+
+**Output:** Requirements document rõ ràng, không còn mơ hồ.
+
+### 00:30 - Planning Phase
+
+Dùng **writing-plans skill** để break down:
+
+Claude tạo implementation plan với tasks bite-sized:
+```markdown
+1. Setup Astro project với Vercel adapter
+2. Configure Tailwind + MDX
+3. Create content collection schema
+4. Build BaseLayout với dark mode
+5. Implement language switching logic
+6. Create blog listing page
+7. Create dynamic [slug] page
+8. Add SEO meta tags
+9. Deploy to Vercel
+```
+
+Mỗi task ước tính 5-10 phút. Clear. Actionable. Không overwhelm.
+
+### 00:45 - Execution: AI Codes, Human Reviews
+
+Dùng **executing-plans skill** để implement từng task.
+
+Ví dụ Task 4 - Dark mode toggle:
+
+Tôi: "Implement dark mode với Tailwind, persist preference vào localStorage."
+
+Claude viết:
+```astro
+---
+// src/components/DarkModeToggle.astro
+---
+<button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+  <svg class="w-5 h-5 dark:hidden"><!-- Sun icon --></svg>
+  <svg class="w-5 h-5 hidden dark:block"><!-- Moon icon --></svg>
+</button>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  const theme = localStorage.getItem('theme') || 'light';
+  
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+  
+  toggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+</script>
+```
+
+Tôi review: ✅ Logic đúng, ✅ Handles system preference, ✅ No flash on load. Next task.
+
+AI viết components, configs, styles. Tôi chỉ cần đọc, test, approve. Workflow như code review trong team.
+
+### 01:30 - Deployment & Bug Fixes
+
+Deploy lên Vercel. First try: **500 Error**.
+
+Lỗi: `Cannot find module '/var/task/dist/server/entry.mjs'`
+
+AI debug:
+1. Check `.vercel/output` structure
+2. Found issue: Vercel adapter generate `nodejs24.x` runtime (doesn't exist)
+3. Fix: Add `"engines": { "node": "20.x" }` to package.json
+4. Create post-build script to patch runtime config
+
+Tôi chỉ cần approve solutions. AI viết scripts, test locally, push lại.
+
+### 02:00 - Live! 🎉
+
+Blog live tại `blog.vercel.app`. Bilingual. Dark mode. Responsive. SEO ready.
+
+Total time: **2 hours**.
+
+## The Reality Check: AI làm gì, Human làm gì?
+
+### AI (95%):
+- ✅ Research tech stack
+- ✅ Write all components (10+ files)
+- ✅ Configure Astro, Tailwind, TypeScript
+- ✅ Implement features (dark mode, language switch, reading time)
+- ✅ Fix build errors
+- ✅ Debug deployment issues
+- ✅ Write utility functions
+
+### Human (5%):
+- ✅ **Make decisions:** "Dùng URL params cho language, không dùng separate routes"
+- ✅ **Review code quality:** "Component này có thể DRY hơn"
+- ✅ **Catch edge cases:** "404 page cần bilingual"
+- ✅ **Final QA:** Test trên mobile, check SEO tags
+
+Human không code. Human **orchestrate**.
+
+## 5 Lessons Học Được
+
+### 1. AI Không Thay Thế Dev, Nó Amplify Productivity
+
+Dev junior có thể ship senior-level project vì AI handle technical details. Dev senior có thể ship 10x faster vì focus vào architecture, không mất thời gian viết boilerplate.
+
+### 2. Quality of Prompts = Quality of Output
+
+Prompt tệ: "Làm blog cho tôi."
+
+Prompt tốt: "Build Astro blog với bilingual support (EN/VI). Use URL params `?lang=` for language switching. MDX for content. Implement reading time calculation. Generate sitemap for SEO."
+
+Skills framework giúp prompts consistent và structured.
+
+### 3. Workflow Rõ Ràng > Ad-hoc Prompting
+
+Không nên: "Ê AI, viết cái này," "Giờ viết cái kia," "À quên, sửa lại cái kia."
+
+Nên: Brainstorming → Planning → Execution → Review. Step-by-step. Organized.
+
+### 4. Human Judgment Vẫn Critical
+
+AI suggest dùng `getStaticPaths` cho blog posts. Tôi bắt: "Wait, ta cần SSR cho language switching động, không phải static."
+
+AI brilliant nhưng không hiểu business context như human.
+
+### 5. Ship Fast, Iterate Later
+
+Blog này chưa perfect. Chưa có comments, analytics, search. Nhưng nó **đã live**.
+
+Procrastination kills ideas. AI giúp bạn ship version 1.0 nhanh, iterate sau.
+
+## Takeaway: Thử Ngay Đêm Nay
+
+Nếu bạn có ý tưởng nằm trong đầu 1 năm như tôi, thử cho AI 2 giờ.
+
+Bạn không cần:
+- ❌ Giỏi coding
+- ❌ Biết Astro, React, Tailwind
+- ❌ Hiểu DevOps
+
+Bạn chỉ cần:
+- ✅ Ý tưởng rõ ràng
+- ✅ Biết hỏi đúng câu hỏi
+- ✅ Review code như đọc tiếng Việt
+
+**Next step:** Chọn một project nhỏ (landing page, portfolio, tool đơn giản). Give AI 2 hours. See what happens.
+
+Worst case: Bạn mất 2 tiếng.
+
+Best case: Ý tưởng của bạn thành hiện thực.
+
+---
+
+*P/S: Skills framework tôi dùng để orchestrate AI sẽ open source soon. Stay tuned!*

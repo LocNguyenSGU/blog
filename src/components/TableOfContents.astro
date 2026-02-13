@@ -1,0 +1,271 @@
+---
+import type { Heading } from '../utils/toc';
+import type { Locale } from '../utils/i18n';
+
+interface Props {
+  headings: Heading[];
+  locale?: Locale;
+}
+
+const { headings, locale = 'vi' } = Astro.props;
+const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
+---
+
+{headings.length > 0 && (
+  <>
+    {/* Desktop: Sticky Sidebar */}
+    <nav 
+      id="toc-desktop"
+      aria-label={tocLabel}
+      class="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto"
+    >
+      <div class="bg-white dark:bg-gray-800 sepia:bg-sepia-100 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
+        <h2 class="font-sans font-bold text-lg mb-4 text-gray-900 dark:text-white sepia:text-sepia-900">
+          {tocLabel}
+        </h2>
+        <ul class="space-y-2 text-sm">
+          {headings.map((heading) => (
+            <li 
+              class:list={[
+                'toc-item',
+                { 'pl-4': heading.depth === 3 }
+              ]}
+              data-heading-id={heading.slug}
+            >
+              <a
+                href={`#${heading.slug}`}
+                class="block py-1 px-3 rounded transition-all duration-200 text-gray-700 dark:text-gray-300 sepia:text-sepia-800 hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-900 hover:bg-blue-50 dark:hover:bg-blue-900/20 sepia:hover:bg-sepia-200"
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+
+    {/* Mobile: Floating Button + Drawer */}
+    <div class="lg:hidden">
+      {/* Floating Button */}
+      <button
+        id="toc-mobile-toggle"
+        aria-label={locale === 'vi' ? 'Mở mục lục' : 'Open table of contents'}
+        class="fixed bottom-4 right-4 z-40 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-all duration-200 flex items-center gap-2"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+
+      {/* Backdrop */}
+      <div
+        id="toc-mobile-backdrop"
+        class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+      ></div>
+
+      {/* Drawer */}
+      <div
+        id="toc-mobile-drawer"
+        class="fixed inset-y-0 right-0 w-80 max-w-[90vw] bg-white dark:bg-gray-800 sepia:bg-sepia-50 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto"
+      >
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="font-sans font-bold text-xl text-gray-900 dark:text-white sepia:text-sepia-900">
+              {tocLabel}
+            </h2>
+            <button
+              id="toc-mobile-close"
+              aria-label={locale === 'vi' ? 'Đóng' : 'Close'}
+              class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sepia:text-sepia-600 sepia:hover:text-sepia-900"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <ul class="space-y-2">
+            {headings.map((heading) => (
+              <li 
+                class:list={[
+                  'toc-item-mobile',
+                  { 'pl-4': heading.depth === 3 }
+                ]}
+                data-heading-id={heading.slug}
+              >
+                <a
+                  href={`#${heading.slug}`}
+                  class="block py-2 px-3 rounded transition-all duration-200 text-gray-700 dark:text-gray-300 sepia:text-sepia-800 hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-900 hover:bg-blue-50 dark:hover:bg-blue-900/20 sepia:hover:bg-sepia-200"
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </>
+)}
+
+<style>
+  /* Active TOC item styling */
+  .toc-item.active a,
+  .toc-item-mobile.active a {
+    @apply font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-600 dark:border-blue-400;
+    border-left-width: 3px;
+    padding-left: 0.625rem; /* Adjust for border */
+  }
+
+  /* Sepia mode active state */
+  :global(.sepia) .toc-item.active a,
+  :global(.sepia) .toc-item-mobile.active a {
+    color: #6b5744; /* sepia-900 */
+    background-color: #f4ead5; /* sepia-200 */
+    border-left-color: #b2a57e; /* sepia-700 */
+  }
+
+  /* Heading highlight animation */
+  @keyframes highlight-flash {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: rgba(251, 191, 36, 0.3); }
+  }
+
+  :global(.heading-highlight) {
+    animation: highlight-flash 1.5s ease-in-out;
+  }
+
+  /* Smooth scrolling */
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar for TOC */
+  #toc-desktop::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #toc-desktop::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-700  rounded;
+  }
+
+  :global(.sepia) #toc-desktop::-webkit-scrollbar-track {
+    background-color: #f4ead5; /* sepia-200 */
+  }
+
+  #toc-desktop::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600  rounded;
+  }
+
+  :global(.sepia) #toc-desktop::-webkit-scrollbar-thumb {
+    background-color: #e5d5b1; /* sepia-400 */
+  }
+
+  #toc-desktop::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+
+  :global(.sepia) #toc-desktop::-webkit-scrollbar-thumb:hover {
+    background-color: #d4c5a0; /* sepia-500 */
+  }
+</style>
+
+<script>
+  // Mobile drawer controls
+  const toggleBtn = document.getElementById('toc-mobile-toggle');
+  const closeBtn = document.getElementById('toc-mobile-close');
+  const backdrop = document.getElementById('toc-mobile-backdrop');
+  const drawer = document.getElementById('toc-mobile-drawer');
+
+  function openDrawer() {
+    drawer?.classList.remove('translate-x-full');
+    backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+  }
+
+  function closeDrawer() {
+    drawer?.classList.add('translate-x-full');
+    backdrop?.classList.add('opacity-0', 'pointer-events-none');
+  }
+
+  toggleBtn?.addEventListener('click', openDrawer);
+  closeBtn?.addEventListener('click', closeDrawer);
+  backdrop?.addEventListener('click', closeDrawer);
+
+  // Close drawer when clicking a TOC link on mobile
+  const mobileLinks = document.querySelectorAll('.toc-item-mobile a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      closeDrawer();
+    });
+  });
+
+  // Scroll spy with Intersection Observer
+  const headings = document.querySelectorAll('h2[id], h3[id]');
+  const tocItems = document.querySelectorAll('.toc-item, .toc-item-mobile');
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '-20% 0% -35% 0%', // Trigger when heading is in center
+    threshold: 0
+  };
+
+  let activeId: string | null = null;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        if (id && id !== activeId) {
+          activeId = id;
+          
+          // Remove previous active states
+          tocItems.forEach(item => item.classList.remove('active'));
+          
+          // Add active state to matching TOC items
+          const matchingItems = document.querySelectorAll(`[data-heading-id="${id}"]`);
+          matchingItems.forEach(item => item.classList.add('active'));
+          
+          // Auto-scroll TOC to keep active item visible (desktop only)
+          const desktopToc = document.getElementById('toc-desktop');
+          const activeDesktopItem = desktopToc?.querySelector('.toc-item.active');
+          if (activeDesktopItem && desktopToc) {
+            activeDesktopItem.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'nearest' 
+            });
+          }
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Observe all headings
+  headings.forEach(heading => observer.observe(heading));
+
+  // Smooth scroll + highlight on click
+  const allTocLinks = document.querySelectorAll('.toc-item a, .toc-item-mobile a');
+  allTocLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      if (href) {
+        const targetId = href.substring(1); // Remove #
+        const targetHeading = document.getElementById(targetId);
+        
+        if (targetHeading) {
+          // Smooth scroll to heading
+          targetHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+          // Add highlight animation
+          targetHeading.classList.add('heading-highlight');
+          setTimeout(() => {
+            targetHeading.classList.remove('heading-highlight');
+          }, 1500);
+          
+          // Update URL hash without jump
+          history.pushState(null, '', href);
+        }
+      }
+    });
+  });
+</script>

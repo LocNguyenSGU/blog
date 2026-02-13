@@ -7,6 +7,7 @@ const { slug } = Astro.params;
 
 let entry = null;
 let Content = null;
+let headings = [];
 
 try {
   // Find the post by slug
@@ -19,12 +20,13 @@ try {
 
   const rendered = await entry.render();
   Content = rendered.Content;
+  headings = rendered.headings; // Get headings from rendered content
 } catch (error) {
   console.error('Error loading blog post:', error);
   return Astro.redirect('/404');
 }
 ---
 
-<BlogPost {...entry.data} slug={entry.slug} body={entry.body} lang={entry.data.lang}>
+<BlogPost {...entry.data} slug={entry.slug} body={entry.body} headings={headings} lang={entry.data.lang}>
   <Content />
 </BlogPost>

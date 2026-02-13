@@ -14,6 +14,7 @@ const blogCollection = defineCollection({
     draft: z.boolean().default(false),
     lang: z.enum(['en', 'vi']).default('vi'),
     translationKey: z.string().optional(), // Link EN/VI versions
+    showTOC: z.boolean().optional(), // Override auto TOC detection
   })
 });
 

@@ -13,8 +13,12 @@ export function getReadingTime(content: string): number {
 /**
  * Format reading time for display
  * @param minutes - Reading time in minutes
- * @returns Formatted string like "5 min read"
+ * @param locale - Language locale ('vi' or 'en')
+ * @returns Formatted string like "5 phút đọc" or "5 min read"
  */
-export function formatReadingTime(minutes: number): string {
+export function formatReadingTime(minutes: number, locale: string = 'vi'): string {
+  if (locale === 'vi') {
+    return `${minutes} phút đọc`;
+  }
   return `${minutes} min read`;
 }
