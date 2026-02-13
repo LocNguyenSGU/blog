@@ -99,7 +99,7 @@ function dataStoreSingleton() {
 }
 const globalDataStore = dataStoreSingleton();
 
-const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "SITE": undefined, "SSR": true};
+const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "PUBLIC_GISCUS_CATEGORY": "General", "PUBLIC_GISCUS_CATEGORY_ID": "DIC_kwDORO6Eg84C2U-b", "PUBLIC_GISCUS_REPO": "LocNguyenSGU/blog", "PUBLIC_GISCUS_REPO_ID": "R_kgDORO6Egw", "PUBLIC_SITE_URL": "http://localhost:4322", "SITE": undefined, "SSR": true};
 function createCollectionToGlobResultMap({
   globResult,
   contentDir
@@ -287,7 +287,7 @@ async function renderEntry(entry) {
   }
   if (entry.deferredRender) {
     try {
-      const { default: contentModules } = await import('./content-modules_DgOdF5MW.mjs');
+      const { default: contentModules } = await import('./content-modules_BazyzOMb.mjs');
       const renderEntryImport = contentModules.get(entry.filePath);
       return render({
         collection: "",

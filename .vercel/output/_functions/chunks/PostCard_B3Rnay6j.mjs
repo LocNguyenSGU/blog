@@ -1,6 +1,6 @@
 import { c as createComponent, m as maybeRenderHead, d as addAttribute, r as renderComponent, a as renderTemplate, b as createAstro } from './astro/server_CphY_etb.mjs';
 import 'piccolore';
-import { g as getReadingTime, $ as $$CategoryBadge, f as formatReadingTime } from './readingTime_DL9Wa4ZU.mjs';
+import { g as getReadingTime, $ as $$CategoryBadge, f as formatReadingTime } from './readingTime_B8OJGn7u.mjs';
 
 function getPostUrl(post) {
   return `/blog/${post.slug}?lang=${post.data.lang}`;
