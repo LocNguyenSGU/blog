@@ -1,0 +1,63 @@
+---
+title: "Hướng dẫn viết blog với Markdown"
+description: "Cách viết bài blog đơn giản với Markdown"
+pubDate: 2026-02-13
+author: "Your Name"
+category: "programming"
+tags: ["tutorial", "markdown"]
+coverImage: "/images/posts/markdown-guide.svg"
+coverAlt: "Markdown guide illustration"
+lang: "vi"
+translationKey: "markdown-guide"
+---
+
+# Viết blog siêu đơn giản!
+
+Bạn chỉ cần tạo file `.mdx` trong thư mục `src/content/blog/` là xong.
+
+## Frontmatter
+
+Phần trên cùng (giữa `---`) là metadata:
+
+```yaml
+---
+title: "Tiêu đề bài viết"
+description: "Mô tả ngắn"
+pubDate: 2026-02-13
+author: "Tên tác giả"
+tags: ["tag1", "tag2"]
+---
+```
+
+## Nội dung
+
+Sau frontmatter, bạn viết Markdown bình thường:
+
+- **Bold text**
+- *Italic text*
+- [Links](https://example.com)
+- Images: `![Alt text](path/to/image.jpg)`
+
+## Code blocks
+
+```javascript
+const hello = "world";
+console.log(hello);
+```
+
+```python
+def greet(name):
+    print(f"Hello, {name}!")
+```
+
+## Danh sách
+
+1. Mục 1
+2. Mục 2
+3. Mục 3
+
+## Quote
+
+> "Viết blog thật đơn giản với Markdown!"
+
+That's it! Không cần HTML, không cần phức tạp. 🎉

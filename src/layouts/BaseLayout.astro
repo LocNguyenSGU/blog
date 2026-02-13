@@ -12,10 +12,15 @@ const { title, description = 'My personal blog', locale = 'vi' } = Astro.props;
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+
+// Get site URL from environment or use current URL
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const currentPath = Astro.url.pathname;
+const canonicalUrl = `${siteUrl}${currentPath}${locale !== 'vi' ? `?lang=${locale}` : ''}`;
 ---
 
 <!DOCTYPE html>
-<html lang="vi">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,6 +28,25 @@ import LanguageSwitcher from '../components/LanguageSwitcher.astro';
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    
+    <!-- SEO: Canonical and alternate language links -->
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="vi" href={`${siteUrl}${currentPath}?lang=vi`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}${currentPath}?lang=en`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}${currentPath}`} />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={locale === 'vi' ? 'vi_VN' : 'en_US'} />
+    <meta property="og:locale:alternate" content={locale === 'vi' ? 'en_US' : 'vi_VN'} />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     
     <!-- Prevent flash of wrong theme -->
     <script is:inline>
@@ -43,8 +67,8 @@ import LanguageSwitcher from '../components/LanguageSwitcher.astro';
         const urlParams = new URLSearchParams(window.location.search);
         const savedLocale = localStorage.getItem('locale');
         
-        // If no lang param but we have saved preference, redirect
-        if (!urlParams.has('lang') && savedLocale) {
+        // Only redirect if saved locale is valid and different from default
+        if (!urlParams.has('lang') && savedLocale && (savedLocale === 'en' || savedLocale === 'vi') && savedLocale !== 'vi') {
           const url = new URL(window.location.href);
           url.searchParams.set('lang', savedLocale);
           window.location.replace(url.toString());

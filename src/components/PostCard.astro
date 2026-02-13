@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import CategoryBadge from './CategoryBadge.astro';
 import { getReadingTime, formatReadingTime } from '../utils/readingTime';
+import { getPostUrl, formatDate } from '../utils/postHelpers';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -9,15 +10,12 @@ interface Props {
 
 const { post } = Astro.props;
 const readingTime = getReadingTime(post.body);
-const formattedDate = new Date(post.data.pubDate).toLocaleDateString('vi-VN', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric'
-});
+const formattedDate = formatDate(new Date(post.data.pubDate), post.data.lang);
+const postUrl = getPostUrl(post);
 ---
 
 <article class="group bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-  <a href={`/blog/${post.slug}?lang=${post.data.lang}`} class="block">
+  <a href={postUrl} class="block">
     <div class="relative aspect-[4/3] overflow-hidden">
       <img 
         src={post.data.coverImage} 

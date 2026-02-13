@@ -70,7 +70,31 @@ const { currentLocale = 'vi' } = Astro.props;
           // Save to localStorage
           localStorage.setItem('locale', lang);
           
-          // Update URL with new language parameter
+          // Check if we're on a blog post page
+          const path = window.location.pathname;
+          const isBlogPost = path.startsWith('/blog/') && path !== '/blog' && path !== '/blog/';
+          
+          if (isBlogPost) {
+            // Extract current slug from path  
+            const currentSlug = path.replace('/blog/', '');
+            
+            // Posts follow pattern: slug.en or slug.vi
+            // Try to find translation by swapping language suffix
+            let translatedSlug = currentSlug;
+            
+            if (currentSlug.endsWith('.en') || currentSlug.endsWith('.vi')) {
+              // Remove current language suffix
+              const baseSlug = currentSlug.replace(/\.(en|vi)$/, '');
+              // Add new language suffix
+              translatedSlug = `${baseSlug}.${lang}`;
+            }
+            
+            // Redirect to translated post (it may or may not exist)
+            window.location.href = `/blog/${translatedSlug}?lang=${lang}`;
+            return;
+          }
+          
+          // Default behavior: just update language parameter
           const url = new URL(window.location.href);
           url.searchParams.set('lang', lang);
           window.location.href = url.toString();
