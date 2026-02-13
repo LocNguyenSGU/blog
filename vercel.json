@@ -1,9 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
-  "functions": {
-    "**/*": {
-      "runtime": "nodejs20.x"
-    }
-  }
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
 }

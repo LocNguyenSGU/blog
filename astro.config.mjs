@@ -7,8 +7,7 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   output: 'server',
   adapter: vercel({
-    analytics: true,
-    imageService: true,
+    maxDuration: 60,
     functionPerRoute: false,
   }),
   integrations: [
