@@ -82,9 +82,14 @@ const { currentLocale = 'vi' } = Astro.props;
           
           const isBlogPost = path.startsWith('/blog/') && path !== '/blog' && path !== '/blog/';
           
-          if (isBlogPost) {
+          const isBookDetail = path.startsWith('/books/') && path !== '/books' && path !== '/books/';
+          
+          if (isBlogPost || isBookDetail) {
+            // Determine prefix
+            const prefix = isBlogPost ? '/blog/' : '/books/';
+            
             // Extract current slug from path (remove trailing slash if present)
-            let currentSlug = path.replace('/blog/', '').replace(/\/$/, '');
+            let currentSlug = path.replace(prefix, '').replace(/\/$/, '');
             console.log('Current slug:', currentSlug);
             
             // Posts follow pattern: slug.en/slug.vi OR slugen/slugvi (Astro may remove dots)
@@ -106,7 +111,7 @@ const { currentLocale = 'vi' } = Astro.props;
             console.log('Translated slug:', translatedSlug);
             
             // Redirect to translated post
-            const newUrl = '/blog/' + translatedSlug + '?lang=' + lang;
+            const newUrl = prefix + translatedSlug + '?lang=' + lang;
             console.log('Redirecting to:', newUrl);
             window.location.href = newUrl;
             return;

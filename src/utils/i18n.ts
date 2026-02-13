@@ -7,6 +7,7 @@ export const translations = {
     // Navigation
     'nav.home': 'Home',
     'nav.blog': 'Blog',
+    'nav.books': 'Books',
     'nav.about': 'About',
     
     // Homepage
@@ -22,6 +23,15 @@ export const translations = {
     'blog.title': 'Blog',
     'blog.subtitle': 'Thoughts, tutorials, and stories',
     'blog.allPosts': 'All Posts',
+    
+    // Books
+    'books.title': 'Books I\'ve Read',
+    'books.subtitle': '25 books completed',
+    'books.categories.tech': 'Technology',
+    'books.categories.fiction': 'Fiction',
+    'books.categories.business': 'Business',
+    'books.categories.self-help': 'Self-Help',
+    'books.categories.other': 'Other',
     
     // Post
     'post.readTime': 'min read',
@@ -44,6 +54,7 @@ export const translations = {
     // Navigation
     'nav.home': 'Trang chủ',
     'nav.blog': 'Blog',
+    'nav.books': 'Sách',
     'nav.about': 'Giới thiệu',
     
     // Homepage
@@ -59,6 +70,15 @@ export const translations = {
     'blog.title': 'Blog',
     'blog.subtitle': 'Suy nghĩ, hướng dẫn và câu chuyện',
     'blog.allPosts': 'Tất cả bài viết',
+    
+    // Books
+    'books.title': 'Sách Tôi Đã Đọc',
+    'books.subtitle': '25 cuốn sách đã hoàn thành',
+    'books.categories.tech': 'Công nghệ',
+    'books.categories.fiction': 'Tiểu thuyết',
+    'books.categories.business': 'Kinh doanh',
+    'books.categories.self-help': 'Phát triển bản thân',
+    'books.categories.other': 'Khác',
     
     // Post
     'post.readTime': 'phút đọc',

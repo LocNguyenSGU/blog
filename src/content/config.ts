@@ -18,6 +18,22 @@ const blogCollection = defineCollection({
   })
 });
 
+const booksCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    author: z.string(),
+    coverImage: z.string(),
+    rating: z.number().min(1).max(5),
+    startDate: z.date(),
+    endDate: z.date(),
+    category: z.enum(['tech', 'fiction', 'business', 'self-help', 'other']),
+    review: z.string(),
+    lang: z.enum(['en', 'vi']).default('vi'),
+  })
+});
+
 export const collections = {
-  blog: blogCollection
+  blog: blogCollection,
+  books: booksCollection
 };
