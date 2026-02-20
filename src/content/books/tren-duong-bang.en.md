@@ -3,8 +3,8 @@ title: "On the Runway"
 author: "Tony Buổi Sáng (Tony Good Morning)"
 coverImage: "/images/books/tren-duong-bang.png"
 rating: 5
-startDate: 2017-06-01
-endDate: 2017-06-01
+startDate: 2022-01-01
+endDate: 2022-12-01
 category: "self-help"
 review: "An excellent book that I read after finishing my high school exams. The lesson about generosity is something I'll never forget."
 lang: "en"
@@ -23,7 +23,7 @@ Each part contains relatable short stories - from "Quan's story," "the corn cob 
 
 ## The Unforgettable Lesson: Generosity
 
-![Living Generously](/images/books/tren-duong-bang-hao-sang.png)
+<img src="/images/books/tren-duong-bang-hao-sang.png" alt="Living Generously" width="500" />
 
 Among the 7 valuable lessons in this book, **generosity** (hào sảng) left the deepest impression:
 
@@ -85,7 +85,7 @@ The lesson: Don't trust any "internet experts"!
 
 ## Reading Experience
 
-Reading this book in June 2017, right after finishing the National High School Graduation Exam - a crucial transition from adolescence to adulthood - left an unforgettable impression.
+Reading this book in 2022, right after finishing the National High School Graduation Exam - a crucial transition from adolescence to adulthood - left an unforgettable impression.
 
 Tony's advice is never distant or clichéd. The writing style is witty, humorous, yet practical. After each story, you see yourself in it - sometimes as Quan who's lost, sometimes as the internet addict, sometimes as the dreamer entrepreneur who knows nothing yet.
 

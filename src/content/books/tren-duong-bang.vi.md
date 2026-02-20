@@ -3,14 +3,12 @@ title: "Trên Đường Băng"
 author: "Tony Buổi Sáng"
 coverImage: "/images/books/tren-duong-bang.png"
 rating: 5
-startDate: 2017-06-01
-endDate: 2017-06-01
+startDate: 2022-01-01
+endDate: 2022-12-01
 category: "self-help"
 review: "Cuốn sách rất hay, mình đọc sau khi kết thúc kì thi THPT Quốc Gia. Bài học về tính hào sảng là điều không bao giờ quên."
 lang: "vi"
 ---
-
-![Trên Đường Băng](/images/books/tren-duong-bang.png)
 
 **Trên Đường Băng** là tác phẩm nổi tiếng nhất của Tony Buổi Sáng - một blogger bí ẩn mà đến tận bây giờ vẫn không ai biết rõ là ai. Cuốn sách là tập hợp những bài viết từ Fanpage của tác giả, nhưng lại có sức hút lạ kỳ thu hút giới trẻ và trở thành cuốn sách bán chạy nhất. Đây không chỉ là một cuốn sách, mà là người bạn đồng hành chia sẻ những bài học quý giá về cuộc sống, sự nghiệp và cách sống ý nghĩa.
 
@@ -26,7 +24,7 @@ Mỗi phần chứa đựng những câu chuyện ngắn gần gũi - từ "chuy
 
 ## Bài học không bao giờ quên: Tính hào sảng
 
-![Sống hào sảng](/images/books/tren-duong-bang-hao-sang.png)
+<img src="/images/books/tren-duong-bang-hao-sang.png" alt="Sống hào sảng" width="500" />
 
 Trong 7 bài học đắt giá của cuốn sách, **tính hào sảng** là điều khắc sâu nhất trong tâm trí mình:
 
@@ -79,7 +77,7 @@ Bài học: Đừng tin bất kỳ "tiến sĩ mạng" nào!
 
 ## Trải nghiệm đọc sách
 
-Đọc cuốn sách này vào tháng 6/2017, ngay sau khi kết thúc kỳ thi THPT Quốc Gia - một giai đoạn chuyển tiếp quan trọng từ tuổi học trò sang tuổi trưởng thành - đã để lại ấn tượng không thể nào quên. 
+Đọc cuốn sách này vào tháng 2022, ngay sau khi kết thúc kỳ thi THPT Quốc Gia - một giai đoạn chuyển tiếp quan trọng từ tuổi học trò sang tuổi trưởng thành - đã để lại ấn tượng không thể nào quên. 
 
 Những lời khuyên của Tony không hề xa vời hay sáo rỗng. Văn phong dí dỏm, hài hước nhưng thực tiễn. Đọc xong mỗi câu chuyện là thấy mình trong đó - đôi khi là thằng Quân đang lạc lối, đôi khi là người đang nghiện Internet, đôi khi là kẻ mơ mộng khởi nghiệp mà chưa biết gì.
 
