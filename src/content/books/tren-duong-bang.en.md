@@ -5,6 +5,7 @@ coverImage: "/images/books/tren-duong-bang.png"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01
+addedDate: 2026-02-13
 category: "self-help"
 review: "An excellent book that I read after finishing my high school exams. The lesson about generosity is something I'll never forget."
 lang: "en"

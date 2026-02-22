@@ -5,6 +5,7 @@ coverImage: "/images/books/hau-van-rat-dat.png"
 rating: 4
 startDate: 2022-06-01
 endDate: 2022-06-01
+addedDate: 2026-02-13
 category: "self-help"
 review: "Sharp, awakening words about life resilience. Concise writing style yet heavy with meaning. Reminds us to live proudly - when you shine bright enough, all contempt becomes meaningless."
 lang: "en"

@@ -5,6 +5,7 @@ coverImage: "/images/books/hau-van-rat-dat.png"
 rating: 4
 startDate: 2022-06-01
 endDate: 2022-06-01
+addedDate: 2026-02-13
 category: "self-help"
 review: "Những lời thức tỉnh sắc sảo về bản lĩnh sống. Văn phong gãy gọn nhưng đầy sức nặng. Nhắc ta sống kiêu hãnh, đủ rực rỡ để mọi sự coi thường trở nên vô nghĩa."
 lang: "vi"

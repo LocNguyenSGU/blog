@@ -27,6 +27,7 @@ const booksCollection = defineCollection({
     rating: z.number().min(1).max(5),
     startDate: z.date(),
     endDate: z.date(),
+    addedDate: z.date(), // When book was added to collection
     category: z.enum(['tech', 'fiction', 'business', 'self-help', 'other']),
     review: z.string(),
     lang: z.enum(['en', 'vi']).default('vi'),

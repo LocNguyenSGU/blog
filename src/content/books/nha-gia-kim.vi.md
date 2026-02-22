@@ -5,6 +5,7 @@ coverImage: "/images/books/nha-gia-kim.png"
 rating: 5
 startDate: 2020-01-01
 endDate: 2020-12-01
+addedDate: 2026-02-13
 category: "fiction"
 review: "Cuốn sách duy nhất tôi đọc tới 3 lần. Mỗi lần đọc lại vỡ ra và ngấm thêm những bài học mới. Cuốn sách mỏng nhưng dày đặc triết lý sống."
 lang: "vi"

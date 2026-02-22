@@ -5,6 +5,7 @@ coverImage: "/images/books/bi-an-mai-mai-la-bi-an.png"
 rating: 5
 startDate: 2017-01-01
 endDate: 2017-01-01
+addedDate: 2026-02-13
 category: "other"
 review: "Cuốn sách đầu tiên mình đọc. Lúc đó còn nhỏ, đọc mấy phần về xác ướp và tàu ma còn thấy sợ, nhưng cũng hài."
 lang: "vi"

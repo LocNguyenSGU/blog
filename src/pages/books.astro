@@ -17,7 +17,7 @@ try {
   allBooks = await getCollection('books');
   books = allBooks
     .filter(book => book.data.lang === locale)
-    .sort((a, b) => b.data.endDate.valueOf() - a.data.endDate.valueOf());
+    .sort((a, b) => b.data.addedDate.valueOf() - a.data.addedDate.valueOf());
 } catch (error) {
   console.error('Error loading books:', error);
   errorMessage = locale === 'en' 

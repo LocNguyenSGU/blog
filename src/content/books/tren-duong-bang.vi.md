@@ -5,6 +5,7 @@ coverImage: "/images/books/tren-duong-bang.png"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01
+addedDate: 2026-02-13
 category: "self-help"
 review: "Cuốn sách rất hay, mình đọc sau khi kết thúc kì thi THPT Quốc Gia. Bài học về tính hào sảng là điều không bao giờ quên."
 lang: "vi"

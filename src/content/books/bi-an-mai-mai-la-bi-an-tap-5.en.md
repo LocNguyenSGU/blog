@@ -5,6 +5,7 @@ coverImage: "/images/books/bi-an-mai-mai-la-bi-an.png"
 rating: 5
 startDate: 2017-01-01
 endDate: 2017-01-01
+addedDate: 2026-02-13
 category: "other"
 review: "The first book I ever read. I was young and got scared reading the parts about mummies and ghost ships, but it was also fun."
 lang: "en"

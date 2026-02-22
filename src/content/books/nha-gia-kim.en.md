@@ -5,6 +5,7 @@ coverImage: "/images/books/nha-gia-kim.png"
 rating: 5
 startDate: 2020-01-01
 endDate: 2020-12-01
+addedDate: 2026-02-13
 category: "fiction"
 review: "The only book I've read 3 times. Each reading revealed new insights that deeply resonated. A thin book but densely packed with life philosophy."
 lang: "en"
