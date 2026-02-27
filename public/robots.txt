@@ -1,0 +1,14 @@
+# Allow all bots to crawl the entire site
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://devjournal.fun/sitemap-index.xml
+
+# Optional: Crawl-delay for aggressive bots (uncomment if needed)
+# Crawl-delay: 10
+
+# Block specific paths (uncomment if needed)
+# Disallow: /admin/
+# Disallow: /api/
+# Disallow: /private/
