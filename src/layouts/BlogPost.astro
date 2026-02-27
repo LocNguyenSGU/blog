@@ -4,9 +4,7 @@ import type { Locale } from '../utils/i18n';
 import type { MarkdownHeading } from 'astro';
 import { t } from '../utils/i18n';
 import { Image } from 'astro:assets';
-import SEO from '../components/SEO.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
-import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import BaseLayout from './BaseLayout.astro';
 import CategoryBadge from '../components/CategoryBadge.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
@@ -14,7 +12,6 @@ import { getReadingTime, formatReadingTime } from '../utils/readingTime';
 import { shouldShowTOC } from '../utils/toc';
 import { generateBlogBreadcrumbs } from '../utils/breadcrumbs';
 import type { Heading } from '../utils/toc';
-import '../styles/global.css';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   slug?: string;
@@ -46,137 +43,25 @@ const formattedDate = new Date(pubDate).toLocaleDateString(locale === 'vi' ? 'vi
 // Generate breadcrumbs for this blog post
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
 const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl);
-
-// Prepare article metadata for JSON-LD schema
-const articleMeta = {
-  publishedTime: pubDate.toISOString(),
-  modifiedTime: pubDate.toISOString(), // You can add modifiedDate field to schema if needed
-  author: author,
-  tags: tags,
-  category: category,
-};
 ---
 
-<!DOCTYPE html>
-<html lang={locale}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.jpg" />
-    
-    <!-- SEO Component for Article (includes JSON-LD BlogPosting schema) -->
-    <SEO 
-      title={title} 
-      description={description || ''} 
-      locale={locale}
-      type="article"
-      image={coverImage}
-      imageAlt={coverAlt}
-      article={articleMeta}
-    />
-    
-    <!-- Prevent flash of wrong theme -->
-    <script is:inline>
-      const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
-        }
-        return 'sepia'; // Default to sepia
-      })();
-      
-      document.documentElement.classList.remove('light', 'sepia', 'dark');
-      document.documentElement.classList.add(theme);
-    </script>
-    
-    <!-- Auto-redirect to saved language preference if no lang param -->
-    <script is:inline>
-      if (typeof window !== 'undefined') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const savedLocale = localStorage.getItem('locale');
-        
-        // Only redirect if saved locale is valid and different from default
-        if (!urlParams.has('lang') && savedLocale && (savedLocale === 'en' || savedLocale === 'vi') && savedLocale !== 'vi') {
-          const url = new URL(window.location.href);
-          url.searchParams.set('lang', savedLocale);
-          window.location.replace(url.toString());
-        }
-      }
-    </script>
-  </head>
-  <body class="min-h-screen transition-colors">
-    {/* Mobile menu overlay */}
-    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" aria-hidden="true"></div>
-    
-    {/* Mobile menu sidebar */}
-    <div id="mobile-menu-sidebar" class="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 sepia:bg-sepia-50 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 md:hidden">
-      <div class="flex flex-col h-full">
-        {/* Close button */}
-        <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-          <span class="font-sans font-bold text-lg">Menu</span>
-          <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        
-        {/* Navigation links */}
-        <nav class="flex-1 overflow-y-auto p-4">
-          <div class="flex flex-col gap-2">
-            <a href="/" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.home', locale)}</a>
-            <a href="/blog" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.blog', locale)}</a>
-            <a href="/books" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.books', locale)}</a>
-            <a href="/about" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.about', locale)}</a>
-          </div>
-        </nav>
-        
-        {/* Settings section */}
-        <div class="border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300 p-4">
-          <div class="space-y-4">
-            <div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-2">{t('nav.theme', locale)}</div>
-              <ThemeToggle />
-            </div>
-            <div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-2">{t('nav.language', locale)}</div>
-              <LanguageSwitcher currentLocale={locale} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Desktop Header */}
-    <header class="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 sepia:bg-sepia-50/80 border-b border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex justify-between items-center">
-          <a href="/" class="font-serif text-2xl font-bold">📚 Blog</a>
-          
-          {/* Desktop Navigation */}
-          <nav class="hidden md:flex items-center gap-6">
-            <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-900 transition-colors">{t('nav.home', locale)}</a>
-            <a href="/blog" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-900 transition-colors">{t('nav.blog', locale)}</a>
-            <a href="/books" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-900 transition-colors">{t('nav.books', locale)}</a>
-            <a href="/about" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-900 transition-colors">{t('nav.about', locale)}</a>
-            <ThemeToggle />
-            <LanguageSwitcher currentLocale={locale} />
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button id="mobile-menu-open" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    {/* Main Content */}
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class:list={["mx-auto", { "lg:grid lg:grid-cols-[1fr_250px] lg:gap-8": displayTOC, "max-w-4xl": !displayTOC }]}>
-        <article class:list={[{ "max-w-4xl": displayTOC }]}>
+<BaseLayout 
+  title={title} 
+  description={description || ''} 
+  locale={locale} 
+  image={coverImage} 
+  imageAlt={coverAlt}
+  type="article"
+  article={{
+    publishedTime: pubDate.toISOString(),
+    modifiedTime: pubDate.toISOString(),
+    author: author,
+    tags: tags,
+    category: category,
+  }}
+>
+  <div class:list={["mx-auto", { "lg:grid lg:grid-cols-[1fr_250px] lg:gap-8": displayTOC, "max-w-4xl": !displayTOC }]}>
+    <article class:list={[{ "max-w-4xl": displayTOC }]}>
     {/* Breadcrumbs */}
     <Breadcrumbs items={breadcrumbs} />
     
@@ -262,71 +147,39 @@ const articleMeta = {
       <TableOfContents headings={headings} locale={locale} />
     </aside>
   )}
-      </div>
-    </main>
+  </div>
 
-    {/* Footer */}
-    <footer class="border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300 mt-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p class="text-center text-gray-600 dark:text-gray-400 sepia:text-sepia-700">
-          © {new Date().getFullYear()} {t('footer.rights', locale)}
-        </p>
-      </div>
-    </footer>
+  {/* View Counter Script */}
+  <script is:inline define:vars={{ slug }}>
+    // View counter
+    function getViewCount(slug) {
+      const key = `post-views-${slug}`;
+      const stored = localStorage.getItem(key);
+      return stored ? parseInt(stored, 10) : 0;
+    }
 
-    <script is:inline define:vars={{ slug }}>
-      // View counter
-      function getViewCount(slug) {
-        const key = `post-views-${slug}`;
-        const stored = localStorage.getItem(key);
-        return stored ? parseInt(stored, 10) : 0;
+    function incrementViewCount(slug) {
+      const currentCount = getViewCount(slug);
+      const newCount = currentCount + 1;
+      const key = `post-views-${slug}`;
+      localStorage.setItem(key, newCount.toString());
+      return newCount;
+    }
+
+    function formatViewCount(count) {
+      if (count >= 1000) {
+        return `${(count / 1000).toFixed(1)}k views`;
       }
+      return `${count} views`;
+    }
 
-      function incrementViewCount(slug) {
-        const currentCount = getViewCount(slug);
-        const newCount = currentCount + 1;
-        const key = `post-views-${slug}`;
-        localStorage.setItem(key, newCount.toString());
-        return newCount;
+    // Initialize view count
+    document.addEventListener('DOMContentLoaded', () => {
+      const viewCount = incrementViewCount(slug);
+      const viewCountElement = document.getElementById('view-count-number');
+      if (viewCountElement) {
+        viewCountElement.textContent = formatViewCount(viewCount);
       }
-
-      function formatViewCount(count) {
-        if (count >= 1000) {
-          return `${(count / 1000).toFixed(1)}k views`;
-        }
-        return `${count} views`;
-      }
-
-      // Initialize view count
-      document.addEventListener('DOMContentLoaded', () => {
-        const viewCount = incrementViewCount(slug);
-        const viewCountElement = document.getElementById('view-count-number');
-        if (viewCountElement) {
-          viewCountElement.textContent = formatViewCount(viewCount);
-        }
-      });
-      
-      // Mobile menu functionality
-      const mobileMenuOpen = document.getElementById('mobile-menu-open');
-      const mobileMenuClose = document.getElementById('mobile-menu-close');
-      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-      const mobileMenuSidebar = document.getElementById('mobile-menu-sidebar');
-
-      function openMobileMenu() {
-        mobileMenuOverlay?.classList.remove('hidden');
-        mobileMenuSidebar?.classList.remove('translate-x-full');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeMobileMenu() {
-        mobileMenuOverlay?.classList.add('hidden');
-        mobileMenuSidebar?.classList.add('translate-x-full');
-        document.body.style.overflow = '';
-      }
-
-      mobileMenuOpen?.addEventListener('click', openMobileMenu);
-      mobileMenuClose?.addEventListener('click', closeMobileMenu);
-      mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
-    </script>
-  </body>
-</html>
+    });
+  </script>
+</BaseLayout>

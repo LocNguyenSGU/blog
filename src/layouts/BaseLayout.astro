@@ -3,15 +3,25 @@ import type { Locale } from '../utils/i18n';
 import { t } from '../utils/i18n';
 import SEO from '../components/SEO.astro';
 
+interface ArticleMeta {
+  publishedTime: string;
+  modifiedTime: string;
+  author: string;
+  tags?: string[];
+  category?: string;
+}
+
 interface Props {
   title: string;
   description?: string;
   locale?: Locale;
   image?: string;
   imageAlt?: string;
+  type?: 'website' | 'article';
+  article?: ArticleMeta;
 }
 
-const { title, description = 'My personal blog', locale = 'vi', image, imageAlt } = Astro.props;
+const { title, description = 'My personal blog', locale = 'vi', image, imageAlt, type = 'website', article } = Astro.props;
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
@@ -30,9 +40,10 @@ import LanguageSwitcher from '../components/LanguageSwitcher.astro';
       title={title} 
       description={description} 
       locale={locale}
-      type="website"
+      type={type}
       image={image}
       imageAlt={imageAlt}
+      article={article}
     />
     
     <!-- Prevent flash of wrong theme -->
