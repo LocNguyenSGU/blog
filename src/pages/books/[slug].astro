@@ -5,6 +5,8 @@ import type { Locale } from '../../utils/i18n';
 import { t } from '../../utils/i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import StarRating from '../../components/StarRating.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { generateBookBreadcrumbs } from '../../utils/breadcrumbs';
 
 const { slug } = Astro.params;
 
@@ -69,11 +71,18 @@ const categoryColors: Record<string, string> = {
   'other': 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 sepia:bg-sepia-200 sepia:text-sepia-900',
 };
 
+// Generate breadcrumbs for this book
+const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
+const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl);
+
 const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
 ---
 
 <BaseLayout title={title} description={review} locale={locale}>
   <article class="max-w-4xl mx-auto">
+    {/* Breadcrumbs */}
+    <Breadcrumbs items={breadcrumbs} />
+    
     {/* Back Button */}
     <a 
       href={backUrl}

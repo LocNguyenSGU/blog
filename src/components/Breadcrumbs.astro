@@ -1,0 +1,42 @@
+---
+import type { BreadcrumbItem } from '../utils/breadcrumbs';
+import { breadcrumbsToJsonLd } from '../utils/breadcrumbs';
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const jsonLd = breadcrumbsToJsonLd(items);
+---
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<!-- Visual Breadcrumbs -->
+<nav aria-label="Breadcrumb" class="mb-4">
+  <ol class="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      return (
+        <li class="flex items-center gap-2">
+          {!isLast ? (
+            <>
+              <a
+                href={item.url}
+                class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                {item.name}
+              </a>
+              <span class="text-gray-400 dark:text-gray-600" aria-hidden="true">/</span>
+            </>
+          ) : (
+            <span class="font-medium text-gray-900 dark:text-gray-100" aria-current="page">
+              {item.name}
+            </span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

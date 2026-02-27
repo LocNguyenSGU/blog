@@ -9,8 +9,10 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import CategoryBadge from '../components/CategoryBadge.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { getReadingTime, formatReadingTime } from '../utils/readingTime';
 import { shouldShowTOC } from '../utils/toc';
+import { generateBlogBreadcrumbs } from '../utils/breadcrumbs';
 import type { Heading } from '../utils/toc';
 import '../styles/global.css';
 
@@ -40,6 +42,10 @@ const formattedDate = new Date(pubDate).toLocaleDateString(locale === 'vi' ? 'vi
   month: 'long',
   day: 'numeric'
 });
+
+// Generate breadcrumbs for this blog post
+const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
+const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl);
 
 // Prepare article metadata for JSON-LD schema
 const articleMeta = {
@@ -171,6 +177,9 @@ const articleMeta = {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class:list={["mx-auto", { "lg:grid lg:grid-cols-[1fr_250px] lg:gap-8": displayTOC, "max-w-4xl": !displayTOC }]}>
         <article class:list={[{ "max-w-4xl": displayTOC }]}>
+    {/* Breadcrumbs */}
+    <Breadcrumbs items={breadcrumbs} />
+    
     {/* Cover Image */}
     <div class="relative -mx-4 md:mx-0 mb-8 md:rounded-2xl overflow-hidden aspect-[21/9] max-h-[500px]">
       <Image 
