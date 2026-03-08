@@ -1,71 +1,144 @@
 ---
-title: "How to Write Blog Posts with Markdown"
-description: "A simple guide to writing blog posts with Markdown"
+title: "How to Write Blog Posts with Markdown and MDX in Astro"
+description: "A practical guide to writing blog posts with Markdown and MDX in Astro, including frontmatter, structure, code blocks, and common mistakes to avoid."
 pubDate: 2026-02-13
-author: "Your Name"
+modifiedDate: 2026-03-08
+faqs:
+  - question: "Should I use Markdown or MDX for blog posts?"
+    answer: "Use Markdown when the article is mostly text. Use MDX when you need components, embeds, or interactive blocks inside the post."
+  - question: "Is MDX better for SEO than Markdown?"
+    answer: "No. SEO depends more on content quality, metadata, internal linking, and page structure than on whether the file is Markdown or MDX."
+  - question: "What is the best blog structure for Markdown posts?"
+    answer: "The best structure is usually an answer-first introduction, clear H2 sections, concise paragraphs, and a short FAQ or conclusion at the end."
+author: "Loc Nguyen"
 category: "programming"
-tags: ["tutorial", "markdown"]
+tags: ["markdown", "mdx", "astro", "blogging", "technical-writing"]
 coverImage: "/images/posts/markdown-guide.svg"
-coverAlt: "Markdown guide illustration"
+coverAlt: "Illustration for a Markdown and MDX writing guide"
 lang: "en"
 translationKey: "markdown-guide"
 ---
 
-# Markdown Writing Guide
+Writing blog posts with Markdown and MDX in Astro is simple: create a content file, add frontmatter, structure the article with headings, and use MDX only when you need richer components. For most posts, that is enough to publish quickly without touching HTML.
 
-Markdown is a lightweight markup language that makes it easy to write formatted content.
+## What Markdown and MDX are good for
 
-## Basic Syntax
+Markdown is ideal when you want clean writing, fast editing, and readable source files. MDX gives you everything Markdown has, plus the ability to import and render components inside the article when needed.
 
-### Headings
+Use:
 
-Use `#` symbols to create headings:
+- **Markdown** for straightforward text-heavy posts
+- **MDX** for posts that need custom components, richer embeds, or interactive content
 
-```markdown
-# H1 Heading
-## H2 Heading
-### H3 Heading
+## Step 1: Create a new content file
+
+Inside an Astro blog, create a new file in `src/content/blog/`.
+
+Examples:
+
+- `my-first-post.en.mdx`
+- `how-i-use-ai.vi.mdx`
+
+Choose a file name that matches the topic and stays readable as a slug.
+
+## Step 2: Add frontmatter
+
+Every post should begin with metadata at the top of the file:
+
+```yaml
+---
+title: "How to Write Blog Posts with Markdown and MDX in Astro"
+description: "A practical guide to structuring and publishing blog content."
+pubDate: 2026-03-08
+author: "Loc Nguyen"
+category: "programming"
+tags: ["markdown", "mdx", "astro"]
+coverImage: "/images/posts/markdown-guide.svg"
+coverAlt: "A guide to writing with Markdown"
+lang: "en"
+translationKey: "markdown-guide"
+---
 ```
 
-### Text Formatting
+Good frontmatter helps both readers and search engines understand the page.
 
-- **Bold text**: `**bold**` or `__bold__`
-- *Italic text*: `*italic*` or `_italic_`
-- ~~Strikethrough~~: `~~strikethrough~~`
+## Step 3: Structure the article clearly
 
-### Lists
+A strong post structure usually looks like this:
 
-Unordered lists:
-```markdown
-- Item 1
-- Item 2
-  - Subitem
-```
+1. A short opening that answers the topic directly
+2. H2 sections for the main ideas
+3. H3 sections only when a section needs sub-points
+4. A short conclusion or FAQ
 
-Ordered lists:
-```markdown
-1. First item
-2. Second item
-3. Third item
-```
+This structure makes the post easier to read and easier for search engines to extract.
 
-### Links and Images
+## Step 4: Write with standard Markdown syntax
+
+You can use normal Markdown for most content:
 
 ```markdown
-[Link text](https://example.com)
-![Alt text](image-url.jpg)
+## Key Takeaways
+
+- Write one clear idea per paragraph
+- Use headings that match real reader questions
+- Keep code examples short and readable
 ```
 
-### Code
+For code blocks:
 
-Inline code: \`code\`
+```ts
+function greet(name: string) {
+  console.log(`Hello, ${name}`);
+}
+```
 
-Code blocks:
-\`\`\`javascript
-const greeting = "Hello, world!";
-console.log(greeting);
-\`\`\`
+## Step 5: Use MDX only when needed
 
-## Conclusion
+If a post needs more than text, MDX lets you import components directly into the article.
 
-Markdown makes writing blog posts simple and enjoyable. Give it a try!
+For example:
+
+```mdx
+import Callout from '../../components/Callout.astro';
+
+<Callout type="tip">
+  Use MDX when content needs custom UI, not by default.
+</Callout>
+```
+
+That flexibility is powerful, but most articles are better when the writing stays simple.
+
+If you want to see a real Astro project built and shipped quickly with AI, read [From Idea to Production in 2 Hours: an Astro blog built with AI](/blog/building-blog-with-ai.en?lang=en). If you want the broader editorial direction behind this site, [Welcome to My Blog: the editorial direction of this site](/blog/first-post.en?lang=en) is the natural introduction.
+
+## Common mistakes to avoid
+
+### Writing without a clear opening
+
+The first paragraph should explain what the post is about and who it helps. Do not make readers guess.
+
+### Overusing headings
+
+Too many short headings can make a post feel fragmented. Use headings to create clarity, not noise.
+
+### Adding code without explanation
+
+A code block is more useful when you explain why it exists and what the reader should notice.
+
+## Frequently asked questions
+
+### Should I use Markdown or MDX for blog posts?
+
+Use Markdown when the article is mostly text. Use MDX when you need components, embeds, or interactive blocks inside the post.
+
+### Is MDX better for SEO than Markdown?
+
+No. SEO depends more on content quality, metadata, internal linking, and page structure than on whether the file is Markdown or MDX.
+
+### What is the best blog structure for Markdown posts?
+
+The best structure is usually an answer-first introduction, clear H2 sections, concise paragraphs, and a short FAQ or conclusion at the end.
+
+## Bottom line
+
+Markdown and MDX are useful because they reduce friction between writing and publishing. The simpler your workflow is, the easier it becomes to publish consistently and keep your content high quality.

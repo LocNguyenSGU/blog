@@ -3,11 +3,21 @@ title: "Từ Ý Tưởng Đến Production Trong 2 Giờ: Làm Blog Với AI"
 description: "Ý tưởng làm blog nằm trong đầu tôi hơn một năm. Đến đêm qua, 12h khuya, tôi quyết định để AI làm 95%. 2 tiếng sau, blog đã live."
 coverImage: "/images/posts/building-blog-with-ai-gemini.jpg"
 pubDate: 2026-02-13
+modifiedDate: 2026-03-08
+faqs:
+  - question: "Có thể làm blog với AI chỉ trong 2 giờ không?"
+    answer: "Có thể, nếu scope đủ rõ và người dùng giữ vai trò ra quyết định, review và QA. AI giúp rút mạnh thời gian viết boilerplate, cấu hình và debug cơ bản."
+  - question: "Dùng AI để build blog thì con người còn làm gì?"
+    answer: "Con người vẫn quyết định kiến trúc, chọn trade-off, review chất lượng, bắt edge case và chịu trách nhiệm cho kết quả cuối cùng. AI tăng tốc phần triển khai, không thay thế hoàn toàn phán đoán kỹ thuật."
+  - question: "Cách hiệu quả nhất để dùng AI build project là gì?"
+    answer: "Hiệu quả nhất là đi theo workflow rõ ràng: brainstorming, planning, execution và review. Prompt càng cụ thể và có cấu trúc thì đầu ra càng tốt."
 category: "programming"
 author: "Loc Nguyen"
 lang: "vi"
 translationKey: "building-blog-with-ai"
 ---
+
+Nếu hỏi ngắn gọn: **có thể dùng AI để đưa một blog từ ý tưởng lên production trong khoảng 2 giờ**, miễn là bạn giữ scope gọn, prompt đủ rõ và xem AI như một đội thi công còn mình là người review và chốt quyết định.
 
 Ý tưởng làm blog cá nhân nằm trong đầu tôi hơn một năm.
 
@@ -188,6 +198,8 @@ Không nên: "Ê AI, viết cái này," "Giờ viết cái kia," "À quên, sử
 
 Nên: Brainstorming → Planning → Execution → Review. Step-by-step. Organized.
 
+Nếu bạn muốn viết nội dung kỹ thuật cho blog này sau khi dựng xong, bài [Cách Viết Blog Bằng Markdown Và MDX Trong Astro: quy trình xuất bản kỹ thuật](/blog/markdown-guide.vi?lang=vi) sẽ giúp phần xuất bản mượt hơn. Còn nếu bạn muốn nhìn AI ở quy mô lớn hơn một project cá nhân, hãy đọc [AI không thay nguyên xi một phòng ban: từ project cá nhân tới workflow doanh nghiệp](/blog/ai-phong-ban-ao.vi?lang=vi).
+
 ### 4. Human Judgment Vẫn Critical
 
 AI suggest dùng `getStaticPaths` cho blog posts. Tôi bắt: "Wait, ta cần SSR cho language switching động, không phải static."
@@ -219,6 +231,20 @@ Bạn chỉ cần:
 Worst case: Bạn mất 2 tiếng.
 
 Best case: Ý tưởng của bạn thành hiện thực.
+
+## Câu hỏi thường gặp
+
+### Có thể làm blog với AI chỉ trong 2 giờ không?
+
+Có thể, nếu scope đủ rõ và bạn không cố nhồi quá nhiều tính năng vào version đầu. AI đặc biệt mạnh ở phần scaffold project, viết boilerplate, cấu hình và xử lý các lỗi phổ biến.
+
+### Dùng AI để build blog thì con người còn làm gì?
+
+Con người vẫn là người chọn hướng đi, review code, bắt edge case, quyết định trade-off và chịu trách nhiệm với sản phẩm cuối cùng. AI chỉ giúp tăng tốc khâu triển khai.
+
+### Cách hiệu quả nhất để dùng AI build project là gì?
+
+Nên đi theo một workflow rõ ràng: brainstorm yêu cầu, lên plan, để AI implement từng phần rồi review kỹ. Cách làm này hiệu quả hơn nhiều so với việc nhảy prompt ngẫu hứng.
 
 ---
 

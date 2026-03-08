@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../utils/i18n';
 import type { MarkdownHeading } from 'astro';
@@ -8,10 +9,12 @@ import BaseLayout from './BaseLayout.astro';
 import CategoryBadge from '../components/CategoryBadge.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import TopicCard from '../components/TopicCard.astro';
 import { getReadingTime, formatReadingTime } from '../utils/readingTime';
 import { shouldShowTOC } from '../utils/toc';
 import { generateBlogBreadcrumbs } from '../utils/breadcrumbs';
 import type { Heading } from '../utils/toc';
+import { TOPICS, getTopicInfo, getTopicPosts, getTopicsForTranslationKey } from '../utils/topics';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   slug?: string;
@@ -20,9 +23,10 @@ type Props = CollectionEntry<'blog'>['data'] & {
   tags?: string[];
 };
 
-const { title, description, pubDate, author = 'Anonymous', category, coverImage, coverAlt, slug = '', body = '', headings: astroHeadings = [], lang = 'vi', showTOC, tags = [] } = Astro.props;
+const { title, description, pubDate, modifiedDate, faqs = [], author = 'Anonymous', category, coverImage, coverAlt, slug = '', body = '', headings: astroHeadings = [], lang = 'vi', translationKey, showTOC, tags = [] } = Astro.props;
 const readingTime = getReadingTime(body);
 const locale: Locale = lang as Locale;
+const effectiveModifiedDate = modifiedDate ?? pubDate;
 
 // Filter and map headings for TOC (only H2 and H3)
 const headings: Heading[] = astroHeadings
@@ -39,10 +43,76 @@ const formattedDate = new Date(pubDate).toLocaleDateString(locale === 'vi' ? 'vi
   month: 'long',
   day: 'numeric'
 });
+const formattedModifiedDate = new Date(effectiveModifiedDate).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+const showModifiedDate = effectiveModifiedDate.getTime() !== pubDate.getTime();
 
 // Generate breadcrumbs for this blog post
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
-const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl);
+const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl, locale);
+const allPosts = await getCollection('blog');
+const relatedPosts = allPosts
+  .filter((post) => {
+    if (post.slug === slug || post.data.draft || post.data.lang !== lang) return false;
+    if (translationKey && post.data.translationKey === translationKey) return false;
+    return true;
+  })
+  .map((post) => {
+    const sharedTags = (post.data.tags ?? []).filter((tag) => tags.includes(tag)).length;
+    const sameCategory = post.data.category === category ? 1 : 0;
+    const score = sharedTags * 3 + sameCategory;
+
+    return { post, score };
+  })
+  .filter(({ score }) => score > 0)
+  .sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf();
+  })
+  .slice(0, 3)
+  .map(({ post }) => post);
+const relatedTopics = getTopicsForTranslationKey(translationKey).slice(0, 2);
+const topicSeries = getTopicsForTranslationKey(translationKey).map((topicSlug) => {
+  const seriesPosts = getTopicPosts(allPosts, topicSlug, locale);
+  const isPillar = translationKey === TOPICS[topicSlug].pillarTranslationKey;
+  const relatedSeriesPosts = seriesPosts.filter((post) => post.slug !== slug);
+
+  return {
+    topicSlug,
+    info: getTopicInfo(topicSlug, locale),
+    isPillar,
+    relatedSeriesPosts,
+  };
+});
+const seriesMembership = topicSeries.map(({ topicSlug, info }) => ({
+  '@type': 'CreativeWorkSeries',
+  name: `${info.name} ${locale === 'en' ? 'topic cluster' : 'cụm chủ đề'}`,
+  url: `${baseUrl}/topics/${topicSlug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+}));
+const seriesParts = topicSeries
+  .filter(({ isPillar, relatedSeriesPosts }) => isPillar && relatedSeriesPosts.length > 0)
+  .flatMap(({ relatedSeriesPosts }) =>
+    relatedSeriesPosts.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.data.title,
+      url: `${baseUrl}/blog/${post.slug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+    }))
+  );
+const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) => ({
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWorkSeries',
+  name: `${info.name} ${locale === 'en' ? 'topic cluster' : 'cụm chủ đề'}`,
+  description: info.description,
+  url: `${baseUrl}/topics/${topicSlug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+  hasPart: relatedSeriesPosts.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    url: `${baseUrl}/blog/${post.slug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+  })),
+}));
 ---
 
 <BaseLayout 
@@ -54,11 +124,15 @@ const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl);
   type="article"
   article={{
     publishedTime: pubDate.toISOString(),
-    modifiedTime: pubDate.toISOString(),
+    modifiedTime: effectiveModifiedDate.toISOString(),
     author: author,
     tags: tags,
     category: category,
+    isPartOf: seriesMembership,
+    hasPart: seriesParts.length > 0 ? seriesParts : undefined,
+    faqs: faqs,
   }}
+  additionalJsonLd={seriesSchemas}
 >
   <div class:list={["mx-auto", { "lg:grid lg:grid-cols-[1fr_250px] lg:gap-8": displayTOC, "max-w-4xl": !displayTOC }]}>
     <article class:list={[{ "max-w-4xl": displayTOC }]}>
@@ -88,6 +162,14 @@ const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl);
       
       <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700">
         <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {showModifiedDate && (
+          <>
+            <span>•</span>
+            <time datetime={effectiveModifiedDate.toISOString()}>
+              {locale === 'vi' ? `Cập nhật ${formattedModifiedDate}` : `Updated ${formattedModifiedDate}`}
+            </time>
+          </>
+        )}
         <span>•</span>
         <span class="flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,6 +200,47 @@ const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl);
     <div class="prose prose-lg dark:prose-invert sepia:prose-sepia prose-headings:font-sans prose-code:font-mono prose-pre:font-mono max-w-none">
       <slot />
     </div>
+
+    {relatedPosts.length > 0 && (
+      <section class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
+        <h2 class="font-sans text-2xl font-bold mb-6">
+          {locale === 'vi' ? 'Đọc tiếp' : 'Related reading'}
+        </h2>
+        <div class="grid gap-4 md:grid-cols-3">
+          {relatedPosts.map((post) => (
+            <a
+              href={`/blog/${post.slug}${locale === 'en' ? '?lang=en' : ''}`}
+              class="block rounded-xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 p-5 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+            >
+              <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-2">
+                {post.data.category}
+              </p>
+              <h3 class="font-sans text-lg font-semibold text-gray-900 dark:text-gray-100 sepia:text-sepia-900 mb-2">
+                {post.data.title}
+              </h3>
+              {post.data.description && (
+                <p class="text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700">
+                  {post.data.description}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {relatedTopics.length > 0 && (
+      <section class="mt-12">
+        <h2 class="font-sans text-2xl font-bold mb-6">
+          {locale === 'vi' ? 'Khám phá theo cụm chủ đề' : 'Explore related topics'}
+        </h2>
+        <div class="grid gap-4 md:grid-cols-2">
+          {relatedTopics.map((topicSlug) => (
+            <TopicCard slug={topicSlug} locale={locale} />
+          ))}
+        </div>
+      </section>
+    )}
 
     {/* Giscus Comments */}
     <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">

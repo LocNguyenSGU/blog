@@ -8,13 +8,26 @@ export interface Props {
   type?: 'website' | 'article';
   image?: string;
   imageAlt?: string;
+  canonicalUrl?: string;
+  alternateUrls?: {
+    vi?: string;
+    en?: string;
+    default?: string;
+  };
   article?: {
     publishedTime?: string;
     modifiedTime?: string;
     author?: string;
     tags?: string[];
     category?: string;
+    isPartOf?: Array<Record<string, unknown>>;
+    hasPart?: Array<Record<string, unknown>>;
+    faqs?: Array<{
+      question: string;
+      answer: string;
+    }>;
   };
+  additionalJsonLd?: Array<Record<string, unknown>>;
   noindex?: boolean;
 }
 
@@ -25,7 +38,10 @@ const {
   type = 'website',
   image,
   imageAlt = '',
+  canonicalUrl,
+  alternateUrls,
   article,
+  additionalJsonLd = [],
   noindex = false,
 } = Astro.props;
 
@@ -37,11 +53,12 @@ const currentPath = Astro.url.pathname;
 const canonicalPath = currentPath.endsWith('/') && currentPath !== '/' 
   ? currentPath.slice(0, -1) 
   : currentPath;
-const canonicalUrl = `${siteUrl}${canonicalPath}`;
+const resolvedCanonicalUrl = canonicalUrl || `${siteUrl}${canonicalPath}`;
 
 // Build alternate language URLs
-const viUrl = `${siteUrl}${currentPath}?lang=vi`;
-const enUrl = `${siteUrl}${currentPath}?lang=en`;
+const viUrl = alternateUrls?.vi || `${siteUrl}${currentPath}?lang=vi`;
+const enUrl = alternateUrls?.en || `${siteUrl}${currentPath}?lang=en`;
+const defaultUrl = alternateUrls?.default || `${siteUrl}${currentPath}`;
 
 // Full image URL for social sharing
 const ogImage = image ? `${siteUrl}${image}` : `${siteUrl}/images/og-default.jpg`;
@@ -52,14 +69,10 @@ const authorName = import.meta.env.PUBLIC_AUTHOR_NAME || 'Anonymous';
 
 // Build JSON-LD structured data
 const buildJsonLd = () => {
-  const baseSchema = {
-    '@context': 'https://schema.org',
-  };
-
   // Website schema (for homepage)
   if (type === 'website' && currentPath === '/') {
     return {
-      ...baseSchema,
+      '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: siteName,
       url: siteUrl,
@@ -74,8 +87,7 @@ const buildJsonLd = () => {
 
   // Blog/Article schema
   if (type === 'article' && article) {
-    return {
-      ...baseSchema,
+    const blogPosting = {
       '@type': 'BlogPosting',
       headline: title,
       description: description,
@@ -93,22 +105,46 @@ const buildJsonLd = () => {
       inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
       keywords: article.tags?.join(', '),
       articleSection: article.category,
-      url: canonicalUrl,
+      url: resolvedCanonicalUrl,
+      isPartOf: article.isPartOf,
+      hasPart: article.hasPart,
+    };
+
+    const graph: Array<Record<string, unknown>> = [blogPosting];
+
+    if (article.faqs && article.faqs.length > 0) {
+      graph.push({
+        '@type': 'FAQPage',
+        mainEntity: article.faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      });
+    }
+
+    return {
+      '@context': 'https://schema.org',
+      '@graph': graph,
     };
   }
 
   // Default webpage schema
   return {
-    ...baseSchema,
+    '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: title,
     description: description,
-    url: canonicalUrl,
+    url: resolvedCanonicalUrl,
     inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
   };
 };
 
 const jsonLd = buildJsonLd();
+const additionalJsonLdScripts = additionalJsonLd.filter(Boolean);
 ---
 
 <!-- Primary Meta Tags -->
@@ -118,16 +154,16 @@ const jsonLd = buildJsonLd();
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Canonical URL -->
-<link rel="canonical" href={canonicalUrl} />
+<link rel="canonical" href={resolvedCanonicalUrl} />
 
 <!-- Alternate Language Links -->
 <link rel="alternate" hreflang="vi" href={viUrl} />
 <link rel="alternate" hreflang="en" href={enUrl} />
-<link rel="alternate" hreflang="x-default" href={`${siteUrl}${currentPath}`} />
+<link rel="alternate" hreflang="x-default" href={defaultUrl} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
-<meta property="og:url" content={canonicalUrl} />
+<meta property="og:url" content={resolvedCanonicalUrl} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />
@@ -149,11 +185,14 @@ const jsonLd = buildJsonLd();
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:url" content={resolvedCanonicalUrl} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 {imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
 
 <!-- JSON-LD Structured Data -->
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+{additionalJsonLdScripts.map((schema) => (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}

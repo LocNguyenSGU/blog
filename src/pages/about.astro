@@ -1,13 +1,56 @@
 ---
 import type { Locale } from '../utils/i18n';
-import { t } from '../utils/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const urlParams = Astro.url.searchParams;
 const locale: Locale = (urlParams.get('lang') as Locale) || 'vi';
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const aboutUrl = `${siteUrl}/about`;
+const personName = locale === 'vi' ? 'Nguyễn Hữu Lộc' : 'Loc Nguyen';
+const aboutDescription = locale === 'vi'
+  ? 'Giới thiệu về Nguyễn Hữu Lộc, software engineer tại TP. Hồ Chí Minh, người viết về lập trình, AI và phát triển bản thân.'
+  : 'About Loc Nguyen, a software engineer in Ho Chi Minh City writing about programming, AI, and personal growth.';
+const additionalJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: locale === 'vi' ? 'Giới thiệu | Lộc Nguyễn' : 'About | Loc Nguyen',
+    description: aboutDescription,
+    url: aboutUrl,
+    inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+    mainEntity: {
+      '@type': 'Person',
+      name: personName,
+      url: aboutUrl,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: personName,
+    url: aboutUrl,
+    jobTitle: 'Software Engineer',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: locale === 'vi' ? 'TP. Hồ Chí Minh' : 'Ho Chi Minh City',
+      addressCountry: 'VN',
+    },
+    knowsAbout: ['Programming', 'AI', 'Logistics', 'Fulfillment', 'Software Engineering'],
+    sameAs: [
+      'https://github.com/LocNguyenSGU',
+      'https://www.facebook.com/nguyen.huu.loc.888963',
+      'https://www.tiktok.com/@loc23092004?_r=1&_t=ZS-93uOck8FBXY',
+    ],
+  },
+];
 ---
 
-<BaseLayout title={t('nav.about', locale)} locale={locale}>
+<BaseLayout
+  title={locale === 'vi' ? 'Giới thiệu | Lộc Nguyễn' : 'About | Loc Nguyen'}
+  description={aboutDescription}
+  locale={locale}
+  additionalJsonLd={additionalJsonLd}
+>
   <div class="max-w-6xl mx-auto px-4 py-8">
     <!-- Main Layout: Content Left, Profile Right -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

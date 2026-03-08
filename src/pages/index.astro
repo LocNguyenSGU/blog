@@ -5,6 +5,10 @@ import { t } from '../utils/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FeaturedPost from '../components/FeaturedPost.astro';
 import PostCard from '../components/PostCard.astro';
+import TopicCard from '../components/TopicCard.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import { TOPICS, getTopicInfo, getTopicPillarPost } from '../utils/topics';
+import { CATEGORIES, type CategoryKey } from '../utils/categories';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
@@ -14,6 +18,9 @@ let allPosts: any[] = [];
 let publishedPosts: any[] = [];
 let featuredPost: any = null;
 let recentPosts: any[] = [];
+let topicCounts: Array<{ slug: keyof typeof TOPICS; count: number }> = [];
+let categoryCounts: Array<{ slug: CategoryKey; count: number }> = [];
+let pillarTopics: Array<{ slug: keyof typeof TOPICS; post: any }> = [];
 let errorMessage = '';
 
 try {
@@ -24,6 +31,22 @@ try {
 
   featuredPost = publishedPosts[0];
   recentPosts = publishedPosts.slice(1, 4); // Show 3 recent posts
+  topicCounts = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).map((slug) => ({
+    slug,
+    count: publishedPosts.filter(
+      (post) => !!post.data.translationKey && TOPICS[slug].translationKeys.includes(post.data.translationKey)
+    ).length,
+  }));
+  categoryCounts = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
+    slug,
+    count: publishedPosts.filter((post) => post.data.category === slug).length,
+  }));
+  pillarTopics = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>)
+    .map((slug) => ({
+      slug,
+      post: getTopicPillarPost(allPosts, slug, locale),
+    }))
+    .filter((entry) => !!entry.post);
 } catch (error) {
   console.error('Error loading blog posts:', error);
   errorMessage = locale === 'en' 
@@ -32,7 +55,13 @@ try {
 }
 ---
 
-<BaseLayout title="My Blog - Home" locale={locale}>
+<BaseLayout
+  title={locale === 'en' ? 'Loc Nguyen Blog | Programming, AI, and Personal Growth' : 'Blog Lộc Nguyễn | Lập trình, AI và phát triển bản thân'}
+  description={locale === 'en'
+    ? 'Essays and practical guides about programming, AI, work, and personal growth.'
+    : 'Các bài viết và hướng dẫn thực tế về lập trình, AI, công việc và phát triển bản thân.'}
+  locale={locale}
+>
   <div class="space-y-16">
     {/* Hero Section */}
     <section class="text-center space-y-6 py-12">
@@ -90,6 +119,81 @@ try {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recentPosts.map(post => (
             <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {!errorMessage && pillarTopics.length > 0 && (
+      <section>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="font-sans text-3xl font-bold">{locale === 'en' ? 'Start with Pillar Articles' : 'Bắt đầu với bài trụ cột'}</h2>
+          <a
+            href={`/topics${locale === 'en' ? '?lang=en' : ''}`}
+            class="text-blue-600 dark:text-blue-400 sepia:text-sepia-700 hover:underline font-medium"
+          >
+            {locale === 'en' ? 'See topic architecture →' : 'Xem cấu trúc chủ đề →'}
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {pillarTopics.map(({ slug, post }) => (
+            <a
+              href={`/blog/${post.slug}${locale === 'en' ? '?lang=en' : ''}`}
+              class="block rounded-2xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 bg-white dark:bg-gray-800 sepia:bg-sepia-50 p-6 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+            >
+              <p class="text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-3">
+                {getTopicInfo(slug, locale).name}
+              </p>
+              <h3 class="font-sans text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100 sepia:text-sepia-900">
+                {post.data.title}
+              </h3>
+              {post.data.description && (
+                <p class="text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-4">
+                  {post.data.description}
+                </p>
+              )}
+              <p class="text-sm text-blue-600 dark:text-blue-400 sepia:text-sepia-800 font-medium">
+                {locale === 'en' ? 'Read pillar article →' : 'Đọc bài trụ cột →'}
+              </p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {!errorMessage && (
+      <section>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="font-sans text-3xl font-bold">{locale === 'en' ? 'Browse by Category' : 'Đọc Theo Category'}</h2>
+          <a
+            href={`/categories${locale === 'en' ? '?lang=en' : '?lang=vi'}`}
+            class="text-blue-600 dark:text-blue-400 sepia:text-sepia-700 hover:underline font-medium"
+          >
+            {locale === 'en' ? 'View category archives →' : 'Xem kho category →'}
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {categoryCounts.map((category) => (
+            <CategoryCard slug={category.slug} locale={locale} count={category.count} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {!errorMessage && (
+      <section>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="font-sans text-3xl font-bold">{locale === 'en' ? 'Explore by Topic' : 'Đọc Theo Chủ Đề'}</h2>
+          <a
+            href={`/topics${locale === 'en' ? '?lang=en' : ''}`}
+            class="text-blue-600 dark:text-blue-400 sepia:text-sepia-700 hover:underline font-medium"
+          >
+            {locale === 'en' ? 'View topic hubs →' : 'Xem các hub chủ đề →'}
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {topicCounts.map((topic) => (
+            <TopicCard slug={topic.slug} locale={locale} count={topic.count} />
           ))}
         </div>
       </section>

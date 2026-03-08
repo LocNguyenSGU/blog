@@ -1,63 +1,142 @@
 ---
-title: "Hướng dẫn viết blog với Markdown"
-description: "Cách viết bài blog đơn giản với Markdown"
+title: "Cách Viết Blog Bằng Markdown Và MDX Trong Astro"
+description: "Hướng dẫn thực tế để viết blog bằng Markdown và MDX trong Astro, bao gồm frontmatter, cấu trúc bài viết, code block và các lỗi thường gặp."
 pubDate: 2026-02-13
-author: "Your Name"
+modifiedDate: 2026-03-08
+faqs:
+  - question: "Nên dùng Markdown hay MDX để viết blog?"
+    answer: "Dùng Markdown khi bài chủ yếu là văn bản. Dùng MDX khi bạn cần component, embed hoặc khối nội dung tương tác trong bài."
+  - question: "MDX có tốt cho SEO hơn Markdown không?"
+    answer: "Không hẳn. SEO phụ thuộc nhiều hơn vào chất lượng nội dung, metadata, internal linking và cấu trúc bài viết hơn là bản thân file dùng Markdown hay MDX."
+  - question: "Cấu trúc nào phù hợp nhất cho một bài Markdown?"
+    answer: "Thường là mở bài trả lời trực tiếp, các phần H2 rõ ràng, đoạn văn ngắn gọn và một phần FAQ hoặc kết luận ở cuối bài."
+author: "Loc Nguyen"
 category: "programming"
-tags: ["tutorial", "markdown"]
+tags: ["markdown", "mdx", "astro", "viet-blog", "technical-writing"]
 coverImage: "/images/posts/markdown-guide.svg"
-coverAlt: "Markdown guide illustration"
+coverAlt: "Minh hoa cho huong dan viet Markdown va MDX"
 lang: "vi"
 translationKey: "markdown-guide"
 ---
 
-# Viết blog siêu đơn giản!
+Viết blog bằng Markdown và MDX trong Astro rất đơn giản: tạo file nội dung, thêm frontmatter, chia bài bằng heading rõ ràng và chỉ dùng MDX khi thật sự cần component. Với đa số bài viết, như vậy là đủ để xuất bản nhanh mà không phải chạm vào HTML.
 
-Bạn chỉ cần tạo file `.mdx` trong thư mục `src/content/blog/` là xong.
+## Markdown và MDX phù hợp với việc gì?
 
-## Frontmatter
+Markdown phù hợp khi bạn muốn viết nhanh, file gọn và dễ đọc. MDX giữ nguyên ưu điểm đó, nhưng cho phép import component vào bài viết khi cần giao diện phong phú hơn.
 
-Phần trên cùng (giữa `---`) là metadata:
+Bạn có thể dùng:
+
+- **Markdown** cho các bài chủ yếu là chữ
+- **MDX** cho các bài cần component riêng, embed hoặc khối nội dung tương tác
+
+## Bước 1: Tạo file nội dung mới
+
+Trong blog Astro, hãy tạo file mới trong thư mục `src/content/blog/`.
+
+Ví dụ:
+
+- `bai-viet-dau-tien.vi.mdx`
+- `how-i-use-ai.en.mdx`
+
+Tên file nên bám sát chủ đề để slug dễ hiểu và dễ nhớ.
+
+## Bước 2: Thêm frontmatter
+
+Mỗi bài nên bắt đầu bằng phần metadata ở đầu file:
 
 ```yaml
 ---
-title: "Tiêu đề bài viết"
-description: "Mô tả ngắn"
-pubDate: 2026-02-13
-author: "Tên tác giả"
-tags: ["tag1", "tag2"]
+title: "Cách Viết Blog Bằng Markdown Và MDX Trong Astro"
+description: "Hướng dẫn thực tế để cấu trúc và xuất bản nội dung blog."
+pubDate: 2026-03-08
+author: "Loc Nguyen"
+category: "programming"
+tags: ["markdown", "mdx", "astro"]
+coverImage: "/images/posts/markdown-guide.svg"
+coverAlt: "Huong dan viet voi Markdown"
+lang: "vi"
+translationKey: "markdown-guide"
 ---
 ```
 
-## Nội dung
+Frontmatter tốt giúp cả người đọc lẫn máy tìm kiếm hiểu bài viết nhanh hơn.
 
-Sau frontmatter, bạn viết Markdown bình thường:
+## Bước 3: Dựng cấu trúc bài viết rõ ràng
 
-- **Bold text**
-- *Italic text*
-- [Links](https://example.com)
-- Images: `![Alt text](path/to/image.jpg)`
+Một bài blog dễ đọc thường có cấu trúc như sau:
 
-## Code blocks
+1. Mở bài trả lời thẳng chủ đề bài viết
+2. Các phần H2 cho ý chính
+3. H3 chỉ dùng khi thật sự cần chia nhỏ
+4. Kết luận ngắn hoặc FAQ ở cuối bài
 
-```javascript
-const hello = "world";
-console.log(hello);
+Cấu trúc này vừa tốt cho người đọc, vừa dễ để search engine trích xuất.
+
+## Bước 4: Viết bằng cú pháp Markdown chuẩn
+
+Bạn có thể dùng Markdown thuần cho phần lớn nội dung:
+
+```markdown
+## Ý chính
+
+- Mỗi đoạn nên có một ý rõ ràng
+- Heading nên gần với câu hỏi người đọc thật sự tìm
+- Ví dụ code nên ngắn và dễ theo dõi
 ```
 
-```python
-def greet(name):
-    print(f"Hello, {name}!")
+Ví dụ code block:
+
+```ts
+function greet(name: string) {
+  console.log(`Hello, ${name}`);
+}
 ```
 
-## Danh sách
+## Bước 5: Chỉ dùng MDX khi thật sự cần
 
-1. Mục 1
-2. Mục 2
-3. Mục 3
+Nếu bài viết cần nhiều hơn chữ, MDX cho phép import component trực tiếp:
 
-## Quote
+```mdx
+import Callout from '../../components/Callout.astro';
 
-> "Viết blog thật đơn giản với Markdown!"
+<Callout type="tip">
+  Chỉ dùng MDX khi nội dung thật sự cần UI riêng.
+</Callout>
+```
 
-That's it! Không cần HTML, không cần phức tạp. 🎉
+Điểm mạnh này rất hữu ích, nhưng đa số bài blog sẽ tốt hơn nếu phần viết vẫn giữ đơn giản.
+
+Nếu bạn muốn xem một project Astro thật đã được dựng và xuất bản nhanh như thế nào với AI, hãy đọc [Từ Ý Tưởng Đến Production Trong 2 Giờ: case study dựng blog Astro với AI](/blog/building-blog-with-ai.vi?lang=vi). Còn nếu bạn muốn biết mình nên viết blog này cho ai và theo tinh thần nào, bài [Chào Mừng Đến Với Blog Của Tôi: định hướng nội dung cho toàn bộ blog](/blog/first-post.vi?lang=vi) là phần mở đầu phù hợp.
+
+## Những lỗi thường gặp cần tránh
+
+### Mở bài không nói rõ bài viết giúp gì
+
+Đoạn đầu nên cho biết bài nói về điều gì và giúp ai. Đừng để người đọc phải tự đoán.
+
+### Dùng quá nhiều heading nhỏ
+
+Quá nhiều heading ngắn làm bài bị vụn. Heading nên tạo sự rõ ràng, không phải tạo cảm giác rối.
+
+### Chèn code nhưng không giải thích
+
+Code block sẽ hữu ích hơn nhiều nếu bạn nói rõ tại sao nó xuất hiện ở đây và người đọc cần chú ý điều gì.
+
+## Câu hỏi thường gặp
+
+### Nên dùng Markdown hay MDX để viết blog?
+
+Dùng Markdown khi bài chủ yếu là văn bản. Dùng MDX khi bạn cần component, embed hoặc khối nội dung tương tác trong bài.
+
+### MDX có tốt cho SEO hơn Markdown không?
+
+Không hẳn. SEO phụ thuộc nhiều hơn vào chất lượng nội dung, metadata, internal linking và cấu trúc bài viết hơn là bản thân file dùng Markdown hay MDX.
+
+### Cấu trúc nào phù hợp nhất cho một bài Markdown?
+
+Thường là mở bài trả lời trực tiếp, các phần H2 rõ ràng, đoạn văn ngắn gọn và một phần FAQ hoặc kết luận ở cuối bài.
+
+## Kết luận
+
+Markdown và MDX hữu ích vì chúng giảm ma sát giữa việc viết và việc xuất bản. Workflow càng đơn giản, bạn càng dễ viết đều và giữ chất lượng nội dung ổn định.

@@ -3,11 +3,21 @@ title: "From Idea to Production in 2 Hours: Building a Blog with AI"
 description: "The idea of building a personal blog sat in my head for over a year. Last night at midnight, I decided to let AI do 95% of the work. Two hours later, the blog was live."
 coverImage: "/images/posts/building-blog-with-ai-gemini.jpg"
 pubDate: 2026-02-13
+modifiedDate: 2026-03-08
+faqs:
+  - question: "Can you build a blog with AI in just 2 hours?"
+    answer: "Yes, if the scope is clear and the human still handles decisions, review, and QA. AI can dramatically reduce the time spent on boilerplate, configuration, and common debugging."
+  - question: "What does the human still do when AI builds the blog?"
+    answer: "The human still makes architectural decisions, reviews quality, catches edge cases, and owns the final result. AI accelerates implementation but does not replace technical judgment."
+  - question: "What is the most effective way to use AI to build a project?"
+    answer: "The most effective approach is a clear workflow: brainstorming, planning, execution, and review. The more structured and specific the prompt, the better the output."
 category: "programming"
 author: "Loc Nguyen"
 lang: "en"
 translationKey: "building-blog-with-ai"
 ---
+
+If you want the short answer: **yes, AI can take a blog from idea to production in about 2 hours**, as long as the scope is tight, the prompts are clear, and the human acts as reviewer and decision-maker instead of expecting magic.
 
 The idea of building a personal blog sat in my head for over a year.
 
@@ -188,6 +198,8 @@ Don't: "Hey AI, write this," "Now write that," "Oh wait, fix that."
 
 Do: Brainstorming → Planning → Execution → Review. Step-by-step. Organized.
 
+If you want to publish technical content after the site is built, [How to Write Blog Posts with Markdown and MDX in Astro: a technical publishing workflow](/blog/markdown-guide.en?lang=en) is the next practical step. If you want to zoom out and see AI beyond a single project, read [AI Doesn't Replace a Whole Department: from personal acceleration to workflow redesign](/blog/ai-phong-ban-ao.en?lang=en).
+
 ### 4. Human Judgment Still Critical
 
 AI suggested using `getStaticPaths` for blog posts. I caught it: "Wait, we need SSR for dynamic language switching, not static."
@@ -219,6 +231,20 @@ You just need:
 Worst case: You lose 2 hours.
 
 Best case: Your idea becomes reality.
+
+## Frequently asked questions
+
+### Can you build a blog with AI in just 2 hours?
+
+Yes, if the first version stays focused and the feature set is limited. AI is especially useful for scaffolding, boilerplate code, configuration, and fixing common setup issues quickly.
+
+### What does the human still do when AI builds the blog?
+
+The human still chooses the architecture, reviews the code, catches edge cases, decides trade-offs, and owns the final output. AI speeds up execution, but it does not remove responsibility.
+
+### What is the most effective way to use AI to build a project?
+
+Use a structured workflow: clarify requirements, break the work into steps, let AI implement each part, then review carefully. That works much better than random ad-hoc prompting.
 
 ---
 
