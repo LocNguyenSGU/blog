@@ -1,0 +1,136 @@
+---
+import type { Locale } from '../../utils/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { User, Mail, Link, Users, Music2, MapPin, Hand } from '@lucide/astro';
+import { isLocale } from '../../utils/routing';
+import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../utils/localeRoute';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const { locale: localeParam } = Astro.params;
+
+if (!isLocale(localeParam)) {
+  return Astro.redirect('/404');
+}
+
+const locale: Locale = localeParam;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const aboutUrl = `${siteUrl}${Astro.url.pathname}`;
+const personName = locale === 'vi' ? 'Nguyễn Hữu Lộc' : 'Loc Nguyen';
+const aboutDescription = locale === 'vi'
+  ? 'Giới thiệu về Nguyễn Hữu Lộc, software engineer tại TP. Hồ Chí Minh, người viết về lập trình, AI và phát triển bản thân.'
+  : 'About Loc Nguyen, a software engineer in Ho Chi Minh City writing about programming, AI, and personal growth.';
+const additionalJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: locale === 'vi' ? 'Giới thiệu | Lộc Nguyễn' : 'About | Loc Nguyen',
+    description: aboutDescription,
+    url: aboutUrl,
+    inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+    mainEntity: {
+      '@type': 'Person',
+      name: personName,
+      url: aboutUrl,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: personName,
+    url: aboutUrl,
+    jobTitle: 'Software Engineer',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: locale === 'vi' ? 'TP. Hồ Chí Minh' : 'Ho Chi Minh City',
+      addressCountry: 'VN',
+    },
+    knowsAbout: ['Programming', 'AI', 'Logistics', 'Fulfillment', 'Software Engineering'],
+    sameAs: [
+      'https://github.com/LocNguyenSGU',
+      'https://www.facebook.com/nguyen.huu.loc.888963',
+      'https://www.tiktok.com/@loc23092004?_r=1&_t=ZS-93uOck8FBXY',
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={locale === 'vi' ? 'Giới thiệu | Lộc Nguyễn' : 'About | Loc Nguyen'}
+  description={aboutDescription}
+  locale={locale}
+  canonicalUrl={aboutUrl}
+  alternateUrls={getLocalizedPageAlternates(siteUrl, 'about')}
+  additionalJsonLd={additionalJsonLd}
+>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <div class="lg:col-span-2 order-2 lg:order-1">
+        <div class="prose prose-lg dark:prose-invert sepia:prose-sepia mx-auto">
+          {locale === 'vi' ? (
+            <>
+              <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+                <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2"><User class="w-5 h-5" aria-hidden="true" /><span>Giới thiệu</span></h2>
+                <p class="mb-3">Chào mọi người! Mình là <strong>Nguyễn Hữu Lộc</strong>. Mình là một người luôn bị thu hút bởi những điều mới mẻ, thích chinh phục các bài toán hóc búa bằng code và có niềm đam mê với việc viết blog để chia sẻ những trải nghiệm, kiến thức cá nhân.</p>
+                <p class="mb-0">Hiện tại, mình đang sống và làm việc tại TP. Hồ Chí Minh. Với vai trò là lập trình viên tại một công ty product, mình tập trung giải quyết các bài toán trong lĩnh vực <strong>Dropshipping, Logistics và Fulfillment</strong>. Công việc của mình xoay quanh việc vận hành hệ thống, tối ưu hóa hiệu suất và không ngừng nâng cao trải nghiệm người dùng.</p>
+              </div>
+              <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2"><Mail class="w-5 h-5" aria-hidden="true" /><span>Liên hệ</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Nếu bạn muốn kết nối hoặc trao đổi công việc, có thể tìm mình qua các kênh sau:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <a href="https://github.com/LocNguyenSGU" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Link class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">GitHub</div><div class="text-sm text-gray-600 dark:text-gray-400">LocNguyenSGU</div></div></a>
+                  <a href="mailto:lockbkbang@email.com" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Mail class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">Email</div><div class="text-sm text-gray-600 dark:text-gray-400">lockbkbang@email.com</div></div></a>
+                  <a href="https://www.facebook.com/nguyen.huu.loc.888963" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Users class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">Facebook</div><div class="text-sm text-gray-600 dark:text-gray-400">Nguyễn Hữu Lộc</div></div></a>
+                  <a href="https://www.tiktok.com/@loc23092004?_r=1&_t=ZS-93uOck8FBXY" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Music2 class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">TikTok</div><div class="text-sm text-gray-600 dark:text-gray-400">@loc23092004</div></div></a>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+                <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2"><User class="w-5 h-5" aria-hidden="true" /><span>About Me</span></h2>
+                <p class="mb-3">Hi there! I'm <strong>Loc Nguyen</strong>. I'm a developer who's constantly driven by curiosity, solving complex problems through code, and sharing my journey and technical insights through blogging.</p>
+                <p class="mb-0">Currently based in Saigon (HCMC), Vietnam, I work as a Software Engineer at a product-driven company. My expertise lies in building and scaling systems for <strong>Dropshipping, Logistics, and Fulfillment</strong>, focusing on system operations, performance optimization, and seamless user experiences.</p>
+              </div>
+              <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2"><Mail class="w-5 h-5" aria-hidden="true" /><span>Get in Touch</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">I'm always open to interesting conversations and collaborations. You can find me here:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <a href="https://github.com/LocNguyenSGU" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Link class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">GitHub</div><div class="text-sm text-gray-600 dark:text-gray-400">LocNguyenSGU</div></div></a>
+                  <a href="mailto:lockbkbang@email.com" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Mail class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">Email</div><div class="text-sm text-gray-600 dark:text-gray-400">lockbkbang@email.com</div></div></a>
+                  <a href="https://www.facebook.com/nguyen.huu.loc.888963" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Users class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">Facebook</div><div class="text-sm text-gray-600 dark:text-gray-400">Loc Nguyen</div></div></a>
+                  <a href="https://www.tiktok.com/@loc23092004?_r=1&_t=ZS-93uOck8FBXY" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline"><Music2 class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" /><div><div class="font-semibold text-gray-900 dark:text-white">TikTok</div><div class="text-sm text-gray-600 dark:text-gray-400">@loc23092004</div></div></a>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      <div class="lg:col-span-1 order-1 lg:order-2">
+        <div class="lg:sticky lg:top-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+            <div class="flex flex-col items-center">
+              <div class="relative mb-4">
+                <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700 shadow-xl">
+                  <img src="/images/profile.jpg" alt="Profile" class="w-full h-full object-cover" />
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-10 h-10 bg-green-500 rounded-full border-4 border-white dark:border-gray-900 flex items-center justify-center">
+                  <Hand class="w-5 h-5 text-white" aria-hidden="true" />
+                </div>
+              </div>
+              <h1 class="text-2xl font-bold mb-1 text-center dark:text-white">{locale === 'vi' ? 'Nguyễn Hữu Lộc' : 'Loc Nguyen'}</h1>
+              <p class="text-lg text-gray-600 dark:text-gray-400 text-center mb-2">Software Engineer</p>
+              <p class="text-sm text-gray-500 dark:text-gray-500 text-center">
+                <span class="inline-flex items-center gap-1"><MapPin class="w-4 h-4" aria-hidden="true" /><span>{locale === 'vi' ? 'TP. HCM, VN' : 'Saigon, VN'}</span></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

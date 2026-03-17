@@ -1,3 +1,5 @@
+import { getLocalizedCategoryUrl } from './routing';
+
 export const CATEGORIES = {
   programming: {
     name: 'Programming',
@@ -89,5 +91,5 @@ export function getCategoryIntro(category: CategoryKey, locale: 'en' | 'vi') {
 }
 
 export function getCategoryUrl(category: CategoryKey, locale: 'en' | 'vi'): string {
-  return `/categories/${category}?lang=${locale}`;
+  return getLocalizedCategoryUrl(locale, category);
 }

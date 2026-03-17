@@ -7,6 +7,7 @@ import SEO from '../components/SEO.astro';
 import { TOPICS, getTopicInfo, getTopicPillarPost } from '../utils/topics';
 import { CATEGORIES, getCategoryLabel, getCategoryUrl, type CategoryKey } from '../utils/categories';
 import { getPostUrl } from '../utils/postHelpers';
+import { getLocalizedAboutUrl, getLocalizedBlogUrl, getLocalizedBooksUrl, getLocalizedCategoriesUrl, getLocalizedHomeUrl, getLocalizedTopicsUrl, getLocalizedTopicUrl } from '../utils/routing';
 import { X, Menu as MenuIcon, Sun, Moon, BookOpenText } from '@lucide/astro';
 
 interface ArticleMeta {
@@ -68,7 +69,7 @@ const pillarPosts = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>)
 const topicHubs = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).map((slug) => ({
   slug,
   name: getTopicInfo(slug, locale).name,
-  url: `/topics/${slug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+  url: getLocalizedTopicUrl(locale, slug),
 }));
 const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
   slug,
@@ -113,16 +114,16 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
       document.documentElement.classList.add(theme);
     </script>
     
-    <!-- Auto-redirect to saved language preference if no lang param -->
+    <!-- Auto-redirect legacy root routes to saved locale if needed -->
     <script is:inline>
       if (typeof window !== 'undefined') {
-        const urlParams = new URLSearchParams(window.location.search);
         const savedLocale = localStorage.getItem('locale');
-        
-        // Only redirect if saved locale is valid and different from default
-        if (!urlParams.has('lang') && savedLocale && (savedLocale === 'en' || savedLocale === 'vi') && savedLocale !== 'vi') {
+        const path = window.location.pathname;
+        const isPrefixed = path === '/en' || path.startsWith('/en/') || path === '/vi' || path.startsWith('/vi/');
+
+        if (!isPrefixed && savedLocale && (savedLocale === 'en' || savedLocale === 'vi') && savedLocale !== 'vi') {
           const url = new URL(window.location.href);
-          url.searchParams.set('lang', savedLocale);
+          url.pathname = `/${savedLocale}${path === '/' ? '' : path}`;
           window.location.replace(url.toString());
         }
       }
@@ -150,10 +151,10 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
         {/* Navigation links */}
         <nav class="flex-1 overflow-y-auto p-4">
           <div class="flex flex-col gap-2">
-            <a href="/" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.home', locale)}</a>
-            <a href="/blog" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.blog', locale)}</a>
-            <a href="/books" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.books', locale)}</a>
-            <a href="/about" class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.about', locale)}</a>
+            <a href={getLocalizedHomeUrl(locale)} class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.home', locale)}</a>
+            <a href={getLocalizedBlogUrl(locale)} class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.blog', locale)}</a>
+            <a href={getLocalizedBooksUrl(locale)} class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.books', locale)}</a>
+            <a href={getLocalizedAboutUrl(locale)} class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 rounded-lg transition-colors font-medium">{t('nav.about', locale)}</a>
           </div>
         </nav>
         
@@ -226,7 +227,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
     <header class="sticky top-0 z-30 hairline border-x-0 border-t-0 bg-white dark:bg-gray-900 sepia:bg-sepia-100 transition-colors">
       <nav class="max-w-6xl mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
-          <a href="/" class="text-xl md:text-2xl font-serif font-semibold tracking-tight ui-link no-underline hover:no-underline">
+          <a href={getLocalizedHomeUrl(locale)} class="text-xl md:text-2xl font-serif font-semibold tracking-tight ui-link no-underline hover:no-underline">
             My Blog
           </a>
           
@@ -245,10 +246,10 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
           {/* Desktop navigation */}
           <div class="hidden md:flex items-center gap-4">
             <div class="flex gap-6">
-              <a href="/" class="ui-link no-underline hover:no-underline">{t('nav.home', locale)}</a>
-              <a href="/blog" class="ui-link no-underline hover:no-underline">{t('nav.blog', locale)}</a>
-              <a href="/books" class="ui-link no-underline hover:no-underline">{t('nav.books', locale)}</a>
-              <a href="/about" class="ui-link no-underline hover:no-underline">{t('nav.about', locale)}</a>
+              <a href={getLocalizedHomeUrl(locale)} class="ui-link no-underline hover:no-underline">{t('nav.home', locale)}</a>
+              <a href={getLocalizedBlogUrl(locale)} class="ui-link no-underline hover:no-underline">{t('nav.blog', locale)}</a>
+              <a href={getLocalizedBooksUrl(locale)} class="ui-link no-underline hover:no-underline">{t('nav.books', locale)}</a>
+              <a href={getLocalizedAboutUrl(locale)} class="ui-link no-underline hover:no-underline">{t('nav.about', locale)}</a>
             </div>
             <LanguageSwitcher currentLocale={locale} />
             <ThemeToggle />
@@ -360,8 +361,11 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
         
         // Highlight active selections
         function updateMobileControls() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const currentLang = urlParams.get('lang') || localStorage.getItem('locale') || 'vi';
+          const currentLang = document.documentElement.lang === 'en'
+            ? 'en'
+            : document.documentElement.lang === 'vi'
+              ? 'vi'
+              : localStorage.getItem('locale') || 'vi';
           const currentTheme = localStorage.getItem('theme') || 'sepia';
 
           // Highlight language
@@ -422,7 +426,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
               {locale === 'en' ? 'Topic hubs' : 'Hub chủ đề'}
             </h2>
             <div class="space-y-3">
-              <a href={`/topics${locale === 'en' ? '?lang=en' : '?lang=vi'}`} class="block ui-link no-underline hover:no-underline">
+              <a href={getLocalizedTopicsUrl(locale)} class="block ui-link no-underline hover:no-underline">
                 {locale === 'en' ? 'Browse all topic hubs' : 'Xem tất cả hub chủ đề'}
               </a>
               {topicHubs.map((topic) => (
@@ -441,7 +445,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
               {locale === 'en' ? 'Category archives' : 'Kho category'}
             </h2>
             <div class="space-y-3">
-              <a href={`/categories${locale === 'en' ? '?lang=en' : '?lang=vi'}`} class="block ui-link no-underline hover:no-underline">
+              <a href={getLocalizedCategoriesUrl(locale)} class="block ui-link no-underline hover:no-underline">
                 {locale === 'en' ? 'Browse all categories' : 'Xem tất cả category'}
               </a>
               {categoryHubs.map((category) => (

@@ -8,6 +8,14 @@ import TopicCard from '../../components/TopicCard.astro';
 import { TOPICS, getTopicInfo, getTopicPillarPost, getTopicPosts, isTopicSlug } from '../../utils/topics';
 import { generateTopicBreadcrumbs } from '../../utils/breadcrumbs';
 import { getAllBlogPosts } from '../../lib/content/posts';
+import { getLocalizedTopicAlternates } from '../../utils/localeRoute';
+import { getLocalizedBlogPostUrl, getLocalizedTopicUrl } from '../../utils/routing';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).map((slug) => ({ params: { slug } }));
+}
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
@@ -28,7 +36,7 @@ const otherPosts = remainingPosts.slice(1);
 const otherTopics = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).filter((topicSlug) => topicSlug !== slug);
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
 const breadcrumbs = generateTopicBreadcrumbs(slug, baseUrl, locale);
-const pageUrl = `${baseUrl}/topics/${slug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`;
+const pageUrl = `${baseUrl}${getLocalizedTopicUrl(locale, slug)}`;
 const topicPosts = pillarPost ? [pillarPost, ...remainingPosts] : posts;
 const topicCollectionSchema = {
   '@context': 'https://schema.org',
@@ -49,7 +57,7 @@ const topicCollectionSchema = {
     itemListElement: topicPosts.map((post, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: `${baseUrl}/blog/${post.slug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+      url: `${baseUrl}${getLocalizedBlogPostUrl(locale, post.slug)}`,
       name: post.data.title,
     })),
   },
@@ -60,6 +68,8 @@ const topicCollectionSchema = {
   title={`${topic.name} | ${locale === 'en' ? 'Topic Hub' : 'Hub chủ đề'}`}
   description={topic.description}
   locale={locale}
+  canonicalUrl={pageUrl}
+  alternateUrls={getLocalizedTopicAlternates(baseUrl, slug)}
   additionalJsonLd={[topicCollectionSchema]}
 >
   <div class="space-y-12">

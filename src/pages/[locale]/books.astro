@@ -1,0 +1,75 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../../utils/i18n';
+import { t } from '../../utils/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCard from '../../components/BookCard.astro';
+import { getBooksByLocale } from '../../lib/content/books';
+import { isLocale } from '../../utils/routing';
+import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../utils/localeRoute';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const { locale: localeParam } = Astro.params;
+
+if (!isLocale(localeParam)) {
+  return Astro.redirect('/404');
+}
+
+const locale: Locale = localeParam;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+
+let books: CollectionEntry<'books'>[] = [];
+let errorMessage = '';
+let booksSubtitle = '';
+
+try {
+  books = await getBooksByLocale(locale);
+  booksSubtitle = locale === 'vi' ? `${books.length} cuốn sách đã hoàn thành` : `${books.length} books completed`;
+} catch (error) {
+  console.error('Error loading books:', error);
+  errorMessage = locale === 'en' ? 'Unable to load books. Please try again later.' : 'Không thể tải sách. Vui lòng thử lại sau.';
+  booksSubtitle = locale === 'vi' ? 'Danh sách sách đã đọc' : 'Reading list';
+}
+---
+
+<BaseLayout
+  title={t('books.title', locale)}
+  description={booksSubtitle}
+  locale={locale}
+  canonicalUrl={`${siteUrl}${Astro.url.pathname}`}
+  alternateUrls={getLocalizedPageAlternates(siteUrl, 'books')}
+>
+  <div class="space-y-12">
+    <section class="text-center space-y-4 py-12">
+      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{t('books.title', locale)}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-2xl mx-auto">{booksSubtitle}</p>
+    </section>
+
+    {errorMessage && (
+      <div class="bg-red-50 dark:bg-red-900/20 sepia:bg-red-100 border border-red-200 dark:border-red-800 sepia:border-red-300 rounded-lg p-6 text-center">
+        <p class="text-red-600 dark:text-red-400 sepia:text-red-700">{errorMessage}</p>
+      </div>
+    )}
+
+    {!errorMessage && books.length === 0 && (
+      <div class="card p-8 text-center">
+        <p class="text-gray-700 dark:text-gray-200 sepia:text-sepia-900 text-lg mb-4">
+          {locale === 'vi' ? 'Chưa có sách nào.' : 'No books yet.'}
+        </p>
+      </div>
+    )}
+
+    {books.length > 0 && (
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {books.map((book) => (
+          <BookCard {...book.data} slug={book.slug} />
+        ))}
+      </section>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import type { Locale } from '../../../utils/i18n';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import TopicCard from '../../../components/TopicCard.astro';
+import { TOPICS, getTopicInfo } from '../../../utils/topics';
+import { generateTopicsBreadcrumbs } from '../../../utils/breadcrumbs';
+import { getPublishedPosts } from '../../../lib/content/posts';
+import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../../utils/localeRoute';
+import { getLocalizedTopicUrl, isLocale } from '../../../utils/routing';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const { locale: localeParam } = Astro.params;
+if (!isLocale(localeParam)) return Astro.redirect('/404');
+const locale: Locale = localeParam;
+const allPosts = await getPublishedPosts(locale);
+const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const breadcrumbs = generateTopicsBreadcrumbs(baseUrl, locale);
+const topicEntries = Object.keys(TOPICS).map((slug) => ({
+  slug,
+  count: allPosts.filter((post) => !!post.data.translationKey && TOPICS[slug as keyof typeof TOPICS].translationKeys.includes(post.data.translationKey)).length,
+  info: getTopicInfo(slug as keyof typeof TOPICS, locale),
+}));
+const pageUrl = `${baseUrl}${Astro.url.pathname}`;
+const topicsCollectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: locale === 'en' ? 'Topic Hubs' : 'Cụm chủ đề',
+  description: locale === 'en' ? 'Browse topic hubs for AI, career, programming, and learning.' : 'Khám phá các cụm chủ đề về AI, nghề nghiệp, lập trình và học tập.',
+  url: pageUrl,
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  mainEntity: { '@type': 'ItemList', numberOfItems: topicEntries.length, itemListElement: topicEntries.map((topic, index) => ({ '@type': 'ListItem', position: index + 1, url: `${baseUrl}${getLocalizedTopicUrl(locale, topic.slug)}`, name: topic.info.name })) },
+};
+---
+
+<BaseLayout title={locale === 'en' ? 'Topic Hubs | Loc Nguyen' : 'Cụm chủ đề | Lộc Nguyễn'} description={locale === 'en' ? 'Browse topic hubs for AI, career, programming, and learning.' : 'Khám phá các cụm chủ đề về AI, nghề nghiệp, lập trình và học tập.'} locale={locale} canonicalUrl={pageUrl} alternateUrls={getLocalizedPageAlternates(baseUrl, 'topics')} additionalJsonLd={[topicsCollectionSchema]}>
+  <div class="space-y-12">
+    <Breadcrumbs items={breadcrumbs} />
+    <section class="text-center space-y-4 py-12">
+      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{locale === 'en' ? 'Topic Hubs' : 'Cụm Chủ Đề'}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl mx-auto">{locale === 'en' ? 'Use these hub pages to explore connected posts by topic instead of reading articles one by one.' : 'Dùng các trang hub này để đọc theo cụm chủ đề thay vì đi từng bài rời rạc.'}</p>
+      <div class="card p-6 max-w-4xl mx-auto text-left"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{locale === 'en' ? 'What these hubs are for' : 'Các hub này dùng để làm gì'}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{locale === 'en' ? 'Each topic page is a curated entry point for searchers who want a pillar article, the supporting essays around it, and a cleaner reading path through the site.' : 'Mỗi topic page là một điểm vào được biên tập lại cho người tìm kiếm: có bài trụ cột, các bài vệ tinh xung quanh và một lộ trình đọc gọn hơn xuyên suốt site.'}</p></div>
+    </section>
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">{topicEntries.map((topic) => <TopicCard slug={topic.slug as keyof typeof TOPICS} locale={locale} count={topic.count} />)}</section>
+  </div>
+</BaseLayout>

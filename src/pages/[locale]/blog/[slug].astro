@@ -1,0 +1,71 @@
+---
+import type { MarkdownHeading } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import BlogPost from '../../../layouts/BlogPost.astro';
+import { getAllBlogPosts, getPublishedPosts } from '../../../lib/content/posts';
+import type { Locale } from '../../../utils/i18n';
+import { isLocale } from '../../../utils/routing';
+import { getLocalizedPostAlternates } from '../../../utils/localeRoute';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const locale of ['vi', 'en'] as const) {
+    const posts = await getPublishedPosts(locale);
+    for (const post of posts) {
+      paths.push({ params: { locale, slug: post.slug } });
+    }
+  }
+  return paths;
+}
+
+const { slug, locale: localeParam } = Astro.params;
+
+if (!slug || !isLocale(localeParam)) {
+  return Astro.redirect('/404');
+}
+
+const locale: Locale = localeParam;
+let entry: CollectionEntry<'blog'> | null = null;
+let Content = null;
+let headings: MarkdownHeading[] = [];
+let alternateUrls;
+
+try {
+  const allPosts = await getAllBlogPosts();
+  entry = allPosts.find((post) => post.slug === slug && post.data.lang === locale) ?? null;
+
+  if (!entry) {
+    return Astro.redirect('/404');
+  }
+
+  const rendered = await entry.render();
+  Content = rendered.Content;
+  headings = rendered.headings;
+
+  if (entry.data.translationKey) {
+    const translations = allPosts.filter((post) => post.data.translationKey === entry?.data.translationKey);
+    alternateUrls = getLocalizedPostAlternates(import.meta.env.PUBLIC_SITE_URL || Astro.url.origin, {
+      vi: translations.find((post) => post.data.lang === 'vi')?.slug,
+      en: translations.find((post) => post.data.lang === 'en')?.slug,
+    });
+  }
+} catch (error) {
+  console.error('Error loading blog post:', error);
+  return Astro.redirect('/404');
+}
+---
+
+<BlogPost
+  {...entry.data}
+  slug={entry.slug}
+  body={entry.body}
+  headings={headings}
+  lang={entry.data.lang}
+  tags={entry.data.tags}
+  canonicalUrl={`${import.meta.env.PUBLIC_SITE_URL || Astro.url.origin}${Astro.url.pathname}`}
+  alternateUrls={alternateUrls}
+>
+  <Content />
+</BlogPost>

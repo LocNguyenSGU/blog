@@ -8,6 +8,15 @@ import StarRating from '../../components/StarRating.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { generateBookBreadcrumbs } from '../../utils/breadcrumbs';
 import { getAllBooks, getBookByLocalizedSlug } from '../../lib/content/books';
+import { getLocalizedBookAlternates } from '../../utils/localeRoute';
+import { getLocalizedBookUrl, getLocalizedBooksUrl } from '../../utils/routing';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const books = await getAllBooks();
+  return books.map((book) => ({ params: { slug: book.slug } }));
+}
 
 const { slug } = Astro.params;
 
@@ -66,9 +75,9 @@ const categoryColors: Record<string, string> = {
 
 // Generate breadcrumbs for this book
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
-const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl);
+const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl, locale);
 
-const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
+const backUrl = getLocalizedBooksUrl(locale);
 const baseSlug = entry.slug.replace(/\.(en|vi)$/, '');
 const vietnameseEdition = allBooks.find((book) => {
   const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
@@ -78,12 +87,11 @@ const englishEdition = allBooks.find((book) => {
   const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
   return bookBaseSlug === baseSlug && book.data.lang === 'en';
 });
-const canonicalUrl = `${baseUrl}/books/${entry.slug}${locale !== 'vi' ? `?lang=${locale}` : ''}`;
-const alternateUrls = {
-  vi: vietnameseEdition ? `${baseUrl}/books/${vietnameseEdition.slug}` : canonicalUrl,
-  en: englishEdition ? `${baseUrl}/books/${englishEdition.slug}?lang=en` : canonicalUrl,
-  default: vietnameseEdition ? `${baseUrl}/books/${vietnameseEdition.slug}` : canonicalUrl,
-};
+const canonicalUrl = `${baseUrl}${getLocalizedBookUrl(locale, entry.slug)}`;
+const alternateUrls = getLocalizedBookAlternates(baseUrl, {
+  vi: vietnameseEdition?.slug,
+  en: englishEdition?.slug,
+});
 const reviewSchema = {
   '@context': 'https://schema.org',
   '@type': 'Review',

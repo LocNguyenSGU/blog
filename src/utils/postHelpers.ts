@@ -1,16 +1,17 @@
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from './i18n';
 import type { CategoryKey } from './categories';
+import { getLocalizedBlogPostUrl, getLocalizedCategoryUrl } from './routing';
 
 /**
  * Generate the full URL path for a blog post with language parameter
  */
 export function getPostUrl(post: CollectionEntry<'blog'>): string {
-  return `/blog/${post.slug}?lang=${post.data.lang}`;
+  return getLocalizedBlogPostUrl(post.data.lang, post.slug);
 }
 
 export function getCategoryPageUrl(category: CategoryKey, locale: Locale): string {
-  return `/categories/${category}?lang=${locale}`;
+  return getLocalizedCategoryUrl(locale, category);
 }
 
 /**

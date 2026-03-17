@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from './i18n';
+import { getLocalizedTopicUrl } from './routing';
 
 interface TopicDefinition {
   en: {
@@ -96,7 +97,7 @@ export function getTopicInfo(slug: TopicSlug, locale: Locale) {
 }
 
 export function getTopicUrl(slug: TopicSlug, locale: Locale): string {
-  return `/topics/${slug}?lang=${locale}`;
+  return getLocalizedTopicUrl(locale, slug);
 }
 
 export function getTopicPosts(

@@ -904,3 +904,49 @@ Lợi ích đạt được:
 - Bỏ duplication logic đổi slug ở cả desktop và mobile menu.
 - Giảm rủi ro redirect sai cho content song ngữ có slug khác nhau thật, nhất là khi không còn phụ thuộc suffix heuristic.
 - Language switching giờ nhất quán hơn với `canonical`/`alternateUrls` đã được sửa ở các hạng mục SEO trước đó.
+
+### Hạng mục 9: Dựng path-based i18n routes và `getStaticPaths` cho route động
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Tạo helper routing mới cho URL path-based:
+  - [src/utils/routing.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/routing.ts)
+  - [src/utils/localeRoute.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/localeRoute.ts)
+- Cập nhật URL builders, breadcrumbs, SEO fallback, RSS và internal links để ưu tiên dạng `/vi/...` và `/en/...`:
+  - [src/utils/postHelpers.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/postHelpers.ts)
+  - [src/utils/categories.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/categories.ts)
+  - [src/utils/topics.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/topics.ts)
+  - [src/utils/breadcrumbs.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/breadcrumbs.ts)
+  - [src/components/SEO.astro](/Users/nguyenhuuloc/Documents/blog/src/components/SEO.astro)
+  - [src/layouts/BaseLayout.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BaseLayout.astro)
+  - [src/layouts/BlogPost.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BlogPost.astro)
+  - [src/pages/rss.xml.ts](/Users/nguyenhuuloc/Documents/blog/src/pages/rss.xml.ts)
+- Thêm bộ route locale mới dưới:
+  - [src/pages/[locale]/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/index.astro)
+  - [src/pages/[locale]/about.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/about.astro)
+  - [src/pages/[locale]/blog/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/blog/index.astro)
+  - [src/pages/[locale]/blog/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/blog/[slug].astro)
+  - [src/pages/[locale]/books.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/books.astro)
+  - [src/pages/[locale]/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/books/[slug].astro)
+  - [src/pages/[locale]/categories/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/categories/index.astro)
+  - [src/pages/[locale]/categories/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/categories/[slug].astro)
+  - [src/pages/[locale]/topics/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/topics/index.astro)
+  - [src/pages/[locale]/topics/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/[locale]/topics/[slug].astro)
+- Thêm `getStaticPaths` + `prerender = true` cho toàn bộ route động cần thiết, gồm cả route cũ và route locale mới:
+  - [src/pages/blog/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/blog/[slug].astro)
+  - [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/[slug].astro)
+  - [src/pages/categories/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/categories/[slug].astro)
+  - [src/pages/topics/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/topics/[slug].astro)
+
+Kiểm tra:
+
+- `npm run lint` pass.
+- `npm run build` pass.
+
+Lợi ích đạt được:
+
+- Site có URL i18n rõ ràng hơn cho crawl, share link và analytics.
+- Dynamic routes đã có `getStaticPaths` thực sự có hiệu lực nhờ `prerender = true`.
+- Codebase đã có nền route helper đủ rõ để tiếp tục migration legacy routes hoặc chuyển hẳn sang static output ở vòng tiếp theo mà không phải đổi URL layer thêm lần nữa.

@@ -1,8 +1,17 @@
 ---
 import type { MarkdownHeading } from 'astro';
-import type { CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { getAllBlogPosts, getPostBySlug } from '../../lib/content/posts';
+import { getLocalizedPostAlternates } from '../../utils/localeRoute';
+import { getLocalizedBlogPostUrl } from '../../utils/routing';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.slug } }));
+}
 
 // Get slug from URL params
 const { slug } = Astro.params;
@@ -26,7 +35,7 @@ try {
 
   const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
   const allPosts = await getAllBlogPosts();
-  canonicalUrl = `${siteUrl}/blog/${entry.slug}?lang=${entry.data.lang}`;
+  canonicalUrl = `${siteUrl}${getLocalizedBlogPostUrl(entry.data.lang, entry.slug)}`;
   const translationKey = entry.data.translationKey;
 
   if (translationKey) {
@@ -36,13 +45,10 @@ try {
     const viPost = translations.find((post) => post.data.lang === 'vi');
     const enPost = translations.find((post) => post.data.lang === 'en');
 
-    alternateUrls = {
-      vi: viPost ? `${siteUrl}/blog/${viPost.slug}?lang=vi` : undefined,
-      en: enPost ? `${siteUrl}/blog/${enPost.slug}?lang=en` : undefined,
-      default: viPost
-        ? `${siteUrl}/blog/${viPost.slug}`
-        : `${siteUrl}/blog/${entry.slug}`,
-    };
+    alternateUrls = getLocalizedPostAlternates(siteUrl, {
+      vi: viPost?.slug,
+      en: enPost?.slug,
+    });
   }
 } catch (error) {
   console.error('Error loading blog post:', error);

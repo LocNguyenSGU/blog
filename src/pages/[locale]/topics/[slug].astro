@@ -1,0 +1,62 @@
+---
+import type { Locale } from '../../../utils/i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import FeaturedPost from '../../../components/FeaturedPost.astro';
+import PostCard from '../../../components/PostCard.astro';
+import TopicCard from '../../../components/TopicCard.astro';
+import { TOPICS, getTopicInfo, getTopicPillarPost, getTopicPosts, isTopicSlug } from '../../../utils/topics';
+import { generateTopicBreadcrumbs } from '../../../utils/breadcrumbs';
+import { getAllBlogPosts } from '../../../lib/content/posts';
+import { getLocalizedTopicAlternates } from '../../../utils/localeRoute';
+import { isLocale } from '../../../utils/routing';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return ['vi', 'en'].flatMap((locale) =>
+    (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).map((slug) => ({ params: { locale, slug } }))
+  );
+}
+
+const { locale: localeParam, slug } = Astro.params;
+if (!isLocale(localeParam) || !slug || !isTopicSlug(slug)) return Astro.redirect('/404');
+const locale: Locale = localeParam;
+const allPosts = await getAllBlogPosts();
+const topic = getTopicInfo(slug, locale);
+const posts = getTopicPosts(allPosts, slug, locale);
+const pillarPost = getTopicPillarPost(allPosts, slug, locale);
+const remainingPosts = posts.filter((post) => post.slug !== pillarPost?.slug);
+const featuredPost = remainingPosts[0];
+const otherPosts = remainingPosts.slice(1);
+const otherTopics = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).filter((topicSlug) => topicSlug !== slug);
+const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const breadcrumbs = generateTopicBreadcrumbs(slug, baseUrl, locale);
+const pageUrl = `${baseUrl}${Astro.url.pathname}`;
+const topicPosts = pillarPost ? [pillarPost, ...remainingPosts] : posts;
+const topicCollectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${topic.name} | ${locale === 'en' ? 'Topic Hub' : 'Hub chủ đề'}`,
+  description: topic.description,
+  url: pageUrl,
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  about: { '@type': 'Thing', name: topic.name, description: topic.description },
+  mainEntity: { '@type': 'ItemList', itemListOrder: 'https://schema.org/ItemListUnordered', numberOfItems: topicPosts.length, itemListElement: topicPosts.map((post, index) => ({ '@type': 'ListItem', position: index + 1, url: `${baseUrl}/${post.data.lang}/blog/${post.slug}`, name: post.data.title })) },
+};
+---
+
+<BaseLayout title={`${topic.name} | ${locale === 'en' ? 'Topic Hub' : 'Hub chủ đề'}`} description={topic.description} locale={locale} canonicalUrl={pageUrl} alternateUrls={getLocalizedTopicAlternates(baseUrl, slug)} additionalJsonLd={[topicCollectionSchema]}>
+  <div class="space-y-12">
+    <Breadcrumbs items={breadcrumbs} />
+    <section class="space-y-4 py-12">
+      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700">{locale === 'en' ? 'Topic Hub' : 'Hub chủ đề'}</p>
+      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{topic.name}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl">{topic.description}</p>
+      <div class="card p-6 max-w-4xl"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{locale === 'en' ? 'How to use this topic hub' : 'Cách dùng hub chủ đề này'}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{topic.intro}</p></div>
+    </section>
+    {pillarPost && <section class="space-y-5"><div><p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-2">{locale === 'en' ? 'Pillar article' : 'Bài trụ cột'}</p><h2 class="font-serif text-3xl font-semibold tracking-tight mb-3">{locale === 'en' ? 'Start here' : 'Nên bắt đầu từ đây'}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl">{topic.pillarDescription}</p></div><FeaturedPost post={pillarPost} /></section>}
+    {featuredPost && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{locale === 'en' ? 'More in this topic' : 'Đọc thêm trong cụm này'}</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><PostCard post={featuredPost} />{otherPosts.map((post) => <PostCard post={post} />)}</div></section>}
+    <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{locale === 'en' ? 'Explore other topics' : 'Khám phá cụm khác'}</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-6">{otherTopics.map((topicSlug) => <TopicCard slug={topicSlug} locale={locale} />)}</div></section>
+  </div>
+</BaseLayout>

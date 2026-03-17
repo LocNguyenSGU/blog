@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import type { Locale } from '../../../utils/i18n';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import CategoryCard from '../../../components/CategoryCard.astro';
+import { CATEGORIES, getCategoryDescription, getCategoryLabel, type CategoryKey } from '../../../utils/categories';
+import { generateCategoriesBreadcrumbs } from '../../../utils/breadcrumbs';
+import { getPublishedPosts } from '../../../lib/content/posts';
+import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../../utils/localeRoute';
+import { getLocalizedCategoryUrl, isLocale } from '../../../utils/routing';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const { locale: localeParam } = Astro.params;
+if (!isLocale(localeParam)) return Astro.redirect('/404');
+const locale: Locale = localeParam;
+
+const allPosts = await getPublishedPosts(locale);
+const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const breadcrumbs = generateCategoriesBreadcrumbs(baseUrl, locale);
+const categoryEntries = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
+  slug,
+  count: allPosts.filter((post) => post.data.category === slug).length,
+}));
+const pageUrl = `${baseUrl}${Astro.url.pathname}`;
+const categoriesCollectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: locale === 'en' ? 'Category Archives' : 'Kho category',
+  description: locale === 'en' ? 'Browse blog archives by category: programming, lifestyle, and personal.' : 'Duyệt blog theo category: lập trình, đời sống và cá nhân.',
+  url: pageUrl,
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: categoryEntries.length,
+    itemListElement: categoryEntries.map((category, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `${baseUrl}${getLocalizedCategoryUrl(locale, category.slug)}`,
+      name: getCategoryLabel(category.slug, locale),
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title={locale === 'en' ? 'Category Archives | Loc Nguyen' : 'Kho category | Lộc Nguyễn'}
+  description={locale === 'en' ? 'Browse blog archives by category: programming, lifestyle, and personal.' : 'Duyệt blog theo category: lập trình, đời sống và cá nhân.'}
+  locale={locale}
+  canonicalUrl={pageUrl}
+  alternateUrls={getLocalizedPageAlternates(baseUrl, 'categories')}
+  additionalJsonLd={[categoriesCollectionSchema]}
+>
+  <div class="space-y-12">
+    <Breadcrumbs items={breadcrumbs} />
+    <section class="text-center space-y-4 py-12">
+      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{locale === 'en' ? 'Category Archives' : 'Kho Category'}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl mx-auto">{locale === 'en' ? 'Use category pages when you want a cleaner archive by intent, not just a long reverse-chronological list.' : 'Dùng các trang category khi bạn muốn duyệt nội dung theo ý định đọc, thay vì chỉ xem danh sách bài theo thời gian.'}</p>
+    </section>
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">{categoryEntries.map((category) => <CategoryCard slug={category.slug} locale={locale} count={category.count} />)}</section>
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {categoryEntries.map((category) => (
+        <article class="card p-6">
+          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{getCategoryLabel(category.slug, locale)}</h2>
+          <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{getCategoryDescription(category.slug, locale)}</p>
+        </article>
+      ))}
+    </section>
+  </div>
+</BaseLayout>

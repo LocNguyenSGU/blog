@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import StarRating from './StarRating.astro';
 import type { Locale } from '../utils/i18n';
 import { t } from '../utils/i18n';
+import { getLocalizedBookUrl } from '../utils/routing';
 
 interface Props {
   title: string;
@@ -35,7 +36,7 @@ const categoryColors: Record<string, string> = {
   'other': 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 sepia:bg-sepia-200 sepia:text-sepia-900',
 };
 
-const bookUrl = `/books/${slug}${lang !== 'vi' ? `?lang=${lang}` : ''}`;
+const bookUrl = getLocalizedBookUrl(lang, slug);
 ---
 
 <a href={bookUrl} class="block group">

@@ -1,6 +1,17 @@
 import { CATEGORIES } from './categories';
 import type { Locale } from './i18n';
 import { getTopicInfo, type TopicSlug } from './topics';
+import {
+  getLocalizedBlogPostUrl,
+  getLocalizedBlogUrl,
+  getLocalizedCategoriesUrl,
+  getLocalizedCategoryUrl,
+  getLocalizedHomeUrl,
+  getLocalizedTopicsUrl,
+  getLocalizedTopicUrl,
+  getLocalizedBooksUrl,
+  getLocalizedBookUrl,
+} from './routing';
 
 export interface BreadcrumbItem {
   name: string;
@@ -31,27 +42,26 @@ export function generateBlogBreadcrumbs(
   locale: Locale
 ): BreadcrumbItem[] {
   const categoryInfo = CATEGORIES[category];
-  const localeQuery = locale === 'en' ? '?lang=en' : '?lang=vi';
   
   return [
     {
       name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
       position: 1,
     },
     {
       name: 'Blog',
-      url: `${baseUrl}/blog${localeQuery}`,
+      url: `${baseUrl}${getLocalizedBlogUrl(locale)}`,
       position: 2,
     },
     {
       name: categoryInfo.labels[locale],
-      url: `${baseUrl}/categories/${category}${localeQuery}`,
+      url: `${baseUrl}${getLocalizedCategoryUrl(locale, category)}`,
       position: 3,
     },
     {
       name: postTitle,
-      url: `${baseUrl}/blog/${slug}${localeQuery}`,
+      url: `${baseUrl}${getLocalizedBlogPostUrl(locale, slug)}`,
       position: 4,
     },
   ];
@@ -65,22 +75,23 @@ export function generateBookBreadcrumbs(
   bookTitle: string,
   _category: 'tech' | 'fiction' | 'business' | 'self-help' | 'other',
   slug: string,
-  baseUrl: string
+  baseUrl: string,
+  locale: Locale
 ): BreadcrumbItem[] {
   return [
     {
-      name: 'Home',
-      url: baseUrl,
+      name: locale === 'en' ? 'Home' : 'Trang chủ',
+      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
       position: 1,
     },
     {
-      name: 'Books',
-      url: `${baseUrl}/books`,
+      name: locale === 'en' ? 'Books' : 'Sách',
+      url: `${baseUrl}${getLocalizedBooksUrl(locale)}`,
       position: 2,
     },
     {
       name: bookTitle,
-      url: `${baseUrl}/books/${slug}`,
+      url: `${baseUrl}${getLocalizedBookUrl(locale, slug)}`,
       position: 3,
     },
   ];
@@ -96,13 +107,13 @@ export function generateTopicsBreadcrumbs(
 ): BreadcrumbItem[] {
   return [
     {
-      name: 'Home',
-      url: `${baseUrl}${locale === 'en' ? '?lang=en' : ''}`,
+      name: locale === 'en' ? 'Home' : 'Trang chủ',
+      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
       position: 1,
     },
     {
       name: locale === 'vi' ? 'Chủ đề' : 'Topics',
-      url: `${baseUrl}/topics${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedTopicsUrl(locale)}`,
       position: 2,
     },
   ];
@@ -115,12 +126,12 @@ export function generateCategoriesBreadcrumbs(
   return [
     {
       name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
       position: 1,
     },
     {
       name: locale === 'en' ? 'Categories' : 'Category',
-      url: `${baseUrl}/categories${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedCategoriesUrl(locale)}`,
       position: 2,
     },
   ];
@@ -136,17 +147,17 @@ export function generateCategoryBreadcrumbs(
   return [
     {
       name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
       position: 1,
     },
     {
       name: locale === 'en' ? 'Categories' : 'Category',
-      url: `${baseUrl}/categories${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedCategoriesUrl(locale)}`,
       position: 2,
     },
     {
       name: categoryInfo.labels[locale],
-      url: `${baseUrl}/categories/${category}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+      url: `${baseUrl}${getLocalizedCategoryUrl(locale, category)}`,
       position: 3,
     },
   ];
@@ -165,18 +176,18 @@ export function generateTopicBreadcrumbs(
 
   return [
     {
-      name: 'Home',
-      url: `${baseUrl}${locale === 'en' ? '?lang=en' : ''}`,
+      name: locale === 'en' ? 'Home' : 'Trang chủ',
+      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
       position: 1,
     },
     {
       name: locale === 'vi' ? 'Chủ đề' : 'Topics',
-      url: `${baseUrl}/topics${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedTopicsUrl(locale)}`,
       position: 2,
     },
     {
       name: topic.name,
-      url: `${baseUrl}/topics/${topicSlug}${locale === 'en' ? '?lang=en' : ''}`,
+      url: `${baseUrl}${getLocalizedTopicUrl(locale, topicSlug)}`,
       position: 3,
     },
   ];

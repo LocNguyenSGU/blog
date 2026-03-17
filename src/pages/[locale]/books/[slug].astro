@@ -1,0 +1,105 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { Locale } from '../../../utils/i18n';
+import { t } from '../../../utils/i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StarRating from '../../../components/StarRating.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import { generateBookBreadcrumbs } from '../../../utils/breadcrumbs';
+import { getAllBooks } from '../../../lib/content/books';
+import { getLocalizedBookAlternates } from '../../../utils/localeRoute';
+import { getLocalizedBooksUrl, isLocale } from '../../../utils/routing';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const books = await getAllBooks();
+  return books.map((book) => ({ params: { locale: book.data.lang, slug: book.slug } }));
+}
+
+const { slug, locale: localeParam } = Astro.params;
+
+if (!slug || !isLocale(localeParam)) {
+  return Astro.redirect('/404');
+}
+
+const locale: Locale = localeParam;
+const allBooks = await getAllBooks();
+let entry: CollectionEntry<'books'> | null = null;
+let Content = null;
+
+try {
+  entry = allBooks.find((book) => book.slug === slug && book.data.lang === locale) ?? null;
+  if (!entry) {
+    return Astro.redirect('/404');
+  }
+  const rendered = await entry.render();
+  Content = rendered.Content;
+} catch (error) {
+  console.error('Error loading book:', error);
+  return Astro.redirect('/404');
+}
+
+const { title, author, coverImage, rating, startDate, endDate, category, review } = entry.data;
+const formatDate = (date: Date) => date.toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', { month: 'long', year: 'numeric' });
+const readPeriod = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+const categoryColors: Record<string, string> = {
+  tech: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 sepia:bg-blue-200 sepia:text-blue-900',
+  fiction: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 sepia:bg-purple-200 sepia:text-purple-900',
+  business: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 sepia:bg-green-200 sepia:text-green-900',
+  'self-help': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 sepia:bg-yellow-200 sepia:text-yellow-900',
+  other: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 sepia:bg-sepia-200 sepia:text-sepia-900',
+};
+const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl, locale);
+const backUrl = getLocalizedBooksUrl(locale);
+const baseSlug = entry.slug.replace(/\.(en|vi)$/, '');
+const alternateUrls = getLocalizedBookAlternates(baseUrl, {
+  vi: allBooks.find((book) => book.data.lang === 'vi' && book.slug.replace(/\.(en|vi)$/, '') === baseSlug)?.slug,
+  en: allBooks.find((book) => book.data.lang === 'en' && book.slug.replace(/\.(en|vi)$/, '') === baseSlug)?.slug,
+});
+const canonicalUrl = `${baseUrl}${Astro.url.pathname}`;
+const reviewSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Review',
+  name: `${locale === 'vi' ? 'Đánh giá sách' : 'Book review'}: ${title}`,
+  reviewBody: review,
+  reviewRating: { '@type': 'Rating', ratingValue: rating, bestRating: 5, worstRating: 1 },
+  author: { '@type': 'Person', name: import.meta.env.PUBLIC_AUTHOR_NAME || 'Loc Nguyen' },
+  datePublished: endDate.toISOString(),
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  itemReviewed: { '@type': 'Book', name: title, author: { '@type': 'Person', name: author }, image: new URL(coverImage.src, baseUrl).toString(), inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US', url: canonicalUrl },
+};
+const bookSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: title,
+  author: { '@type': 'Person', name: author },
+  image: new URL(coverImage.src, baseUrl).toString(),
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  url: canonicalUrl,
+  review: { '@type': 'Review', reviewBody: review, reviewRating: { '@type': 'Rating', ratingValue: rating, bestRating: 5, worstRating: 1 } },
+};
+---
+
+<BaseLayout title={title} description={review} locale={locale} image={coverImage} imageAlt={title} canonicalUrl={canonicalUrl} alternateUrls={alternateUrls} additionalJsonLd={[bookSchema, reviewSchema]}>
+  <article class="max-w-4xl mx-auto">
+    <Breadcrumbs items={breadcrumbs} />
+    <a href={backUrl} class="inline-flex items-center gap-2 ui-link mb-8"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>{locale === 'vi' ? 'Quay lại danh sách' : 'Back to list'}</a>
+    <div class="grid md:grid-cols-[300px_1fr] gap-8 mb-12">
+      <div class="aspect-[2/3] overflow-hidden rounded-xl shadow-lg bg-gray-100 dark:bg-gray-900 sepia:bg-sepia-200"><Image src={coverImage} alt={title} width={400} height={600} format="webp" quality={85} loading="eager" class="w-full h-full object-cover" /></div>
+      <div class="space-y-4">
+        <span class={`inline-block px-3 py-1 rounded-full text-sm font-medium ${categoryColors[category] || categoryColors.other}`}>{t(`books.categories.${category}`, locale)}</span>
+        <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight">{title}</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{author}</p>
+        <div class="flex items-center gap-2"><StarRating rating={rating} /><span class="text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{rating}/5</span></div>
+        <div class="text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700"><strong>{locale === 'vi' ? 'Đọc từ:' : 'Read from:'}</strong> {readPeriod}</div>
+        <div class="pt-4 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300"><p class="text-lg text-gray-700 dark:text-gray-300 sepia:text-sepia-800 italic">"{review}"</p></div>
+      </div>
+    </div>
+    <hr class="border-gray-200 dark:border-gray-700 sepia:border-sepia-300 mb-8" />
+    <div class="prose prose-lg dark:prose-invert sepia:prose-sepia prose-headings:font-serif max-w-none"><Content /></div>
+    <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300"><a href={backUrl} class="inline-flex items-center gap-2 ui-link"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>{locale === 'vi' ? 'Quay lại danh sách' : 'Back to list'}</a></div>
+  </article>
+</BaseLayout>

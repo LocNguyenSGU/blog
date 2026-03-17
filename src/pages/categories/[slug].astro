@@ -9,6 +9,14 @@ import { CATEGORIES, getCategoryDescription, getCategoryIntro, getCategoryLabel,
 import { getTopicsForTranslationKey, TOPICS, type TopicSlug } from '../../utils/topics';
 import { generateCategoryBreadcrumbs } from '../../utils/breadcrumbs';
 import { getPostsByCategory } from '../../lib/content/posts';
+import { getLocalizedCategoryAlternates } from '../../utils/localeRoute';
+import { getLocalizedBlogPostUrl, getLocalizedCategoryUrl } from '../../utils/routing';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({ params: { slug } }));
+}
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
@@ -29,7 +37,7 @@ const relatedTopics = Array.from(new Set(
 const intro = getCategoryIntro(category, locale);
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
 const breadcrumbs = generateCategoryBreadcrumbs(category, baseUrl, locale);
-const pageUrl = `${baseUrl}/categories/${category}${locale === 'en' ? '?lang=en' : '?lang=vi'}`;
+const pageUrl = `${baseUrl}${getLocalizedCategoryUrl(locale, category)}`;
 const categorySchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -49,7 +57,7 @@ const categorySchema = {
     itemListElement: posts.map((post, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: `${baseUrl}/blog/${post.slug}${locale === 'en' ? '?lang=en' : '?lang=vi'}`,
+      url: `${baseUrl}${getLocalizedBlogPostUrl(locale, post.slug)}`,
       name: post.data.title,
     })),
   },
@@ -60,6 +68,8 @@ const categorySchema = {
   title={`${getCategoryLabel(category, locale)} | ${locale === 'en' ? 'Category Archive' : 'Kho category'}`}
   description={getCategoryDescription(category, locale)}
   locale={locale}
+  canonicalUrl={pageUrl}
+  alternateUrls={getLocalizedCategoryAlternates(baseUrl, category)}
   additionalJsonLd={[categorySchema]}
 >
   <div class="space-y-12">

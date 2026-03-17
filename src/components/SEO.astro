@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from 'astro';
 import type { Locale } from '../utils/i18n';
+import { getLocalizedHomeUrl } from '../utils/routing';
 
 export interface Props {
   title: string;
@@ -57,9 +58,10 @@ const canonicalPath = currentPath.endsWith('/') && currentPath !== '/'
 const resolvedCanonicalUrl = canonicalUrl || `${siteUrl}${canonicalPath}`;
 
 // Build alternate language URLs
-const viUrl = alternateUrls?.vi || `${siteUrl}${currentPath}?lang=vi`;
-const enUrl = alternateUrls?.en || `${siteUrl}${currentPath}?lang=en`;
-const defaultUrl = alternateUrls?.default || `${siteUrl}${currentPath}`;
+const pathnameWithoutLocale = currentPath.replace(/^\/(en|vi)(?=\/|$)/, '') || '/';
+const viUrl = alternateUrls?.vi || `${siteUrl}/vi${pathnameWithoutLocale === '/' ? '' : pathnameWithoutLocale}`;
+const enUrl = alternateUrls?.en || `${siteUrl}/en${pathnameWithoutLocale === '/' ? '' : pathnameWithoutLocale}`;
+const defaultUrl = alternateUrls?.default || `${siteUrl}${getLocalizedHomeUrl('vi') === '/vi' && pathnameWithoutLocale === '/' ? '/vi' : `/vi${pathnameWithoutLocale === '/' ? '' : pathnameWithoutLocale}`}`;
 
 // Full image URL for social sharing
 const resolvedImagePath = typeof image === 'string' ? image : image?.src;

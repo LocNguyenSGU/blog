@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { getLocalizedBlogPostUrl } from '../utils/routing';
 
 export async function GET(context: { site: URL | undefined }) {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -15,7 +16,7 @@ export async function GET(context: { site: URL | undefined }) {
         title: post.data.title,
         description: post.data.description ?? '',
         pubDate: post.data.pubDate,
-        link: `/blog/${post.slug}?lang=${post.data.lang}`,
+        link: getLocalizedBlogPostUrl(post.data.lang, post.slug),
       })),
     customData: `<language>vi-VN</language>`,
   });
