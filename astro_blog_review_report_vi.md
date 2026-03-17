@@ -789,3 +789,29 @@ Lợi ích đạt được:
 - Cover image của content giờ được Astro kiểm tra ở schema level.
 - `<Image />` render từ metadata local thay vì string path, giúp tối ưu asset đúng chuẩn hơn và an toàn type hơn.
 - Loại lỗi “đường dẫn ảnh tồn tại trong frontmatter nhưng file thực tế không resolve được” sẽ bị phát hiện sớm ngay ở build.
+
+### Hạng mục 5: Bổ sung SEO chuyên biệt cho trang sách detail
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Bổ sung canonical URL và alternate URL EN/VI chính xác cho books detail dựa trên localized sibling cùng base slug:
+  - [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/[slug].astro)
+- Truyền `image`, `imageAlt`, `canonicalUrl`, `alternateUrls` vào layout để Open Graph/Twitter cards của trang sách không còn chỉ dựa vào fallback chung:
+  - [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/[slug].astro)
+- Thêm structured data riêng cho trang sách:
+  - `@type: Book`
+  - `@type: Review`
+  - gồm `name`, `author`, `image`, `reviewBody`, `reviewRating`, `inLanguage`, `url`
+  - file: [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/[slug].astro)
+
+Kiểm tra:
+
+- `npm run build` pass sau khi thêm JSON-LD và alternate URLs cho books detail.
+
+Lợi ích đạt được:
+
+- Search engine có thêm tín hiệu ngữ nghĩa đúng cho trang review sách thay vì chỉ thấy generic `WebPage`.
+- Books detail có social preview image chính xác thay vì phụ thuộc fallback.
+- Hreflang/canonical của nội dung sách song ngữ nhất quán hơn với phần blog detail đã sửa trước đó.

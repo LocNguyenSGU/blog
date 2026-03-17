@@ -19,11 +19,11 @@ const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
 const locale: Locale = (langParam === 'en' || langParam === 'vi') ? langParam : 'vi';
 
+const allBooks = await getAllBooks();
 let entry: CollectionEntry<'books'> | null = null;
 let Content = null;
 
 try {
-  const allBooks = await getAllBooks();
   entry = await getBookByLocalizedSlug(slug, locale) ?? null;
   
   // If found a different language version, redirect to correct slug
@@ -69,9 +69,84 @@ const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
 const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl);
 
 const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
+const baseSlug = entry.slug.replace(/\.(en|vi)$/, '');
+const vietnameseEdition = allBooks.find((book) => {
+  const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
+  return bookBaseSlug === baseSlug && book.data.lang === 'vi';
+});
+const englishEdition = allBooks.find((book) => {
+  const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
+  return bookBaseSlug === baseSlug && book.data.lang === 'en';
+});
+const canonicalUrl = `${baseUrl}/books/${entry.slug}${locale !== 'vi' ? `?lang=${locale}` : ''}`;
+const alternateUrls = {
+  vi: vietnameseEdition ? `${baseUrl}/books/${vietnameseEdition.slug}` : canonicalUrl,
+  en: englishEdition ? `${baseUrl}/books/${englishEdition.slug}?lang=en` : canonicalUrl,
+  default: vietnameseEdition ? `${baseUrl}/books/${vietnameseEdition.slug}` : canonicalUrl,
+};
+const reviewSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Review',
+  name: `${locale === 'vi' ? 'Đánh giá sách' : 'Book review'}: ${title}`,
+  reviewBody: review,
+  reviewRating: {
+    '@type': 'Rating',
+    ratingValue: rating,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  author: {
+    '@type': 'Person',
+    name: import.meta.env.PUBLIC_AUTHOR_NAME || 'Loc Nguyen',
+  },
+  datePublished: endDate.toISOString(),
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  itemReviewed: {
+    '@type': 'Book',
+    name: title,
+    author: {
+      '@type': 'Person',
+      name: author,
+    },
+    image: new URL(coverImage.src, baseUrl).toString(),
+    inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+    url: canonicalUrl,
+  },
+};
+const bookSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: title,
+  author: {
+    '@type': 'Person',
+    name: author,
+  },
+  image: new URL(coverImage.src, baseUrl).toString(),
+  inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
+  url: canonicalUrl,
+  review: {
+    '@type': 'Review',
+    reviewBody: review,
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  },
+};
 ---
 
-<BaseLayout title={title} description={review} locale={locale}>
+<BaseLayout
+  title={title}
+  description={review}
+  locale={locale}
+  image={coverImage}
+  imageAlt={title}
+  canonicalUrl={canonicalUrl}
+  alternateUrls={alternateUrls}
+  additionalJsonLd={[bookSchema, reviewSchema]}
+>
   <article class="max-w-4xl mx-auto">
     {/* Breadcrumbs */}
     <Breadcrumbs items={breadcrumbs} />
