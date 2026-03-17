@@ -1,7 +1,7 @@
 ---
 title: "Forever Mysteries - Volume 5"
 author: "Multiple Authors"
-coverImage: "/images/books/bi-an-mai-mai-la-bi-an.png"
+coverImage: "./_images/bi-an-mai-mai-la-bi-an.png"
 rating: 5
 startDate: 2017-01-01
 endDate: 2017-01-01

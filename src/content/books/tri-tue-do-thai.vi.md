@@ -1,7 +1,7 @@
 ---
 title: "Trí Tuệ Do Thái"
 author: "Eran Katz"
-coverImage: "/images/books/tri-tue-do-thai.png"
+coverImage: "./_images/tri-tue-do-thai.png"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01

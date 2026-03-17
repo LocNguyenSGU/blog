@@ -2,7 +2,7 @@
 title: "Rich Dad's Guide to Investing - Volume 3"
 slug: "cha-giau-cha-ngheo-tap-3-en"
 author: "Robert T. Kiyosaki"
-coverImage: "/images/books/cha-giau-cha-ngheo-tap-3-cover.jpg"
+coverImage: "./_images/cha-giau-cha-ngheo-tap-3-cover.jpg"
 rating: 5
 startDate: 2022-03-01
 endDate: 2022-12-01

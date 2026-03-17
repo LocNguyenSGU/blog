@@ -1,7 +1,7 @@
 ---
 title: "Ruby Performance Optimization: Tại Sao Ruby Chậm và Cách Khắc Phục"
 author: "Alexander Dymo"
-coverImage: "/images/books/ruby-performance.png"
+coverImage: "./_images/ruby-performance.png"
 rating: 4
 startDate: 2026-02-01
 endDate: 2026-03-07

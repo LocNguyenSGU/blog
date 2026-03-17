@@ -2,7 +2,7 @@
 title: "Cha Giàu Cha Nghèo - Tập 1"
 slug: "cha-giau-cha-ngheo-tap-1-vi"
 author: "Robert T. Kiyosaki"
-coverImage: "/images/books/cha-giau-cha-ngheo-tap-1-cover.jpg"
+coverImage: "./_images/cha-giau-cha-ngheo-tap-1-cover.jpg"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01

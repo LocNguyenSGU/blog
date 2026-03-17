@@ -2,7 +2,7 @@
 title: "I Learned English From Below Zero"
 slug: "toi-hoc-tieng-anh-tu-con-so-am-en"
 author: "Nguyen The Anh"
-coverImage: "/images/books/toi-hoc-tieng-anh-tu-con-so-am-cover.jpg"
+coverImage: "./_images/toi-hoc-tieng-anh-tu-con-so-am-cover.jpg"
 rating: 5
 startDate: 2024-06-01
 endDate: 2024-06-01

@@ -1,7 +1,7 @@
 ---
 title: "Trên Đường Băng"
 author: "Tony Buổi Sáng"
-coverImage: "/images/books/tren-duong-bang.png"
+coverImage: "./_images/tren-duong-bang.png"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01

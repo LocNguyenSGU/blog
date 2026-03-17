@@ -2,7 +2,7 @@
 title: "Currency Wars - Volume 1"
 slug: "chien-tranh-tien-te-tap-1-en"
 author: "Song Hongbing"
-coverImage: "/images/books/chien-tranh-tien-te-tap-1-cover.jpg"
+coverImage: "./_images/chien-tranh-tien-te-tap-1-cover.jpg"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01

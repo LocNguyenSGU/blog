@@ -1,7 +1,7 @@
 ---
 title: "Hậu Vận Rất Đắt, Xin Đừng Lãng Phí"
 author: "Nhiều tác giả"
-coverImage: "/images/books/hau-van-rat-dat.png"
+coverImage: "./_images/hau-van-rat-dat.png"
 rating: 4
 startDate: 2022-06-01
 endDate: 2022-06-01

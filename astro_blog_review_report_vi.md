@@ -758,3 +758,34 @@ Kiểm tra:
 Ghi chú:
 
 - Focus trap hiện tại là mức “cơ bản nhưng đúng hướng”; nếu sau này menu/drawer phức tạp hơn, nên tách ra helper chung hoặc dùng pattern component chuẩn hóa hơn.
+
+### Hạng mục 4: Chuyển cover image sang Astro Content Collections `image()`
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Nâng schema content collections để `coverImage` dùng `image()` thay vì `z.string()`:
+  - [src/content/config.ts](/Users/nguyenhuuloc/Documents/blog/src/content/config.ts)
+- Chuyển toàn bộ frontmatter của blog/books từ đường dẫn `public/` sang asset local đồng vị trí với content:
+  - [src/content/blog](/Users/nguyenhuuloc/Documents/blog/src/content/blog)
+  - [src/content/books](/Users/nguyenhuuloc/Documents/blog/src/content/books)
+  - asset mới đặt tại:
+    - [src/content/blog/_images](/Users/nguyenhuuloc/Documents/blog/src/content/blog/_images)
+    - [src/content/books/_images](/Users/nguyenhuuloc/Documents/blog/src/content/books/_images)
+- Cập nhật type surface để nhận `ImageMetadata` thay vì giả định `string`:
+  - [src/components/SEO.astro](/Users/nguyenhuuloc/Documents/blog/src/components/SEO.astro)
+  - [src/layouts/BaseLayout.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BaseLayout.astro)
+  - [src/components/BookCard.astro](/Users/nguyenhuuloc/Documents/blog/src/components/BookCard.astro)
+- Sửa logic tạo absolute OG image URL để hoạt động đúng cho cả `string` lẫn `ImageMetadata.src`:
+  - [src/components/SEO.astro](/Users/nguyenhuuloc/Documents/blog/src/components/SEO.astro)
+
+Kiểm tra:
+
+- `npm run build` pass sau migration schema + asset local.
+
+Lợi ích đạt được:
+
+- Cover image của content giờ được Astro kiểm tra ở schema level.
+- `<Image />` render từ metadata local thay vì string path, giúp tối ưu asset đúng chuẩn hơn và an toàn type hơn.
+- Loại lỗi “đường dẫn ảnh tồn tại trong frontmatter nhưng file thực tế không resolve được” sẽ bị phát hiện sớm ngay ở build.

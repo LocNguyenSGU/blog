@@ -2,7 +2,7 @@
 title: "No Death, No Fear"
 slug: "khong-diet-khong-sinh-dung-so-hai-en"
 author: "Thich Nhat Hanh"
-coverImage: "/images/books/khong-diet-khong-sinh-dung-so-hai-cover.jpg"
+coverImage: "./_images/khong-diet-khong-sinh-dung-so-hai-cover.jpg"
 rating: 5
 startDate: 2021-08-01
 endDate: 2021-08-15

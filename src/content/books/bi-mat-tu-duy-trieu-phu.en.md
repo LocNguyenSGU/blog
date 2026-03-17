@@ -2,7 +2,7 @@
 title: "Secrets of the Millionaire Mind"
 slug: "bi-mat-tu-duy-trieu-phu-en"
 author: "T. Harv Eker"
-coverImage: "/images/books/bi-mat-tu-duy-trieu-phu.png"
+coverImage: "./_images/bi-mat-tu-duy-trieu-phu.png"
 rating: 5
 startDate: 2023-01-01
 endDate: 2023-12-01

@@ -1,4 +1,5 @@
 ---
+import type { ImageMetadata } from 'astro';
 import type { Locale } from '../utils/i18n';
 
 export interface Props {
@@ -6,7 +7,7 @@ export interface Props {
   description: string;
   locale?: Locale;
   type?: 'website' | 'article';
-  image?: string;
+  image?: string | ImageMetadata;
   imageAlt?: string;
   canonicalUrl?: string;
   alternateUrls?: {
@@ -61,7 +62,10 @@ const enUrl = alternateUrls?.en || `${siteUrl}${currentPath}?lang=en`;
 const defaultUrl = alternateUrls?.default || `${siteUrl}${currentPath}`;
 
 // Full image URL for social sharing
-const ogImage = image ? `${siteUrl}${image}` : `${siteUrl}/images/og-default.svg`;
+const resolvedImagePath = typeof image === 'string' ? image : image?.src;
+const ogImage = resolvedImagePath
+  ? new URL(resolvedImagePath, siteUrl).toString()
+  : `${siteUrl}/images/og-default.svg`;
 
 // Site name
 const siteName = import.meta.env.PUBLIC_SITE_NAME || 'Personal Blog';

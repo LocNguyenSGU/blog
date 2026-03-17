@@ -1,7 +1,7 @@
 ---
 title: "Bí Ẩn Mãi Mãi Là Bí Ẩn - Tập 5"
 author: "Nhiều tác giả"
-coverImage: "/images/books/bi-an-mai-mai-la-bi-an.png"
+coverImage: "./_images/bi-an-mai-mai-la-bi-an.png"
 rating: 5
 startDate: 2017-01-01
 endDate: 2017-01-01

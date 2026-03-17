@@ -2,7 +2,7 @@
 title: "The Richest Man in Babylon"
 slug: "nguoi-giau-co-nhat-thanh-babylon-en"
 author: "George S. Clason"
-coverImage: "/images/books/nguoi-giau-co-nhat-thanh-babylon-cover.jpg"
+coverImage: "./_images/nguoi-giau-co-nhat-thanh-babylon-cover.jpg"
 rating: 5
 startDate: 2022-01-01
 endDate: 2022-12-01

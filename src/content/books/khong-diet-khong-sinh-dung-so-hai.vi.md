@@ -2,7 +2,7 @@
 title: "Không Diệt Không Sinh Đừng Sợ Hãi"
 slug: "khong-diet-khong-sinh-dung-so-hai-vi"
 author: "Thích Nhất Hạnh"
-coverImage: "/images/books/khong-diet-khong-sinh-dung-so-hai-cover.jpg"
+coverImage: "./_images/khong-diet-khong-sinh-dung-so-hai-cover.jpg"
 rating: 5
 startDate: 2021-08-01
 endDate: 2021-08-15

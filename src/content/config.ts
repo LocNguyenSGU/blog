@@ -2,7 +2,7 @@ import { z, defineCollection } from 'astro:content';
 
 const blogCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string().optional(),
     pubDate: z.date(),
@@ -14,7 +14,7 @@ const blogCollection = defineCollection({
     author: z.string().default('Anonymous'),
     category: z.enum(['programming', 'lifestyle', 'personal']),
     tags: z.array(z.string()).optional(),
-    coverImage: z.string(),
+    coverImage: image(),
     coverAlt: z.string().default('Cover image'),
     draft: z.boolean().default(false),
     lang: z.enum(['en', 'vi']).default('vi'),
@@ -25,10 +25,10 @@ const blogCollection = defineCollection({
 
 const booksCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     author: z.string(),
-    coverImage: z.string(),
+    coverImage: image(),
     rating: z.number().min(1).max(5),
     startDate: z.date(),
     endDate: z.date(),

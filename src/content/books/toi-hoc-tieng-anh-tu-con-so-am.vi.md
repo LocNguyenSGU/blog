@@ -2,7 +2,7 @@
 title: "Tôi học tiếng Anh từ con số âm"
 slug: "toi-hoc-tieng-anh-tu-con-so-am-vi"
 author: "Nguyễn Thế Anh"
-coverImage: "/images/books/toi-hoc-tieng-anh-tu-con-so-am-cover.jpg"
+coverImage: "./_images/toi-hoc-tieng-anh-tu-con-so-am-cover.jpg"
 rating: 5
 startDate: 2024-06-01
 endDate: 2024-06-01

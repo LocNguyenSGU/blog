@@ -1,7 +1,7 @@
 ---
 title: "Ruby Performance Optimization: Why Ruby Is Slow, and How to Fix It"
 author: "Alexander Dymo"
-coverImage: "/images/books/ruby-performance.png"
+coverImage: "./_images/ruby-performance.png"
 rating: 4
 startDate: 2026-02-01
 endDate: 2026-03-07

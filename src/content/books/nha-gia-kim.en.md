@@ -1,7 +1,7 @@
 ---
 title: "The Alchemist"
 author: "Paulo Coelho"
-coverImage: "/images/books/nha-gia-kim.png"
+coverImage: "./_images/nha-gia-kim.png"
 rating: 5
 startDate: 2020-01-01
 endDate: 2020-12-01
