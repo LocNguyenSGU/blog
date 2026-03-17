@@ -36,6 +36,8 @@ const { currentLocale = 'vi' } = Astro.props;
 </div>
 
 <script>
+  import { getLanguageTargetUrl, persistLocale } from '../utils/languageSwitch';
+
   const updateLanguageUI = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const currentLang = urlParams.get('lang') || localStorage.getItem('locale') || 'vi';
@@ -96,50 +98,9 @@ const { currentLocale = 'vi' } = Astro.props;
         
         const lang = button.getAttribute('data-lang');
 
-        if (lang) {
-          // Save to localStorage
-          localStorage.setItem('locale', lang);
-          
-          // Check if we're on a blog post page
-          const path = window.location.pathname;
-          
-          const isBlogPost = path.startsWith('/blog/') && path !== '/blog' && path !== '/blog/';
-          
-          const isBookDetail = path.startsWith('/books/') && path !== '/books' && path !== '/books/';
-          
-          if (isBlogPost || isBookDetail) {
-            // Determine prefix
-            const prefix = isBlogPost ? '/blog/' : '/books/';
-            
-            // Extract current slug from path (remove trailing slash if present)
-            const currentSlug = path.replace(prefix, '').replace(/\/$/, '');
-            
-            // Posts follow pattern: slug.en/slug.vi OR slugen/slugvi (Astro may remove dots)
-            let translatedSlug = currentSlug;
-            
-            // Check both formats: with dot (.en, .vi) or without dot (en, vi at end)
-            if (currentSlug.endsWith('.en')) {
-              translatedSlug = currentSlug.replace(/\.en$/, '.' + lang);
-            } else if (currentSlug.endsWith('.vi')) {
-              translatedSlug = currentSlug.replace(/\.vi$/, '.' + lang);
-            } else if (currentSlug.endsWith('en')) {
-              // Without dot format (e.g., building-blog-with-aien)
-              translatedSlug = currentSlug.replace(/en$/, lang);
-            } else if (currentSlug.endsWith('vi')) {
-              // Without dot format (e.g., building-blog-with-aivi)
-              translatedSlug = currentSlug.replace(/vi$/, lang);
-            }
-
-            // Redirect to translated post
-            const newUrl = prefix + translatedSlug + '?lang=' + lang;
-            window.location.href = newUrl;
-            return;
-          }
-          
-          // Default behavior: just update language parameter
-          const url = new URL(window.location.href);
-          url.searchParams.set('lang', lang);
-          window.location.href = url.toString();
+        if (lang === 'en' || lang === 'vi') {
+          persistLocale(lang);
+          window.location.href = getLanguageTargetUrl(lang);
         }
       });
     });

@@ -878,3 +878,29 @@ Lợi ích đạt được:
 - `BlogPost` bớt gánh logic client-side, dễ đọc và dễ bảo trì hơn.
 - Script Giscus không còn tải eager cho mọi pageview của bài viết; chỉ tải khi người dùng thực sự muốn mở comments.
 - View counter không còn duplicate logic inline, tránh drift với utility riêng.
+
+### Hạng mục 8: Loại bỏ heuristic đổi slug khi switch ngôn ngữ
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Tạo helper client-side dùng chung cho language switching:
+  - [src/utils/languageSwitch.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/languageSwitch.ts)
+- Cập nhật desktop language switcher để ưu tiên exact alternate URL từ page metadata, fallback mới tới query param:
+  - [src/components/LanguageSwitcher.astro](/Users/nguyenhuuloc/Documents/blog/src/components/LanguageSwitcher.astro)
+- Cập nhật mobile language switcher trong layout dùng cùng helper, bỏ hoàn toàn logic đoán `.en/.vi` bằng string replace:
+  - [src/layouts/BaseLayout.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BaseLayout.astro)
+- Đưa alternate URLs xuống `body[data-alternate-vi|en]` để client scripts dùng chung source of truth:
+  - [src/layouts/BaseLayout.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BaseLayout.astro)
+
+Kiểm tra:
+
+- `npm run lint` pass.
+- `npm run build` pass.
+
+Lợi ích đạt được:
+
+- Bỏ duplication logic đổi slug ở cả desktop và mobile menu.
+- Giảm rủi ro redirect sai cho content song ngữ có slug khác nhau thật, nhất là khi không còn phụ thuộc suffix heuristic.
+- Language switching giờ nhất quán hơn với `canonical`/`alternateUrls` đã được sửa ở các hạng mục SEO trước đó.

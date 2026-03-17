@@ -128,7 +128,11 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
       }
     </script>
   </head>
-  <body class="min-h-screen transition-colors">
+  <body
+    class="min-h-screen transition-colors"
+    data-alternate-vi={alternateUrls?.vi}
+    data-alternate-en={alternateUrls?.en}
+  >
     {/* Mobile menu overlay */}
     <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" aria-hidden="true"></div>
     
@@ -254,6 +258,8 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
     </header>
 
     <script>
+      import { getLanguageTargetUrl, persistLocale } from '../utils/languageSwitch';
+
       document.addEventListener('DOMContentLoaded', () => {
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         const mobileMenuClose = document.getElementById('mobile-menu-close');
@@ -326,38 +332,9 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
             
             const lang = btn.getAttribute('data-mobile-lang');
             
-            if (lang) {
-              localStorage.setItem('locale', lang);
-              
-              // Handle language switching for blog/books pages
-              const path = window.location.pathname;
-              const isBlogPost = path.startsWith('/blog/') && path !== '/blog' && path !== '/blog/';
-              const isBookDetail = path.startsWith('/books/') && path !== '/books' && path !== '/books/';
-              
-              if (isBlogPost || isBookDetail) {
-                const prefix = isBlogPost ? '/blog/' : '/books/';
-                const currentSlug = path.replace(prefix, '').replace(/\/$/, '');
-                let translatedSlug = currentSlug;
-                
-                // Swap language suffix
-                if (currentSlug.endsWith('.en')) {
-                  translatedSlug = currentSlug.replace(/\.en$/, '.' + lang);
-                } else if (currentSlug.endsWith('.vi')) {
-                  translatedSlug = currentSlug.replace(/\.vi$/, '.' + lang);
-                } else if (currentSlug.endsWith('en')) {
-                  translatedSlug = currentSlug.replace(/en$/, lang);
-                } else if (currentSlug.endsWith('vi')) {
-                  translatedSlug = currentSlug.replace(/vi$/, lang);
-                }
-                
-                const newUrl = prefix + translatedSlug + '?lang=' + lang;
-                window.location.href = newUrl;
-              } else {
-                // Default behavior: just update language parameter
-                const url = new URL(window.location.href);
-                url.searchParams.set('lang', lang);
-                window.location.href = url.toString();
-              }
+            if (lang === 'en' || lang === 'vi') {
+              persistLocale(lang);
+              window.location.href = getLanguageTargetUrl(lang);
             }
           });
         });
