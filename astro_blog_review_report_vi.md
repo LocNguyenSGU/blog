@@ -727,3 +727,34 @@ Ghi chú:
 
 - Hạng mục này sửa đúng lỗi `hreflang`/alternate trước đó ở bài viết bilingual.
 - Books detail vẫn chưa có structured data riêng kiểu `Book` / `Review`; có thể xử lý ở vòng tiếp theo nếu đưa vào phạm vi SEO sâu hơn.
+
+### Hạng mục 3: Sửa accessibility cho menu/drawer, landmark 404 và breadcrumb sách
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Nâng cấp semantics + state cho theme dropdown:
+  - `aria-haspopup`, `aria-expanded`, `aria-controls`, `role="menu"`, `role="menuitemradio"`, `aria-checked`
+  - file: [src/components/ThemeToggle.astro](/Users/nguyenhuuloc/Documents/blog/src/components/ThemeToggle.astro)
+- Nâng cấp semantics + state cho language dropdown:
+  - file: [src/components/LanguageSwitcher.astro](/Users/nguyenhuuloc/Documents/blog/src/components/LanguageSwitcher.astro)
+- Thêm dialog semantics + focus handling cho mobile menu:
+  - `role="dialog"`, `aria-modal`, `aria-labelledby`, `aria-expanded`
+  - focus return + tab loop cơ bản
+  - file: [src/layouts/BaseLayout.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BaseLayout.astro)
+- Thêm dialog semantics + focus handling cho TOC drawer mobile:
+  - file: [src/components/TableOfContents.astro](/Users/nguyenhuuloc/Documents/blog/src/components/TableOfContents.astro)
+- Sửa landmark 404:
+  - đổi nested `<main>` thành `<section>`
+  - file: [src/pages/404.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/404.astro)
+- Sửa breadcrumb sách để không còn link tới `?category=` chưa được hỗ trợ:
+  - file: [src/utils/breadcrumbs.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/breadcrumbs.ts)
+
+Kiểm tra:
+
+- `npm run build` pass sau các thay đổi accessibility.
+
+Ghi chú:
+
+- Focus trap hiện tại là mức “cơ bản nhưng đúng hướng”; nếu sau này menu/drawer phức tạp hơn, nên tách ra helper chung hoặc dùng pattern component chuẩn hóa hơn.

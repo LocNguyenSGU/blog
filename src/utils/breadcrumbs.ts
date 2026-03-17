@@ -58,28 +58,15 @@ export function generateBlogBreadcrumbs(
 }
 
 /**
- * Books categories mapping (similar to blog categories)
- */
-const BOOK_CATEGORIES = {
-  'tech': 'Technology',
-  'fiction': 'Fiction',
-  'business': 'Business',
-  'self-help': 'Self Help',
-  'other': 'Other',
-} as const;
-
-/**
  * Generate breadcrumbs for books
- * Structure: Home > Books > Category > Book Title
+ * Structure: Home > Books > Book Title
  */
 export function generateBookBreadcrumbs(
   bookTitle: string,
-  category: 'tech' | 'fiction' | 'business' | 'self-help' | 'other',
+  _category: 'tech' | 'fiction' | 'business' | 'self-help' | 'other',
   slug: string,
   baseUrl: string
 ): BreadcrumbItem[] {
-  const categoryName = BOOK_CATEGORIES[category];
-  
   return [
     {
       name: 'Home',
@@ -92,14 +79,9 @@ export function generateBookBreadcrumbs(
       position: 2,
     },
     {
-      name: categoryName,
-      url: `${baseUrl}/books?category=${category}`,
-      position: 3,
-    },
-    {
       name: bookTitle,
       url: `${baseUrl}/books/${slug}`,
-      position: 4,
+      position: 3,
     },
   ];
 }

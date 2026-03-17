@@ -132,12 +132,12 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
     <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" aria-hidden="true"></div>
     
     {/* Mobile menu sidebar */}
-    <div id="mobile-menu-sidebar" class="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 sepia:bg-sepia-50 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 md:hidden">
+    <div id="mobile-menu-sidebar" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title" class="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 sepia:bg-sepia-50 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 md:hidden">
       <div class="flex flex-col h-full">
         {/* Close button */}
         <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-          <span class="font-serif font-semibold tracking-tight text-lg">Menu</span>
-          <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors">
+          <span id="mobile-menu-title" class="font-serif font-semibold tracking-tight text-lg">Menu</span>
+          <button id="mobile-menu-close" type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors">
             <X class="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
@@ -162,12 +162,14 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
               </label>
               <div class="flex gap-2">
                 <button 
+                  type="button"
                   data-mobile-lang="vi"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                 >
                   Tiếng Việt
                 </button>
                 <button 
+                  type="button"
                   data-mobile-lang="en"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                 >
@@ -183,6 +185,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
               </label>
               <div class="flex gap-2">
                 <button 
+                  type="button"
                   data-mobile-theme="light"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                   title="Light"
@@ -191,6 +194,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
                   <Sun class="w-4 h-4 mx-auto" aria-hidden="true" />
                 </button>
                 <button 
+                  type="button"
                   data-mobile-theme="sepia"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                   title="Sepia"
@@ -199,6 +203,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
                   <BookOpenText class="w-4 h-4 mx-auto" aria-hidden="true" />
                 </button>
                 <button 
+                  type="button"
                   data-mobile-theme="dark"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                   title="Dark"
@@ -223,8 +228,11 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
           {/* Mobile menu button */}
           <button 
             id="mobile-menu-toggle"
+            type="button"
             class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors"
             aria-label="Toggle menu"
+            aria-controls="mobile-menu-sidebar"
+            aria-expanded="false"
           >
             <MenuIcon class="w-6 h-6" aria-hidden="true" />
           </button>
@@ -250,17 +258,28 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
         const mobileMenuClose = document.getElementById('mobile-menu-close');
         const mobileMenuSidebar = document.getElementById('mobile-menu-sidebar');
         const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        let previousFocus: HTMLElement | null = null;
+        
+        const getFocusableElements = (): HTMLElement[] =>
+          Array.from(mobileMenuSidebar?.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          ) ?? []);
         
         const openMenu = () => {
+          previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
           mobileMenuSidebar?.classList.remove('translate-x-full');
           mobileMenuOverlay?.classList.remove('hidden');
           document.body.style.overflow = 'hidden';
+          mobileMenuToggle?.setAttribute('aria-expanded', 'true');
+          mobileMenuClose?.focus();
         };
         
         const closeMenu = () => {
           mobileMenuSidebar?.classList.add('translate-x-full');
           mobileMenuOverlay?.classList.add('hidden');
           document.body.style.overflow = '';
+          mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+          previousFocus?.focus?.();
         };
         
         mobileMenuToggle?.addEventListener('click', openMenu);
@@ -277,6 +296,22 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
             closeMenu();
+          }
+
+          if (e.key === 'Tab' && mobileMenuSidebar && !mobileMenuSidebar.classList.contains('translate-x-full')) {
+            const focusable = getFocusableElements();
+            if (focusable.length === 0) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
           }
         });
         

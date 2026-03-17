@@ -50,7 +50,10 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
       {/* Floating Button */}
       <button
         id="toc-mobile-toggle"
+        type="button"
         aria-label={locale === 'vi' ? 'Mở mục lục' : 'Open table of contents'}
+        aria-controls="toc-mobile-drawer"
+        aria-expanded="false"
         class="fixed bottom-4 right-4 z-40 bg-gray-900 hover:bg-black text-white rounded-full p-4 shadow-lg transition-all duration-200 flex items-center gap-2"
       >
         <List class="w-5 h-5" aria-hidden="true" />
@@ -65,15 +68,19 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
       {/* Drawer */}
       <div
         id="toc-mobile-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="toc-mobile-title"
         class="fixed inset-y-0 right-0 w-80 max-w-[90vw] bg-white dark:bg-gray-800 sepia:bg-sepia-50 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto"
       >
         <div class="p-6">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="font-serif font-semibold tracking-tight text-xl text-gray-900 dark:text-white sepia:text-sepia-900">
+            <h2 id="toc-mobile-title" class="font-serif font-semibold tracking-tight text-xl text-gray-900 dark:text-white sepia:text-sepia-900">
               {tocLabel}
             </h2>
             <button
               id="toc-mobile-close"
+              type="button"
               aria-label={locale === 'vi' ? 'Đóng' : 'Close'}
               class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sepia:text-sepia-600 sepia:hover:text-sepia-900"
             >
@@ -173,20 +180,53 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
   const closeBtn = document.getElementById('toc-mobile-close');
   const backdrop = document.getElementById('toc-mobile-backdrop');
   const drawer = document.getElementById('toc-mobile-drawer');
+  let previousFocus: HTMLElement | null = null;
+
+  function getFocusableElements(): HTMLElement[] {
+    return Array.from(
+      drawer?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])') ?? []
+    );
+  }
 
   function openDrawer() {
+    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     drawer?.classList.remove('translate-x-full');
     backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+    toggleBtn?.setAttribute('aria-expanded', 'true');
+    closeBtn?.focus();
   }
 
   function closeDrawer() {
     drawer?.classList.add('translate-x-full');
     backdrop?.classList.add('opacity-0', 'pointer-events-none');
+    toggleBtn?.setAttribute('aria-expanded', 'false');
+    previousFocus?.focus?.();
   }
 
   toggleBtn?.addEventListener('click', openDrawer);
   closeBtn?.addEventListener('click', closeDrawer);
   backdrop?.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeDrawer();
+    }
+
+    if (e.key === 'Tab' && drawer && !drawer.classList.contains('translate-x-full')) {
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
 
   // Close drawer when clicking a TOC link on mobile
   const mobileLinks = document.querySelectorAll('.toc-item-mobile a');

@@ -8,7 +8,10 @@ import { Sun, Moon, BookOpenText } from '@lucide/astro';
     id="theme-toggle"
     type="button"
     class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors"
-    aria-label="Toggle theme"
+    aria-label="Change theme"
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="theme-menu"
   >
     <Sun id="theme-icon-light" class="hidden w-5 h-5" aria-hidden="true" />
     <BookOpenText id="theme-icon-sepia" class="w-5 h-5" aria-hidden="true" />
@@ -16,16 +19,16 @@ import { Sun, Moon, BookOpenText } from '@lucide/astro';
   </button>
   
   <!-- Theme dropdown menu -->
-  <div id="theme-menu" class="hidden absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 z-50">
-    <button data-theme="light" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-t-lg flex items-center gap-2">
+  <div id="theme-menu" role="menu" class="hidden absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 z-50">
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme="light" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-t-lg flex items-center gap-2">
       <Sun class="w-4 h-4" aria-hidden="true" />
       Light
     </button>
-    <button data-theme="sepia" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 flex items-center gap-2">
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme="sepia" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 flex items-center gap-2">
       <BookOpenText class="w-4 h-4" aria-hidden="true" />
       Sepia
     </button>
-    <button data-theme="dark" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-b-lg flex items-center gap-2">
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme="dark" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-b-lg flex items-center gap-2">
       <Moon class="w-4 h-4" aria-hidden="true" />
       Dark
     </button>
@@ -54,6 +57,7 @@ import { Sun, Moon, BookOpenText } from '@lucide/astro';
     const lightIcon = document.getElementById('theme-icon-light');
     const sepiaIcon = document.getElementById('theme-icon-sepia');
     const darkIcon = document.getElementById('theme-icon-dark');
+    const themeButtons = document.querySelectorAll('[data-theme]');
     
     lightIcon?.classList.add('hidden');
     sepiaIcon?.classList.add('hidden');
@@ -66,6 +70,11 @@ import { Sun, Moon, BookOpenText } from '@lucide/astro';
     } else {
       darkIcon?.classList.remove('hidden');
     }
+
+    themeButtons.forEach((button) => {
+      const isActive = button.getAttribute('data-theme') === theme;
+      button.setAttribute('aria-checked', String(isActive));
+    });
   }
   
   // Initialize theme
@@ -77,15 +86,26 @@ import { Sun, Moon, BookOpenText } from '@lucide/astro';
     const toggleBtn = document.getElementById('theme-toggle');
     const menu = document.getElementById('theme-menu');
     const themeButtons = document.querySelectorAll('[data-theme]');
+    const closeMenu = () => {
+      menu?.classList.add('hidden');
+      toggleBtn?.setAttribute('aria-expanded', 'false');
+    };
     
     toggleBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       menu?.classList.toggle('hidden');
+      toggleBtn.setAttribute('aria-expanded', String(!menu?.classList.contains('hidden')));
     });
     
     // Close menu when clicking outside
     document.addEventListener('click', () => {
-      menu?.classList.add('hidden');
+      closeMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
     });
     
     // Theme selection
@@ -93,7 +113,7 @@ import { Sun, Moon, BookOpenText } from '@lucide/astro';
       btn.addEventListener('click', (e) => {
         const theme = (e.currentTarget as HTMLElement).getAttribute('data-theme') as Theme;
         setTheme(theme);
-        menu?.classList.add('hidden');
+        closeMenu();
       });
     });
   });
