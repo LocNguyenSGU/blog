@@ -5,12 +5,13 @@ import BlogPost from '../../layouts/BlogPost.astro';
 import { getAllBlogPosts, getPostBySlug } from '../../lib/content/posts';
 import { getLocalizedPostAlternates } from '../../utils/localeRoute';
 import { getLocalizedBlogPostUrl } from '../../utils/routing';
+import { toPublicSlug } from '../../utils/slugs';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.slug } }));
+  return posts.map((post) => ({ params: { slug: toPublicSlug(post.slug, post.data.lang) } }));
 }
 
 // Get slug from URL params

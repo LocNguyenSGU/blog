@@ -11,6 +11,7 @@ import { generateCategoryBreadcrumbs } from '../../../utils/breadcrumbs';
 import { getPostsByCategory } from '../../../lib/content/posts';
 import { getLocalizedCategoryAlternates } from '../../../utils/localeRoute';
 import { isLocale } from '../../../utils/routing';
+import { toPublicSlug } from '../../../utils/slugs';
 
 export const prerender = true;
 
@@ -40,7 +41,7 @@ const categorySchema = {
   url: pageUrl,
   inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
   about: { '@type': 'Thing', name: getCategoryLabel(category, locale), description: getCategoryDescription(category, locale) },
-  mainEntity: { '@type': 'ItemList', itemListOrder: 'https://schema.org/ItemListOrderDescending', numberOfItems: posts.length, itemListElement: posts.map((post, index) => ({ '@type': 'ListItem', position: index + 1, url: `${baseUrl}/${post.data.lang}/blog/${post.slug}`, name: post.data.title })) },
+  mainEntity: { '@type': 'ItemList', itemListOrder: 'https://schema.org/ItemListOrderDescending', numberOfItems: posts.length, itemListElement: posts.map((post, index) => ({ '@type': 'ListItem', position: index + 1, url: `${baseUrl}/${post.data.lang}/blog/${toPublicSlug(post.slug, post.data.lang)}`, name: post.data.title })) },
 };
 ---
 

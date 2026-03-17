@@ -13,6 +13,7 @@ import { getCategoryCounts, getPublishedPosts, getTopicCounts } from '../../../l
 import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../../utils/localeRoute';
 import { getLocalizedBlogUrl, getLocalizedCategoriesUrl, getLocalizedCategoryUrl, getLocalizedTopicUrl, getLocalizedTopicsUrl } from '../../../utils/routing';
 import { isLocale } from '../../../utils/routing';
+import { toPublicSlug } from '../../../utils/slugs';
 
 export const prerender = true;
 
@@ -105,7 +106,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         itemListElement: filteredPosts.map((post, index) => ({
           '@type': 'ListItem',
           position: index + 1,
-          url: `${siteUrl}/${post.data.lang}/blog/${post.slug}`,
+          url: `${siteUrl}/${post.data.lang}/blog/${toPublicSlug(post.slug, post.data.lang)}`,
           name: post.data.title,
         })),
       },

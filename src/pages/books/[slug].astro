@@ -10,12 +10,13 @@ import { generateBookBreadcrumbs } from '../../utils/breadcrumbs';
 import { getAllBooks, getBookByLocalizedSlug } from '../../lib/content/books';
 import { getLocalizedBookAlternates } from '../../utils/localeRoute';
 import { getLocalizedBookUrl, getLocalizedBooksUrl } from '../../utils/routing';
+import { toPublicSlug } from '../../utils/slugs';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const books = await getAllBooks();
-  return books.map((book) => ({ params: { slug: book.slug } }));
+  return books.map((book) => ({ params: { slug: toPublicSlug(book.slug, book.data.lang) } }));
 }
 
 const { slug } = Astro.params;
@@ -78,13 +79,13 @@ const baseUrl = import.meta.env.PUBLIC_SITE_URL || 'https://devjournal.fun';
 const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl, locale);
 
 const backUrl = getLocalizedBooksUrl(locale);
-const baseSlug = entry.slug.replace(/\.(en|vi)$/, '');
+const baseSlug = toPublicSlug(entry.slug, locale);
 const vietnameseEdition = allBooks.find((book) => {
-  const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
+  const bookBaseSlug = toPublicSlug(book.slug, 'vi');
   return bookBaseSlug === baseSlug && book.data.lang === 'vi';
 });
 const englishEdition = allBooks.find((book) => {
-  const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
+  const bookBaseSlug = toPublicSlug(book.slug, 'en');
   return bookBaseSlug === baseSlug && book.data.lang === 'en';
 });
 const canonicalUrl = `${baseUrl}${getLocalizedBookUrl(locale, entry.slug)}`;

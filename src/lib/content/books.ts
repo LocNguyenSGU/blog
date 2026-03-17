@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Locale } from '@/utils/i18n';
+import { toPublicSlug } from '@/utils/slugs';
 
 export type BookEntry = CollectionEntry<'books'>;
 
@@ -17,10 +18,9 @@ export async function getBookByLocalizedSlug(
   locale: Locale
 ): Promise<BookEntry | undefined> {
   const books = await getAllBooks();
-  const baseSlug = slug.replace(/\.(en|vi)$/, '');
+  const publicSlug = toPublicSlug(slug, locale);
 
   return books.find((book) => {
-    const bookBaseSlug = book.slug.replace(/\.(en|vi)$/, '');
-    return bookBaseSlug === baseSlug && book.data.lang === locale;
+    return toPublicSlug(book.slug, locale) === publicSlug && book.data.lang === locale;
   });
 }

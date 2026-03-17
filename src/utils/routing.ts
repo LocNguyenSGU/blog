@@ -1,4 +1,5 @@
 import type { Locale } from './i18n';
+import { toPublicSlug } from './slugs';
 
 export const SUPPORTED_LOCALES: Locale[] = ['vi', 'en'];
 
@@ -28,7 +29,7 @@ export function getLocalizedBlogUrl(locale: Locale): string {
 }
 
 export function getLocalizedBlogPostUrl(locale: Locale, slug: string): string {
-  return withLocale(locale, `/blog/${slug}`);
+  return withLocale(locale, `/blog/${toPublicSlug(slug, locale)}`);
 }
 
 export function getLocalizedBooksUrl(locale: Locale): string {
@@ -36,7 +37,7 @@ export function getLocalizedBooksUrl(locale: Locale): string {
 }
 
 export function getLocalizedBookUrl(locale: Locale, slug: string): string {
-  return withLocale(locale, `/books/${slug}`);
+  return withLocale(locale, `/books/${toPublicSlug(slug, locale)}`);
 }
 
 export function getLocalizedCategoriesUrl(locale: Locale): string {

@@ -2,6 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Locale } from '@/utils/i18n';
 import { TOPICS, getTopicPillarPost, type TopicSlug } from '@/utils/topics';
 import { CATEGORIES, type CategoryKey } from '@/utils/categories';
+import { toPublicSlug } from '@/utils/slugs';
 
 export type BlogEntry = CollectionEntry<'blog'>;
 
@@ -14,9 +15,12 @@ export async function getPublishedPosts(locale: Locale): Promise<BlogEntry[]> {
   return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
-export async function getPostBySlug(slug: string): Promise<BlogEntry | undefined> {
+export async function getPostBySlug(slug: string, locale?: Locale): Promise<BlogEntry | undefined> {
   const posts = await getAllBlogPosts();
-  return posts.find((post) => post.slug === slug);
+  return posts.find((post) => {
+    if (locale && post.data.lang !== locale) return false;
+    return toPublicSlug(post.slug, post.data.lang) === toPublicSlug(slug, locale ?? post.data.lang);
+  });
 }
 
 export async function getPostsByCategory(

@@ -13,6 +13,7 @@ import { getAllBlogPosts, getCategoryCounts, getPillarTopics, getPublishedPosts,
 import { isLocale } from '../../utils/routing';
 import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../utils/localeRoute';
 import { getLocalizedAboutUrl, getLocalizedBlogUrl, getLocalizedCategoriesUrl, getLocalizedTopicsUrl } from '../../utils/routing';
+import { toPublicSlug } from '../../utils/slugs';
 
 export const prerender = true;
 
@@ -120,7 +121,7 @@ try {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {pillarTopics.map(({ slug, post }) => (
-            <a href={`/${post.data.lang}/blog/${post.slug}`} class="block card p-6">
+            <a href={`/${post.data.lang}/blog/${toPublicSlug(post.slug, post.data.lang)}`} class="block card p-6">
               <p class="text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-3">
                 {getTopicInfo(slug, locale).name}
               </p>

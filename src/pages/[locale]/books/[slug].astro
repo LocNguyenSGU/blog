@@ -10,12 +10,13 @@ import { generateBookBreadcrumbs } from '../../../utils/breadcrumbs';
 import { getAllBooks } from '../../../lib/content/books';
 import { getLocalizedBookAlternates } from '../../../utils/localeRoute';
 import { getLocalizedBooksUrl, isLocale } from '../../../utils/routing';
+import { toPublicSlug } from '../../../utils/slugs';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const books = await getAllBooks();
-  return books.map((book) => ({ params: { locale: book.data.lang, slug: book.slug } }));
+  return books.map((book) => ({ params: { locale: book.data.lang, slug: toPublicSlug(book.slug, book.data.lang) } }));
 }
 
 const { slug, locale: localeParam } = Astro.params;
@@ -30,7 +31,7 @@ let entry: CollectionEntry<'books'> | null = null;
 let Content = null;
 
 try {
-  entry = allBooks.find((book) => book.slug === slug && book.data.lang === locale) ?? null;
+  entry = allBooks.find((book) => toPublicSlug(book.slug, locale) === slug && book.data.lang === locale) ?? null;
   if (!entry) {
     return Astro.redirect('/404');
   }
@@ -54,10 +55,10 @@ const categoryColors: Record<string, string> = {
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
 const breadcrumbs = generateBookBreadcrumbs(title, category, slug, baseUrl, locale);
 const backUrl = getLocalizedBooksUrl(locale);
-const baseSlug = entry.slug.replace(/\.(en|vi)$/, '');
+const baseSlug = toPublicSlug(entry.slug, locale);
 const alternateUrls = getLocalizedBookAlternates(baseUrl, {
-  vi: allBooks.find((book) => book.data.lang === 'vi' && book.slug.replace(/\.(en|vi)$/, '') === baseSlug)?.slug,
-  en: allBooks.find((book) => book.data.lang === 'en' && book.slug.replace(/\.(en|vi)$/, '') === baseSlug)?.slug,
+  vi: allBooks.find((book) => book.data.lang === 'vi' && toPublicSlug(book.slug, 'vi') === baseSlug)?.slug,
+  en: allBooks.find((book) => book.data.lang === 'en' && toPublicSlug(book.slug, 'en') === baseSlug)?.slug,
 });
 const canonicalUrl = `${baseUrl}${Astro.url.pathname}`;
 const reviewSchema = {

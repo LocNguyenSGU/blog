@@ -10,6 +10,7 @@ import { generateTopicBreadcrumbs } from '../../../utils/breadcrumbs';
 import { getAllBlogPosts } from '../../../lib/content/posts';
 import { getLocalizedTopicAlternates } from '../../../utils/localeRoute';
 import { isLocale } from '../../../utils/routing';
+import { toPublicSlug } from '../../../utils/slugs';
 
 export const prerender = true;
 
@@ -42,7 +43,7 @@ const topicCollectionSchema = {
   url: pageUrl,
   inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
   about: { '@type': 'Thing', name: topic.name, description: topic.description },
-  mainEntity: { '@type': 'ItemList', itemListOrder: 'https://schema.org/ItemListUnordered', numberOfItems: topicPosts.length, itemListElement: topicPosts.map((post, index) => ({ '@type': 'ListItem', position: index + 1, url: `${baseUrl}/${post.data.lang}/blog/${post.slug}`, name: post.data.title })) },
+  mainEntity: { '@type': 'ItemList', itemListOrder: 'https://schema.org/ItemListUnordered', numberOfItems: topicPosts.length, itemListElement: topicPosts.map((post, index) => ({ '@type': 'ListItem', position: index + 1, url: `${baseUrl}/${post.data.lang}/blog/${toPublicSlug(post.slug, post.data.lang)}`, name: post.data.title })) },
 };
 ---
 

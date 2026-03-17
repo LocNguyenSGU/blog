@@ -950,3 +950,40 @@ Lợi ích đạt được:
 - Site có URL i18n rõ ràng hơn cho crawl, share link và analytics.
 - Dynamic routes đã có `getStaticPaths` thực sự có hiệu lực nhờ `prerender = true`.
 - Codebase đã có nền route helper đủ rõ để tiếp tục migration legacy routes hoặc chuyển hẳn sang static output ở vòng tiếp theo mà không phải đổi URL layer thêm lần nữa.
+
+### Hạng mục 10: Chuẩn hóa public slug, bỏ hậu tố locale khỏi URL
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Tạo helper chuẩn hóa slug public:
+  - [src/utils/slugs.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/slugs.ts)
+- Cập nhật route/url builders để dùng slug sạch thay vì slug nội bộ có hậu tố locale:
+  - [src/utils/routing.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/routing.ts)
+  - [src/lib/content/posts.ts](/Users/nguyenhuuloc/Documents/blog/src/lib/content/posts.ts)
+  - [src/lib/content/books.ts](/Users/nguyenhuuloc/Documents/blog/src/lib/content/books.ts)
+- Cập nhật `getStaticPaths`, route matching, canonical/RSS/schema URLs và internal links để render:
+  - `/vi/blog/ai-phong-ban-ao`
+  - `/en/blog/ai-phong-ban-ao`
+  - `/vi/books/ruby-performance-optimization`
+  - `/en/books/ruby-performance-optimization`
+  thay vì các dạng có hậu tố `...vi` / `...en`
+- Các file chính đã đổi:
+  - [src/pages/[locale]/blog/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/%5Blocale%5D/blog/%5Bslug%5D.astro)
+  - [src/pages/[locale]/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/%5Blocale%5D/books/%5Bslug%5D.astro)
+  - [src/pages/blog/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/blog/%5Bslug%5D.astro)
+  - [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/%5Bslug%5D.astro)
+  - [src/pages/rss.xml.ts](/Users/nguyenhuuloc/Documents/blog/src/pages/rss.xml.ts)
+
+Kiểm tra:
+
+- `npm run lint` pass.
+- `npm run build` pass.
+- Build output xác nhận URL prerender mới không còn hậu tố locale ở cuối slug.
+
+Lợi ích đạt được:
+
+- URL public ngắn, sạch và dễ đọc hơn.
+- Cùng một bài/cuốn giữa `vi` và `en` giờ khác nhau ở locale prefix, không phải ở slug suffix.
+- Tách bạch rõ hơn giữa `slug nội bộ` của content entry và `slug public` của site.
