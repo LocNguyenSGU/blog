@@ -31,9 +31,13 @@ export function incrementViewCount(slug: string): number {
  * @param count - View count number
  * @returns Formatted string like "1.2k views" or "45 views"
  */
-export function formatViewCount(count: number): string {
+import type { Locale } from './i18n';
+
+export function formatViewCount(count: number, locale: Locale = 'en'): string {
+  const suffix = locale === 'vi' ? 'lượt xem' : 'views';
+
   if (count >= 1000) {
-    return `${(count / 1000).toFixed(1)}k views`;
+    return `${(count / 1000).toFixed(1)}k ${suffix}`;
   }
-  return `${count} views`;
+  return `${count} ${suffix}`;
 }

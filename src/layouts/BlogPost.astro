@@ -3,13 +3,14 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../utils/i18n';
 import type { MarkdownHeading } from 'astro';
-import { t } from '../utils/i18n';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import CategoryBadge from '../components/CategoryBadge.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import TopicCard from '../components/TopicCard.astro';
+import Comments from '../components/Comments.astro';
+import ViewCounter from '../components/ViewCounter.astro';
 import { getReadingTime, formatReadingTime } from '../utils/readingTime';
 import { shouldShowTOC } from '../utils/toc';
 import { generateBlogBreadcrumbs } from '../utils/breadcrumbs';
@@ -205,13 +206,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
           {formatReadingTime(readingTime, locale)}
         </span>
         <span>•</span>
-        <span id="view-count" class="flex items-center gap-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-          </svg>
-          <span id="view-count-number">0 views</span>
-        </span>
+        <ViewCounter slug={slug} locale={locale} />
         <span>•</span>
         <span>{author}</span>
       </div>
@@ -269,26 +264,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
       </section>
     )}
 
-    {/* Giscus Comments */}
-    <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-      <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('post.comments', locale)}</h2>
-      <script is:inline
-        src="https://giscus.app/client.js"
-        data-repo={import.meta.env.PUBLIC_GISCUS_REPO || "your-username/your-repo"}
-        data-repo-id={import.meta.env.PUBLIC_GISCUS_REPO_ID || "YOUR_REPO_ID"}
-        data-category={import.meta.env.PUBLIC_GISCUS_CATEGORY || "General"}
-        data-category-id={import.meta.env.PUBLIC_GISCUS_CATEGORY_ID || "YOUR_CATEGORY_ID"}
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang={locale === 'en' ? 'en' : 'vi'}
-        crossorigin="anonymous"
-        async
-      ></script>
-    </div>
+    <Comments locale={locale} />
   </article>
 
   {/* Table of Contents */}
@@ -299,37 +275,4 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
   )}
   </div>
 
-  {/* View Counter Script */}
-  <script is:inline define:vars={{ slug }}>
-    // View counter
-    function getViewCount(slug) {
-      const key = `post-views-${slug}`;
-      const stored = localStorage.getItem(key);
-      return stored ? parseInt(stored, 10) : 0;
-    }
-
-    function incrementViewCount(slug) {
-      const currentCount = getViewCount(slug);
-      const newCount = currentCount + 1;
-      const key = `post-views-${slug}`;
-      localStorage.setItem(key, newCount.toString());
-      return newCount;
-    }
-
-    function formatViewCount(count) {
-      if (count >= 1000) {
-        return `${(count / 1000).toFixed(1)}k views`;
-      }
-      return `${count} views`;
-    }
-
-    // Initialize view count
-    document.addEventListener('DOMContentLoaded', () => {
-      const viewCount = incrementViewCount(slug);
-      const viewCountElement = document.getElementById('view-count-number');
-      if (viewCountElement) {
-        viewCountElement.textContent = formatViewCount(viewCount);
-      }
-    });
-  </script>
 </BaseLayout>

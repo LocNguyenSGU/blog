@@ -1,0 +1,48 @@
+---
+import type { Locale } from '../utils/i18n';
+
+interface Props {
+  slug: string;
+  locale: Locale;
+}
+
+const { slug, locale } = Astro.props;
+---
+
+<span class="flex items-center gap-1" data-view-counter data-slug={slug} data-locale={locale}>
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+  </svg>
+  <span data-view-counter-number>0 {locale === 'vi' ? 'lượt xem' : 'views'}</span>
+</span>
+
+<script>
+  import { formatViewCount, incrementViewCount } from '../utils/viewCounter';
+
+  const initializeViewCounters = () => {
+    document.querySelectorAll('[data-view-counter]').forEach((counter) => {
+      if (!(counter instanceof HTMLElement) || counter.dataset.initialized === 'true') {
+        return;
+      }
+
+      const slug = counter.dataset.slug;
+      const locale = counter.dataset.locale === 'en' ? 'en' : 'vi';
+      const valueElement = counter.querySelector('[data-view-counter-number]');
+
+      if (!slug || !(valueElement instanceof HTMLElement)) {
+        return;
+      }
+
+      const viewCount = incrementViewCount(slug);
+      valueElement.textContent = formatViewCount(viewCount, locale);
+      counter.dataset.initialized = 'true';
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeViewCounters, { once: true });
+  } else {
+    initializeViewCounters();
+  }
+</script>

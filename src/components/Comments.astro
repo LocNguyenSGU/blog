@@ -1,0 +1,87 @@
+---
+import type { Locale } from '../utils/i18n';
+import { t } from '../utils/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const loadLabel = locale === 'vi' ? 'Tải bình luận' : 'Load comments';
+const loadingLabel = locale === 'vi' ? 'Đang tải bình luận...' : 'Loading comments...';
+---
+
+<section class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h2 class="font-serif text-2xl font-semibold tracking-tight">{t('post.comments', locale)}</h2>
+    <button
+      type="button"
+      class="inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-2 text-sm font-medium transition hover:border-gray-400 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-800 sepia:border-sepia-300 sepia:hover:border-sepia-500 sepia:hover:bg-sepia-100"
+      data-comments-trigger
+      data-loading-label={loadingLabel}
+      data-locale={locale}
+      data-repo={import.meta.env.PUBLIC_GISCUS_REPO || 'your-username/your-repo'}
+      data-repo-id={import.meta.env.PUBLIC_GISCUS_REPO_ID || 'YOUR_REPO_ID'}
+      data-category={import.meta.env.PUBLIC_GISCUS_CATEGORY || 'General'}
+      data-category-id={import.meta.env.PUBLIC_GISCUS_CATEGORY_ID || 'YOUR_CATEGORY_ID'}
+    >
+      {loadLabel}
+    </button>
+  </div>
+  <div class="mt-6" data-comments-container hidden></div>
+</section>
+
+<script>
+  const loadGiscus = (trigger: Element) => {
+    if (!(trigger instanceof HTMLButtonElement) || trigger.dataset.loaded === 'true') {
+      return;
+    }
+
+    const section = trigger.closest('section');
+    const container = section?.querySelector('[data-comments-container]');
+
+    if (!(container instanceof HTMLElement)) {
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.setAttribute('data-repo', trigger.dataset.repo ?? '');
+    script.setAttribute('data-repo-id', trigger.dataset.repoId ?? '');
+    script.setAttribute('data-category', trigger.dataset.category ?? '');
+    script.setAttribute('data-category-id', trigger.dataset.categoryId ?? '');
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
+    script.setAttribute('data-lang', trigger.dataset.locale === 'en' ? 'en' : 'vi');
+
+    trigger.disabled = true;
+    trigger.textContent = trigger.dataset.loadingLabel ?? trigger.textContent ?? '';
+    container.hidden = false;
+    container.append(script);
+    trigger.dataset.loaded = 'true';
+    trigger.hidden = true;
+  };
+
+  const initializeComments = () => {
+    document.querySelectorAll('[data-comments-trigger]').forEach((trigger) => {
+      if (!(trigger instanceof HTMLButtonElement) || trigger.dataset.initialized === 'true') {
+        return;
+      }
+
+      trigger.addEventListener('click', () => loadGiscus(trigger));
+      trigger.dataset.initialized = 'true';
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeComments, { once: true });
+  } else {
+    initializeComments();
+  }
+</script>

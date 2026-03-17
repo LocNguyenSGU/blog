@@ -849,3 +849,32 @@ Lợi ích đạt được:
 - Repo có guardrail rõ ràng để chặn lỗi cú pháp/style/a11y từ sớm.
 - Các file config/runtime hiện không còn mang lint debt ngay từ lúc introduce tooling.
 - Team có thể đưa `lint` và `format:check` vào CI mà không cần cleanup thủ công thêm trước mắt.
+
+### Hạng mục 7: Giảm duplication trong `BlogPost` và lazy-load comments
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Tách view counter khỏi inline script trong layout thành component riêng:
+  - [src/components/ViewCounter.astro](/Users/nguyenhuuloc/Documents/blog/src/components/ViewCounter.astro)
+  - dùng lại utility [src/utils/viewCounter.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/viewCounter.ts)
+- Tách Giscus comments thành component riêng và chuyển sang lazy-load theo hành động người dùng:
+  - [src/components/Comments.astro](/Users/nguyenhuuloc/Documents/blog/src/components/Comments.astro)
+- Làm gọn [src/layouts/BlogPost.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BlogPost.astro):
+  - bỏ inline script view counter
+  - bỏ block script Giscus eager
+  - thay bằng `ViewCounter` và `Comments`
+- Xóa dead component không còn được dùng:
+  - [src/components/DarkModeToggle.astro](/Users/nguyenhuuloc/Documents/blog/src/components/DarkModeToggle.astro)
+
+Kiểm tra:
+
+- `npm run lint` pass.
+- `npm run build` pass.
+
+Lợi ích đạt được:
+
+- `BlogPost` bớt gánh logic client-side, dễ đọc và dễ bảo trì hơn.
+- Script Giscus không còn tải eager cho mọi pageview của bài viết; chỉ tải khi người dùng thực sự muốn mở comments.
+- View counter không còn duplicate logic inline, tránh drift với utility riêng.
