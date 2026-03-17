@@ -58,7 +58,7 @@ const bookUrl = `/books/${slug}${lang !== 'vi' ? `?lang=${lang}` : ''}`;
   <div class="p-4 space-y-2">
     {/* Category Badge */}
     <span class={`inline-block px-2 py-1 rounded-full text-xs font-medium ${categoryColors[category] || categoryColors.other}`}>
-      {t(`books.categories.${category}` as any, lang)}
+      {t(`books.categories.${category}`, lang)}
     </span>
     
     {/* Title */}

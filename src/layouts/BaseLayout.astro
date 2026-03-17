@@ -336,7 +336,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
               
               if (isBlogPost || isBookDetail) {
                 const prefix = isBlogPost ? '/blog/' : '/books/';
-                let currentSlug = path.replace(prefix, '').replace(/\/$/, '');
+                const currentSlug = path.replace(prefix, '').replace(/\/$/, '');
                 let translatedSlug = currentSlug;
                 
                 // Swap language suffix

@@ -815,3 +815,37 @@ Lợi ích đạt được:
 - Search engine có thêm tín hiệu ngữ nghĩa đúng cho trang review sách thay vì chỉ thấy generic `WebPage`.
 - Books detail có social preview image chính xác thay vì phụ thuộc fallback.
 - Hreflang/canonical của nội dung sách song ngữ nhất quán hơn với phần blog detail đã sửa trước đó.
+
+### Hạng mục 6: Bổ sung DX tooling với ESLint và Prettier
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Thêm script DX chuẩn trong [package.json](/Users/nguyenhuuloc/Documents/blog/package.json):
+  - `check`
+  - `lint`
+  - `lint:fix`
+  - `format`
+  - `format:check`
+- Thêm ESLint flat config cho Astro + TypeScript + a11y:
+  - [eslint.config.mjs](/Users/nguyenhuuloc/Documents/blog/eslint.config.mjs)
+- Thêm Prettier config và ignore:
+  - [.prettierrc.json](/Users/nguyenhuuloc/Documents/blog/.prettierrc.json)
+  - [.prettierignore](/Users/nguyenhuuloc/Documents/blog/.prettierignore)
+- Sửa các lint issue thực tế để baseline mới pass sạch:
+  - bỏ `require()` trong [tailwind.config.mjs](/Users/nguyenhuuloc/Documents/blog/tailwind.config.mjs)
+  - sửa `prefer-const` ở [src/components/LanguageSwitcher.astro](/Users/nguyenhuuloc/Documents/blog/src/components/LanguageSwitcher.astro) và [src/layouts/BaseLayout.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BaseLayout.astro)
+  - đổi `env.d.ts` sang import-style reference ở [src/env.d.ts](/Users/nguyenhuuloc/Documents/blog/src/env.d.ts)
+  - bỏ các `as any` không cần thiết ở [src/components/BookCard.astro](/Users/nguyenhuuloc/Documents/blog/src/components/BookCard.astro) và [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/[slug].astro)
+
+Kiểm tra:
+
+- `npm run lint` pass.
+- `npm run build` pass.
+
+Lợi ích đạt được:
+
+- Repo có guardrail rõ ràng để chặn lỗi cú pháp/style/a11y từ sớm.
+- Các file config/runtime hiện không còn mang lint debt ngay từ lúc introduce tooling.
+- Team có thể đưa `lint` và `format:check` vào CI mà không cần cleanup thủ công thêm trước mắt.
