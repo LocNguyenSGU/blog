@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import type { Locale } from '../../utils/i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
@@ -9,6 +8,7 @@ import TopicCard from '../../components/TopicCard.astro';
 import { CATEGORIES, getCategoryDescription, getCategoryIntro, getCategoryLabel, type CategoryKey } from '../../utils/categories';
 import { getTopicsForTranslationKey, TOPICS, type TopicSlug } from '../../utils/topics';
 import { generateCategoryBreadcrumbs } from '../../utils/breadcrumbs';
+import { getPostsByCategory } from '../../lib/content/posts';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
@@ -20,10 +20,7 @@ if (!slug || !(slug in CATEGORIES)) {
 }
 
 const category = slug as CategoryKey;
-const allPosts = await getCollection('blog');
-const posts = allPosts
-  .filter((post) => !post.data.draft && post.data.lang === locale && post.data.category === category)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = await getPostsByCategory(locale, category);
 const featuredPost = posts[0];
 const otherPosts = posts.slice(1);
 const relatedTopics = Array.from(new Set(

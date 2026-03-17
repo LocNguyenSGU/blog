@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../../utils/i18n';
 import { t } from '../../utils/i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -9,6 +9,7 @@ import TopicCard from '../../components/TopicCard.astro';
 import CategoryCard from '../../components/CategoryCard.astro';
 import { TOPICS, getTopicInfo, isTopicSlug, type TopicSlug } from '../../utils/topics';
 import { CATEGORIES, getCategoryIntro, getCategoryLabel, type CategoryKey } from '../../utils/categories';
+import { getCategoryCounts, getPublishedPosts, getTopicCounts } from '../../lib/content/posts';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
@@ -18,12 +19,11 @@ const topicParam = urlParams.get('topic');
 const activeCategory: CategoryKey | null = categoryParam && categoryParam in CATEGORIES ? categoryParam as CategoryKey : null;
 const activeTopic: TopicSlug | null = topicParam && isTopicSlug(topicParam) ? topicParam : null;
 
-let allPosts: any[] = [];
-let publishedPosts: any[] = [];
-let filteredPosts: any[] = [];
-let featuredPost: any = null;
-let otherPosts: any[] = [];
-let topicCounts: Array<{ slug: keyof typeof TOPICS; count: number }> = [];
+let publishedPosts: CollectionEntry<'blog'>[] = [];
+let filteredPosts: CollectionEntry<'blog'>[] = [];
+let featuredPost: CollectionEntry<'blog'> | null = null;
+let otherPosts: CollectionEntry<'blog'>[] = [];
+let topicCounts: Array<{ slug: TopicSlug; count: number }> = [];
 let categoryCounts: Array<{ slug: CategoryKey; count: number }> = [];
 let errorMessage = '';
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
@@ -81,11 +81,7 @@ const alternateUrls = {
 const noindex = !!activeTopic || !!activeCategory;
 
 try {
-  allPosts = await getCollection('blog');
-  publishedPosts = allPosts
-    .filter(post => !post.data.draft && post.data.lang === locale)
-    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
+  publishedPosts = await getPublishedPosts(locale);
   filteredPosts = publishedPosts.filter((post) => {
     const matchCategory = activeCategory ? post.data.category === activeCategory : true;
     const matchTopic = activeTopic
@@ -97,16 +93,8 @@ try {
 
   featuredPost = filteredPosts[0];
   otherPosts = filteredPosts.slice(1);
-  topicCounts = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).map((slug) => ({
-    slug,
-    count: publishedPosts.filter(
-      (post) => !!post.data.translationKey && TOPICS[slug].translationKeys.includes(post.data.translationKey)
-    ).length,
-  }));
-  categoryCounts = (Object.keys(CATEGORIES) as Array<CategoryKey>).map((slug) => ({
-    slug,
-    count: publishedPosts.filter((post) => post.data.category === slug).length,
-  }));
+  topicCounts = getTopicCounts(publishedPosts);
+  categoryCounts = getCategoryCounts(publishedPosts);
 } catch (error) {
   console.error('Error loading blog posts:', error);
   errorMessage = locale === 'en' 

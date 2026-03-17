@@ -1,24 +1,21 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../utils/i18n';
 import { t } from '../utils/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BookCard from '../components/BookCard.astro';
+import { getBooksByLocale } from '../lib/content/books';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
 const locale: Locale = (langParam === 'en' || langParam === 'vi') ? langParam : 'vi';
 
-let allBooks: any[] = [];
-let books: any[] = [];
+let books: CollectionEntry<'books'>[] = [];
 let errorMessage = '';
 let booksSubtitle = '';
 
 try {
-  allBooks = await getCollection('books');
-  books = allBooks
-    .filter(book => book.data.lang === locale)
-    .sort((a, b) => b.data.addedDate.valueOf() - a.data.addedDate.valueOf());
+  books = await getBooksByLocale(locale);
   booksSubtitle = locale === 'vi'
     ? `${books.length} cuốn sách đã hoàn thành`
     : `${books.length} books completed`;

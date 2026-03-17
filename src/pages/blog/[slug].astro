@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import type { CollectionEntry } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import { getPostBySlug } from '../../lib/content/posts';
 
 // Get slug from URL params
 const { slug } = Astro.params;
 
-let entry = null;
+let entry: CollectionEntry<'blog'> | null = null;
 let Content = null;
-let headings = [];
+let headings: MarkdownHeading[] = [];
 
 try {
-  // Find the post by slug
-  const allPosts = await getCollection('blog');
-  entry = allPosts.find(post => post.slug === slug);
+  entry = slug ? await getPostBySlug(slug) ?? null : null;
 
   if (!entry) {
     return Astro.redirect('/404');

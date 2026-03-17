@@ -1,24 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { Locale } from '../../utils/i18n';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { TOPICS, getTopicInfo } from '../../utils/topics';
 import { generateTopicsBreadcrumbs } from '../../utils/breadcrumbs';
+import { getPublishedPosts } from '../../lib/content/posts';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
 const locale: Locale = (langParam === 'en' || langParam === 'vi') ? langParam : 'vi';
 
-const allPosts = await getCollection('blog');
+const allPosts = await getPublishedPosts(locale);
 const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
 const breadcrumbs = generateTopicsBreadcrumbs(baseUrl, locale);
 const topicEntries = Object.keys(TOPICS).map((slug) => {
   const count = allPosts.filter(
     (post) =>
-      !post.data.draft &&
-      post.data.lang === locale &&
       !!post.data.translationKey &&
       TOPICS[slug as keyof typeof TOPICS].translationKeys.includes(post.data.translationKey)
   ).length;

@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import type { Locale } from '../../utils/i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
@@ -8,6 +7,7 @@ import PostCard from '../../components/PostCard.astro';
 import TopicCard from '../../components/TopicCard.astro';
 import { TOPICS, getTopicInfo, getTopicPillarPost, getTopicPosts, isTopicSlug } from '../../utils/topics';
 import { generateTopicBreadcrumbs } from '../../utils/breadcrumbs';
+import { getAllBlogPosts } from '../../lib/content/posts';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
@@ -18,7 +18,7 @@ if (!slug || !isTopicSlug(slug)) {
   return Astro.redirect('/404');
 }
 
-const allPosts = await getCollection('blog');
+const allPosts = await getAllBlogPosts();
 const topic = getTopicInfo(slug, locale);
 const posts = getTopicPosts(allPosts, slug, locale);
 const pillarPost = getTopicPillarPost(allPosts, slug, locale);

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../utils/i18n';
 import { t } from '../utils/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -7,46 +7,31 @@ import FeaturedPost from '../components/FeaturedPost.astro';
 import PostCard from '../components/PostCard.astro';
 import TopicCard from '../components/TopicCard.astro';
 import CategoryCard from '../components/CategoryCard.astro';
-import { TOPICS, getTopicInfo, getTopicPillarPost } from '../utils/topics';
-import { CATEGORIES, type CategoryKey } from '../utils/categories';
+import { getTopicInfo, type TopicSlug } from '../utils/topics';
+import type { CategoryKey } from '../utils/categories';
+import { getAllBlogPosts, getCategoryCounts, getPillarTopics, getPublishedPosts, getTopicCounts } from '../lib/content/posts';
 
 const urlParams = Astro.url.searchParams;
 const langParam = urlParams.get('lang');
 const locale: Locale = (langParam === 'en' || langParam === 'vi') ? langParam : 'vi';
 
-let allPosts: any[] = [];
-let publishedPosts: any[] = [];
-let featuredPost: any = null;
-let recentPosts: any[] = [];
-let topicCounts: Array<{ slug: keyof typeof TOPICS; count: number }> = [];
+let allPosts: CollectionEntry<'blog'>[] = [];
+let publishedPosts: CollectionEntry<'blog'>[] = [];
+let featuredPost: CollectionEntry<'blog'> | null = null;
+let recentPosts: CollectionEntry<'blog'>[] = [];
+let topicCounts: Array<{ slug: TopicSlug; count: number }> = [];
 let categoryCounts: Array<{ slug: CategoryKey; count: number }> = [];
-let pillarTopics: Array<{ slug: keyof typeof TOPICS; post: any }> = [];
+let pillarTopics: Array<{ slug: TopicSlug; post: CollectionEntry<'blog'> }> = [];
 let errorMessage = '';
 
 try {
-  allPosts = await getCollection('blog');
-  publishedPosts = allPosts
-    .filter(post => !post.data.draft && post.data.lang === locale)
-    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
+  allPosts = await getAllBlogPosts();
+  publishedPosts = await getPublishedPosts(locale);
   featuredPost = publishedPosts[0];
   recentPosts = publishedPosts.slice(1, 4); // Show 3 recent posts
-  topicCounts = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>).map((slug) => ({
-    slug,
-    count: publishedPosts.filter(
-      (post) => !!post.data.translationKey && TOPICS[slug].translationKeys.includes(post.data.translationKey)
-    ).length,
-  }));
-  categoryCounts = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
-    slug,
-    count: publishedPosts.filter((post) => post.data.category === slug).length,
-  }));
-  pillarTopics = (Object.keys(TOPICS) as Array<keyof typeof TOPICS>)
-    .map((slug) => ({
-      slug,
-      post: getTopicPillarPost(allPosts, slug, locale),
-    }))
-    .filter((entry) => !!entry.post);
+  topicCounts = getTopicCounts(publishedPosts);
+  categoryCounts = getCategoryCounts(publishedPosts);
+  pillarTopics = getPillarTopics(allPosts, locale);
 } catch (error) {
   console.error('Error loading blog posts:', error);
   errorMessage = locale === 'en' 
