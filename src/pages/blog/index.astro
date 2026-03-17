@@ -148,7 +148,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
 >
   <div class="space-y-12">
     <div>
-      <h1 class="font-sans text-4xl md:text-5xl font-bold mb-2">{t('blog.title', locale)}</h1>
+      <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight mb-2">{t('blog.title', locale)}</h1>
       <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 text-lg">{t('blog.subtitle', locale)}</p>
     </div>
     
@@ -159,13 +159,13 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     )}
     
     {!errorMessage && publishedPosts.length === 0 && (
-      <div class="bg-blue-50 dark:bg-blue-900/20 sepia:bg-blue-100 border border-blue-200 dark:border-blue-800 sepia:border-blue-300 rounded-lg p-8 text-center">
-        <p class="text-blue-600 dark:text-blue-400 sepia:text-blue-700 text-lg mb-4">
+      <div class="card p-8 text-center">
+        <p class="text-gray-700 dark:text-gray-200 sepia:text-sepia-900 text-lg mb-4">
           {locale === 'en' ? 'No posts available in English yet.' : 'Chưa có bài viết bằng tiếng Việt.'}
         </p>
         <a 
           href={`/blog?lang=${locale === 'en' ? 'vi' : 'en'}`}
-          class="text-blue-600 dark:text-blue-400 hover:underline"
+          class="ui-link"
         >
           {locale === 'en' ? 'View Vietnamese posts →' : 'Xem bài viết tiếng Anh →'}
         </a>
@@ -175,13 +175,13 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && publishedPosts.length > 0 && (
       <section class="space-y-6">
         {(activeTopic || activeCategory) && (
-          <div class="rounded-2xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 bg-white dark:bg-gray-800 sepia:bg-sepia-50 p-6">
+          <div class="card p-6">
             <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-3">
               {activeTopic
                 ? (locale === 'en' ? 'Topic filter preview' : 'Bản xem trước theo topic')
                 : (locale === 'en' ? 'Category filter preview' : 'Bản xem trước theo category')}
             </p>
-            <h2 class="font-sans text-2xl font-bold mb-3">
+            <h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">
               {activeTopic ? getTopicInfo(activeTopic, locale).name : getCategoryIntro(activeCategory!, locale).title}
             </h2>
             <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-4">
@@ -191,7 +191,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
               href={activeTopic
                 ? `/topics/${activeTopic}${locale === 'en' ? '?lang=en' : '?lang=vi'}`
                 : `/categories/${activeCategory}${locale === 'en' ? '?lang=en' : '?lang=vi'}`}
-              class="text-blue-600 dark:text-blue-400 sepia:text-sepia-800 hover:underline font-medium"
+              class="ui-link font-medium"
             >
               {activeTopic
                 ? (locale === 'en' ? 'Open canonical topic hub →' : 'Mở topic hub chính thức →')
@@ -201,13 +201,13 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         )}
 
         <div>
-          <h2 class="font-sans text-2xl font-bold mb-4">{locale === 'en' ? 'Filter by category' : 'Lọc theo category'}</h2>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{locale === 'en' ? 'Filter by category' : 'Lọc theo category'}</h2>
           <div class="flex flex-wrap gap-3">
             <a
               href={buildBlogUrl({ category: null, topic: activeTopic })}
-              class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors", {
-                "border-blue-500 text-blue-700 dark:text-blue-300": !activeCategory,
-                "border-gray-200 dark:border-gray-700 sepia:border-sepia-300 text-gray-600 dark:text-gray-300": activeCategory
+              class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", {
+                "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": !activeCategory,
+                "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeCategory
               }]}
             >
               {locale === 'en' ? 'All categories' : 'Tất cả category'}
@@ -215,9 +215,9 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
             {categoryCounts.map((category) => (
               <a
                 href={buildBlogUrl({ category: category.slug, topic: activeTopic })}
-                class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors", {
-                  "border-blue-500 text-blue-700 dark:text-blue-300": activeCategory === category.slug,
-                  "border-gray-200 dark:border-gray-700 sepia:border-sepia-300 text-gray-600 dark:text-gray-300": activeCategory !== category.slug
+                class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", {
+                  "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": activeCategory === category.slug,
+                  "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeCategory !== category.slug
                 }]}
               >
                 {getCategoryLabel(category.slug, locale)} ({category.count})
@@ -227,13 +227,13 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         </div>
 
         <div>
-          <h2 class="font-sans text-2xl font-bold mb-4">{locale === 'en' ? 'Filter by topic' : 'Lọc theo topic'}</h2>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{locale === 'en' ? 'Filter by topic' : 'Lọc theo topic'}</h2>
           <div class="flex flex-wrap gap-3">
             <a
               href={buildBlogUrl({ category: activeCategory, topic: null })}
-              class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors", {
-                "border-blue-500 text-blue-700 dark:text-blue-300": !activeTopic,
-                "border-gray-200 dark:border-gray-700 sepia:border-sepia-300 text-gray-600 dark:text-gray-300": activeTopic
+              class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", {
+                "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": !activeTopic,
+                "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeTopic
               }]}
             >
               {locale === 'en' ? 'All topics' : 'Tất cả topic'}
@@ -241,9 +241,9 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
             {topicCounts.map((topic) => (
               <a
                 href={buildBlogUrl({ category: activeCategory, topic: topic.slug })}
-                class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors", {
-                  "border-blue-500 text-blue-700 dark:text-blue-300": activeTopic === topic.slug,
-                  "border-gray-200 dark:border-gray-700 sepia:border-sepia-300 text-gray-600 dark:text-gray-300": activeTopic !== topic.slug
+                class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", {
+                  "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": activeTopic === topic.slug,
+                  "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeTopic !== topic.slug
                 }]}
               >
                 {getTopicInfo(topic.slug, locale).name} ({topic.count})
@@ -263,7 +263,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         </p>
         <a
           href={buildBlogUrl({ category: null, topic: null })}
-          class="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+          class="ui-link font-medium"
         >
           {locale === 'en' ? 'Clear filters →' : 'Xóa bộ lọc →'}
         </a>
@@ -278,7 +278,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     
     {!errorMessage && otherPosts.length > 0 && (
       <section>
-        <h2 class="font-sans text-2xl font-bold mb-6">
+        <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">
           {activeCategory || activeTopic
             ? (locale === 'en' ? 'Filtered posts' : 'Bài theo bộ lọc')
             : t('blog.allPosts', locale)}
@@ -294,10 +294,10 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-sans text-2xl font-bold">{locale === 'en' ? 'Category Archives' : 'Kho Category'}</h2>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight">{locale === 'en' ? 'Category Archives' : 'Kho Category'}</h2>
           <a
             href={`/categories${locale === 'en' ? '?lang=en' : '?lang=vi'}`}
-            class="text-blue-600 dark:text-blue-400 sepia:text-sepia-700 hover:underline font-medium"
+            class="ui-link font-medium"
           >
             {locale === 'en' ? 'Browse all categories →' : 'Xem tất cả category →'}
           </a>
@@ -313,10 +313,10 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-sans text-2xl font-bold">{locale === 'en' ? 'Topic Hubs' : 'Hub Chủ Đề'}</h2>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight">{locale === 'en' ? 'Topic Hubs' : 'Hub Chủ Đề'}</h2>
           <a
             href={`/topics${locale === 'en' ? '?lang=en' : ''}`}
-            class="text-blue-600 dark:text-blue-400 sepia:text-sepia-700 hover:underline font-medium"
+            class="ui-link font-medium"
           >
             {locale === 'en' ? 'Browse all topics →' : 'Xem tất cả chủ đề →'}
           </a>

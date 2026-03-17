@@ -6,6 +6,7 @@ import SEO from '../components/SEO.astro';
 import { TOPICS, getTopicInfo, getTopicPillarPost } from '../utils/topics';
 import { CATEGORIES, getCategoryLabel, getCategoryUrl, type CategoryKey } from '../utils/categories';
 import { getPostUrl } from '../utils/postHelpers';
+import { X, Menu as MenuIcon, Sun, Moon, BookOpenText } from '@lucide/astro';
 
 interface ArticleMeta {
   publishedTime: string;
@@ -135,11 +136,9 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
       <div class="flex flex-col h-full">
         {/* Close button */}
         <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-          <span class="font-sans font-bold text-lg">Menu</span>
+          <span class="font-serif font-semibold tracking-tight text-lg">Menu</span>
           <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            <X class="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
         
@@ -166,13 +165,13 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
                   data-mobile-lang="vi"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                 >
-                  🇻🇳 Tiếng Việt
+                  Tiếng Việt
                 </button>
                 <button 
                   data-mobile-lang="en"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                 >
-                  🇬🇧 English
+                  English
                 </button>
               </div>
             </div>
@@ -187,22 +186,25 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
                   data-mobile-theme="light"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                   title="Light"
+                  aria-label={locale === 'vi' ? 'Giao diện sáng' : 'Light theme'}
                 >
-                  ☀️
+                  <Sun class="w-4 h-4 mx-auto" aria-hidden="true" />
                 </button>
                 <button 
                   data-mobile-theme="sepia"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                   title="Sepia"
+                  aria-label={locale === 'vi' ? 'Giao diện giấy' : 'Sepia theme'}
                 >
-                  📄
+                  <BookOpenText class="w-4 h-4 mx-auto" aria-hidden="true" />
                 </button>
                 <button 
                   data-mobile-theme="dark"
                   class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-gray-100 dark:bg-gray-800 sepia:bg-sepia-200 hover:bg-gray-200 dark:hover:bg-gray-700 sepia:hover:bg-sepia-300"
                   title="Dark"
+                  aria-label={locale === 'vi' ? 'Giao diện tối' : 'Dark theme'}
                 >
-                  🌙
+                  <Moon class="w-4 h-4 mx-auto" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -211,10 +213,10 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
       </div>
     </div>
     
-    <header class="sticky top-0 z-30 border-b border-gray-200 dark:border-gray-700 sepia:border-sepia-300 bg-white/80 dark:bg-gray-900/80 sepia:bg-sepia-100/80 backdrop-blur-md transition-colors">
+    <header class="sticky top-0 z-30 hairline border-x-0 border-t-0 bg-white dark:bg-gray-900 sepia:bg-sepia-100 transition-colors">
       <nav class="max-w-6xl mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
-          <a href="/" class="text-xl md:text-2xl font-sans font-bold hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">
+          <a href="/" class="text-xl md:text-2xl font-serif font-semibold tracking-tight ui-link no-underline hover:no-underline">
             My Blog
           </a>
           
@@ -224,18 +226,16 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
             class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors"
             aria-label="Toggle menu"
           >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
+            <MenuIcon class="w-6 h-6" aria-hidden="true" />
           </button>
           
           {/* Desktop navigation */}
           <div class="hidden md:flex items-center gap-4">
             <div class="flex gap-6">
-              <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.home', locale)}</a>
-              <a href="/blog" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.blog', locale)}</a>
-              <a href="/books" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.books', locale)}</a>
-              <a href="/about" class="hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-700 transition-colors">{t('nav.about', locale)}</a>
+              <a href="/" class="ui-link no-underline hover:no-underline">{t('nav.home', locale)}</a>
+              <a href="/blog" class="ui-link no-underline hover:no-underline">{t('nav.blog', locale)}</a>
+              <a href="/books" class="ui-link no-underline hover:no-underline">{t('nav.books', locale)}</a>
+              <a href="/about" class="ui-link no-underline hover:no-underline">{t('nav.about', locale)}</a>
             </div>
             <LanguageSwitcher currentLocale={locale} />
             <ThemeToggle />
@@ -282,7 +282,6 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
         
         // Language switching in mobile menu
         const mobileLangButtons = document.querySelectorAll('[data-mobile-lang]');
-        console.log('Found language buttons:', mobileLangButtons.length);
         
         mobileLangButtons.forEach(btn => {
           btn.addEventListener('click', (e) => {
@@ -290,7 +289,6 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
             e.stopPropagation();
             
             const lang = btn.getAttribute('data-mobile-lang');
-            console.log('Language button clicked:', lang);
             
             if (lang) {
               localStorage.setItem('locale', lang);
@@ -317,13 +315,11 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
                 }
                 
                 const newUrl = prefix + translatedSlug + '?lang=' + lang;
-                console.log('Redirecting to:', newUrl);
                 window.location.href = newUrl;
               } else {
                 // Default behavior: just update language parameter
                 const url = new URL(window.location.href);
                 url.searchParams.set('lang', lang);
-                console.log('Redirecting to:', url.toString());
                 window.location.href = url.toString();
               }
             }
@@ -332,7 +328,6 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
         
         // Theme switching in mobile menu
         const mobileThemeButtons = document.querySelectorAll('[data-mobile-theme]');
-        console.log('Found theme buttons:', mobileThemeButtons.length);
         
         mobileThemeButtons.forEach(btn => {
           btn.addEventListener('click', (e) => {
@@ -340,7 +335,6 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
             e.stopPropagation();
             
             const theme = btn.getAttribute('data-mobile-theme');
-            console.log('Theme button clicked:', theme);
             
             if (theme) {
               localStorage.setItem('theme', theme);
@@ -356,9 +350,7 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
           const urlParams = new URLSearchParams(window.location.search);
           const currentLang = urlParams.get('lang') || localStorage.getItem('locale') || 'vi';
           const currentTheme = localStorage.getItem('theme') || 'sepia';
-          
-          console.log('Updating mobile controls - Lang:', currentLang, 'Theme:', currentTheme);
-          
+
           // Highlight language
           mobileLangButtons.forEach(btn => {
             const lang = btn.getAttribute('data-mobile-lang');
@@ -388,18 +380,18 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
       <slot />
     </main>
 
-    <footer class="border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300 mt-20">
+    <footer class="hairline border-x-0 border-b-0 mt-20">
       <div class="max-w-6xl mx-auto px-4 py-10 space-y-8">
         <div class="grid gap-8 md:grid-cols-3">
           <section>
-            <h2 class="font-sans text-lg font-bold mb-4">
+            <h2 class="text-xs uppercase tracking-[0.18em] text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-4">
               {locale === 'en' ? 'Pillar articles' : 'Bài trụ cột'}
             </h2>
             <div class="space-y-3">
               {pillarPosts.map(({ slug, post }) => (
                 <a
                   href={getPostUrl(post!)}
-                  class="block hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-800 transition-colors"
+                  class="block ui-link no-underline hover:no-underline"
                 >
                   <p class="text-xs uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-1">
                     {getTopicInfo(slug, locale).name}
@@ -413,17 +405,17 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
           </section>
 
           <section>
-            <h2 class="font-sans text-lg font-bold mb-4">
+            <h2 class="text-xs uppercase tracking-[0.18em] text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-4">
               {locale === 'en' ? 'Topic hubs' : 'Hub chủ đề'}
             </h2>
             <div class="space-y-3">
-              <a href={`/topics${locale === 'en' ? '?lang=en' : '?lang=vi'}`} class="block hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-800 transition-colors">
+              <a href={`/topics${locale === 'en' ? '?lang=en' : '?lang=vi'}`} class="block ui-link no-underline hover:no-underline">
                 {locale === 'en' ? 'Browse all topic hubs' : 'Xem tất cả hub chủ đề'}
               </a>
               {topicHubs.map((topic) => (
                 <a
                   href={topic.url}
-                  class="block hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-800 transition-colors"
+                  class="block ui-link no-underline hover:no-underline"
                 >
                   {topic.name}
                 </a>
@@ -432,17 +424,17 @@ const categoryHubs = (Object.keys(CATEGORIES) as CategoryKey[]).map((slug) => ({
           </section>
 
           <section>
-            <h2 class="font-sans text-lg font-bold mb-4">
+            <h2 class="text-xs uppercase tracking-[0.18em] text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-4">
               {locale === 'en' ? 'Category archives' : 'Kho category'}
             </h2>
             <div class="space-y-3">
-              <a href={`/categories${locale === 'en' ? '?lang=en' : '?lang=vi'}`} class="block hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-800 transition-colors">
+              <a href={`/categories${locale === 'en' ? '?lang=en' : '?lang=vi'}`} class="block ui-link no-underline hover:no-underline">
                 {locale === 'en' ? 'Browse all categories' : 'Xem tất cả category'}
               </a>
               {categoryHubs.map((category) => (
                 <a
                   href={category.url}
-                  class="block hover:text-blue-600 dark:hover:text-blue-400 sepia:hover:text-sepia-800 transition-colors"
+                  class="block ui-link no-underline hover:no-underline"
                 >
                   {category.label}
                 </a>

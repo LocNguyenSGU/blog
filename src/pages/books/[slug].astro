@@ -86,7 +86,7 @@ const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
     {/* Back Button */}
     <a 
       href={backUrl}
-      class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 sepia:text-sepia-800 hover:underline mb-8"
+      class="inline-flex items-center gap-2 ui-link mb-8"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -118,7 +118,7 @@ const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
         </span>
 
         {/* Title */}
-        <h1 class="font-sans text-4xl md:text-5xl font-bold">
+        <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight">
           {title}
         </h1>
 
@@ -152,7 +152,7 @@ const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
     <hr class="border-gray-200 dark:border-gray-700 sepia:border-sepia-300 mb-8" />
 
     {/* Long Review/Notes */}
-    <div class="prose prose-lg dark:prose-invert sepia:prose-sepia prose-headings:font-sans max-w-none">
+    <div class="prose prose-lg dark:prose-invert sepia:prose-sepia prose-headings:font-serif max-w-none">
       <Content />
     </div>
 
@@ -160,7 +160,7 @@ const backUrl = `/books${locale !== 'vi' ? `?lang=${locale}` : ''}`;
     <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
       <a 
         href={backUrl}
-        class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 sepia:text-sepia-800 hover:underline"
+        class="inline-flex items-center gap-2 ui-link"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>

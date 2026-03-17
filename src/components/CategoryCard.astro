@@ -15,14 +15,14 @@ const categoryUrl = getCategoryUrl(slug, locale);
 
 <a
   href={categoryUrl}
-  class="block rounded-2xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 bg-white dark:bg-gray-800 sepia:bg-sepia-50 p-6 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+  class="block card p-6"
 >
   <div class="flex items-start justify-between gap-4 mb-3">
-    <h3 class="font-sans text-xl font-bold text-gray-900 dark:text-gray-100 sepia:text-sepia-900">
+    <h3 class="font-serif text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 sepia:text-sepia-900">
       {getCategoryLabel(slug, locale)}
     </h3>
     {typeof count === 'number' && (
-      <span class="text-xs font-medium px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 sepia:bg-sepia-200 text-gray-600 dark:text-gray-300 sepia:text-sepia-800">
+      <span class="chip text-gray-700 dark:text-gray-200 sepia:text-sepia-900">
         {count}
       </span>
     )}

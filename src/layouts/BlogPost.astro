@@ -158,7 +158,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
 
     {/* Post Header */}
     <header class="mb-8">
-      <h1 class="font-sans text-4xl md:text-5xl font-bold mb-4">{title}</h1>
+      <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight mb-4">{title}</h1>
       
       <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700">
         <time datetime={pubDate.toISOString()}>{formattedDate}</time>
@@ -197,25 +197,25 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
     <hr class="border-gray-200 dark:border-gray-700 sepia:border-sepia-300 mb-8" />
 
     {/* Content */}
-    <div class="prose prose-lg dark:prose-invert sepia:prose-sepia prose-headings:font-sans prose-code:font-mono prose-pre:font-mono max-w-none">
+    <div class="prose prose-lg dark:prose-invert sepia:prose-sepia prose-headings:font-serif prose-code:font-mono prose-pre:font-mono max-w-none">
       <slot />
     </div>
 
     {relatedPosts.length > 0 && (
       <section class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-        <h2 class="font-sans text-2xl font-bold mb-6">
+        <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">
           {locale === 'vi' ? 'Đọc tiếp' : 'Related reading'}
         </h2>
         <div class="grid gap-4 md:grid-cols-3">
           {relatedPosts.map((post) => (
             <a
               href={`/blog/${post.slug}${locale === 'en' ? '?lang=en' : ''}`}
-              class="block rounded-xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 p-5 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+              class="block card p-5"
             >
               <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-2">
                 {post.data.category}
               </p>
-              <h3 class="font-sans text-lg font-semibold text-gray-900 dark:text-gray-100 sepia:text-sepia-900 mb-2">
+              <h3 class="font-serif text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 sepia:text-sepia-900 mb-2">
                 {post.data.title}
               </h3>
               {post.data.description && (
@@ -231,7 +231,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
 
     {relatedTopics.length > 0 && (
       <section class="mt-12">
-        <h2 class="font-sans text-2xl font-bold mb-6">
+        <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">
           {locale === 'vi' ? 'Khám phá theo cụm chủ đề' : 'Explore related topics'}
         </h2>
         <div class="grid gap-4 md:grid-cols-2">
@@ -244,7 +244,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
 
     {/* Giscus Comments */}
     <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
-      <h2 class="font-sans text-2xl font-bold mb-6">{t('post.comments', locale)}</h2>
+      <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('post.comments', locale)}</h2>
       <script is:inline
         src="https://giscus.app/client.js"
         data-repo={import.meta.env.PUBLIC_GISCUS_REPO || "your-username/your-repo"}

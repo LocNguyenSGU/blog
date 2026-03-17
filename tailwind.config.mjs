@@ -19,9 +19,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Consolas', 'monospace']
+        sans: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+        serif: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', 'Consolas', 'monospace']
       },
       typography: {
         DEFAULT: {

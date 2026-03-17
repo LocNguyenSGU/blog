@@ -1,5 +1,6 @@
 ---
 // Theme toggle with 3 modes: Light, Sepia, Dark
+import { Sun, Moon, BookOpenText } from '@lucide/astro';
 ---
 
 <div class="relative">
@@ -9,38 +10,23 @@
     class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 sepia:hover:bg-sepia-200 transition-colors"
     aria-label="Toggle theme"
   >
-    <!-- Light mode icon -->
-    <svg id="theme-icon-light" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-    </svg>
-    <!-- Sepia mode icon -->
-    <svg id="theme-icon-sepia" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-    </svg>
-    <!-- Dark mode icon -->
-    <svg id="theme-icon-dark" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-    </svg>
+    <Sun id="theme-icon-light" class="hidden w-5 h-5" aria-hidden="true" />
+    <BookOpenText id="theme-icon-sepia" class="w-5 h-5" aria-hidden="true" />
+    <Moon id="theme-icon-dark" class="hidden w-5 h-5" aria-hidden="true" />
   </button>
   
   <!-- Theme dropdown menu -->
   <div id="theme-menu" class="hidden absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 z-50">
     <button data-theme="light" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-t-lg flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-      </svg>
+      <Sun class="w-4 h-4" aria-hidden="true" />
       Light
     </button>
     <button data-theme="sepia" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-      </svg>
+      <BookOpenText class="w-4 h-4" aria-hidden="true" />
       Sepia
     </button>
     <button data-theme="dark" class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200 rounded-b-lg flex items-center gap-2">
-      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-      </svg>
+      <Moon class="w-4 h-4" aria-hidden="true" />
       Dark
     </button>
   </div>

@@ -38,7 +38,7 @@ const bookUrl = `/books/${slug}${lang !== 'vi' ? `?lang=${lang}` : ''}`;
 ---
 
 <a href={bookUrl} class="block group">
-  <article class="bg-white dark:bg-gray-800 sepia:bg-sepia-50 rounded-xl border border-gray-200 dark:border-gray-700 sepia:border-sepia-300 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+  <article class="card">
   {/* Cover Image - 2:3 aspect ratio */}
   <div class="aspect-[2/3] overflow-hidden bg-gray-100 dark:bg-gray-900 sepia:bg-sepia-200">
     <Image 
@@ -61,7 +61,7 @@ const bookUrl = `/books/${slug}${lang !== 'vi' ? `?lang=${lang}` : ''}`;
     </span>
     
     {/* Title */}
-    <h3 class="font-sans font-bold text-lg line-clamp-2 text-gray-900 dark:text-white sepia:text-sepia-900">
+    <h3 class="font-serif font-semibold tracking-tight text-lg line-clamp-2 text-gray-900 dark:text-white sepia:text-sepia-900">
       {title}
     </h3>
     

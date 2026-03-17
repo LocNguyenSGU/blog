@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../utils/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { User, Mail, Link, Users, Music2, MapPin, Hand } from '@lucide/astro';
 
 const urlParams = Astro.url.searchParams;
 const locale: Locale = (urlParams.get('lang') as Locale) || 'vi';
@@ -60,7 +61,10 @@ const additionalJsonLd = [
       {locale === 'vi' ? (
         <>
           <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
-            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white">👨‍💻 Giới thiệu</h2>
+            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+              <User class="w-5 h-5" aria-hidden="true" />
+              <span>Giới thiệu</span>
+            </h2>
             <p class="mb-3">
               Chào mọi người! Mình là <strong>Nguyễn Hữu Lộc</strong>. 
               Mình là một người luôn bị thu hút bởi những điều mới mẻ, thích chinh phục các bài toán hóc búa bằng code và có niềm đam mê với việc viết blog để chia sẻ những trải nghiệm, kiến thức cá nhân.
@@ -72,34 +76,37 @@ const additionalJsonLd = [
           </div>
 
           <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white">📫 Liên hệ</h2>
+            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+              <Mail class="w-5 h-5" aria-hidden="true" />
+              <span>Liên hệ</span>
+            </h2>
             <p class="text-gray-600 dark:text-gray-400 mb-4">
               Nếu bạn muốn kết nối hoặc trao đổi công việc, có thể tìm mình qua các kênh sau:
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <a href="https://github.com/LocNguyenSGU" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">💻</span>
+                <Link class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">GitHub</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">LocNguyenSGU</div>
                 </div>
               </a>
               <a href="mailto:lockbkbang@email.com" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">📧</span>
+                <Mail class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">Email</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">lockbkbang@email.com</div>
                 </div>
               </a>
               <a href="https://www.facebook.com/nguyen.huu.loc.888963" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">👤</span>
+                <Users class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">Facebook</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">Nguyễn Hữu Lộc</div>
                 </div>
               </a>
               <a href="https://www.tiktok.com/@loc23092004?_r=1&_t=ZS-93uOck8FBXY" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">🎵</span>
+                <Music2 class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">TikTok</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">@loc23092004</div>
@@ -111,7 +118,10 @@ const additionalJsonLd = [
       ) : (
         <>
           <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
-            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white">👨‍💻 About Me</h2>
+            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+              <User class="w-5 h-5" aria-hidden="true" />
+              <span>About Me</span>
+            </h2>
             <p class="mb-3">
               Hi there! I'm <strong>Loc Nguyen</strong>. 
               I'm a developer who's constantly driven by curiosity, solving complex problems through code, and sharing my journey and technical insights through blogging.
@@ -123,34 +133,37 @@ const additionalJsonLd = [
           </div>
 
           <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white">📫 Get in Touch</h2>
+            <h2 class="mt-0 mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+              <Mail class="w-5 h-5" aria-hidden="true" />
+              <span>Get in Touch</span>
+            </h2>
             <p class="text-gray-600 dark:text-gray-400 mb-4">
               I'm always open to interesting conversations and collaborations. You can find me here:
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <a href="https://github.com/LocNguyenSGU" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">💻</span>
+                <Link class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">GitHub</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">LocNguyenSGU</div>
                 </div>
               </a>
               <a href="mailto:lockbkbang@email.com" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">📧</span>
+                <Mail class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">Email</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">lockbkbang@email.com</div>
                 </div>
               </a>
               <a href="https://www.facebook.com/nguyen.huu.loc.888963" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">👤</span>
+                <Users class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">Facebook</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">Loc Nguyen</div>
                 </div>
               </a>
               <a href="https://www.tiktok.com/@loc23092004?_r=1&_t=ZS-93uOck8FBXY" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors no-underline">
-                <span class="text-2xl">🎵</span>
+                <Music2 class="w-5 h-5 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 <div>
                   <div class="font-semibold text-gray-900 dark:text-white">TikTok</div>
                   <div class="text-sm text-gray-600 dark:text-gray-400">@loc23092004</div>
@@ -177,7 +190,7 @@ const additionalJsonLd = [
                   />
                 </div>
                 <div class="absolute -bottom-1 -right-1 w-10 h-10 bg-green-500 rounded-full border-4 border-white dark:border-gray-900 flex items-center justify-center">
-                  <span class="text-white text-lg">👋</span>
+                  <Hand class="w-5 h-5 text-white" aria-hidden="true" />
                 </div>
               </div>
               
@@ -188,7 +201,10 @@ const additionalJsonLd = [
                 Software Engineer
               </p>
               <p class="text-sm text-gray-500 dark:text-gray-500 text-center">
-                📍 {locale === 'vi' ? 'TP. HCM, VN' : 'Saigon, VN'}
+                <span class="inline-flex items-center gap-1">
+                  <MapPin class="w-4 h-4" aria-hidden="true" />
+                  <span>{locale === 'vi' ? 'TP. HCM, VN' : 'Saigon, VN'}</span>
+                </span>
               </p>
             </div>
           </div>
