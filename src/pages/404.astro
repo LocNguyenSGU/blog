@@ -1,10 +1,9 @@
 ---
-import type { Locale } from '../utils/i18n';
+import { getLegacyLocaleFromUrl } from '../utils/legacyRedirect';
+import { getLocalizedBlogUrl, getLocalizedHomeUrl } from '../utils/routing';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const urlParams = Astro.url.searchParams;
-const langParam = urlParams.get('lang');
-const locale: Locale = (langParam === 'en' || langParam === 'vi') ? langParam : 'vi';
+const locale = getLegacyLocaleFromUrl(Astro.url);
 
 const title = locale === 'en' ? 'Page Not Found' : 'Không tìm thấy trang';
 const description = locale === 'en' 
@@ -33,13 +32,13 @@ const blogButtonText = locale === 'en' ? 'Browse Blog' : 'Xem Blog';
       
       <div class="flex gap-4 justify-center">
         <a 
-          href={`/?lang=${locale}`}
+          href={getLocalizedHomeUrl(locale)}
           class="px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 sepia:bg-sepia-600 sepia:hover:bg-sepia-700 text-white rounded-lg transition-colors font-medium"
         >
           {homeButtonText}
         </a>
         <a 
-          href={`/blog?lang=${locale}`}
+          href={getLocalizedBlogUrl(locale)}
           class="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 sepia:bg-sepia-200 sepia:hover:bg-sepia-300 text-gray-900 dark:text-gray-100 sepia:text-sepia-900 rounded-lg transition-colors font-medium"
         >
           {blogButtonText}

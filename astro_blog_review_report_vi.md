@@ -987,3 +987,39 @@ Lợi ích đạt được:
 - URL public ngắn, sạch và dễ đọc hơn.
 - Cùng một bài/cuốn giữa `vi` và `en` giờ khác nhau ở locale prefix, không phải ở slug suffix.
 - Tách bạch rõ hơn giữa `slug nội bộ` của content entry và `slug public` của site.
+
+### Hạng mục 11: Redirect route legacy về canonical locale path
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Tạo helper redirect dùng chung:
+  - [src/utils/legacyRedirect.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/legacyRedirect.ts)
+- Chuyển toàn bộ route legacy không có locale prefix sang redirect `301` về canonical route mới:
+  - [src/pages/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/index.astro) -> `/vi` hoặc `/en`
+  - [src/pages/about.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/about.astro) -> `/vi/about` hoặc `/en/about`
+  - [src/pages/books.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books.astro) -> `/vi/books` hoặc `/en/books`
+  - [src/pages/blog/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/blog/index.astro) -> `/vi/blog` hoặc `/en/blog`
+  - [src/pages/categories/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/categories/index.astro) -> `/vi/categories` hoặc `/en/categories`
+  - [src/pages/topics/index.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/topics/index.astro) -> `/vi/topics` hoặc `/en/topics`
+  - [src/pages/blog/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/blog/%5Bslug%5D.astro) -> redirect theo bài viết canonical đã resolve đúng locale/translation
+  - [src/pages/books/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/books/%5Bslug%5D.astro) -> redirect theo canonical book URL
+  - [src/pages/categories/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/categories/%5Bslug%5D.astro)
+  - [src/pages/topics/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/topics/%5Bslug%5D.astro)
+- Giữ các **dynamic legacy redirect routes** ở chế độ on-demand server route thay vì prerender, để query cũ như `?lang=en` vẫn được resolve đúng locale tại runtime.
+- Giữ lại query cần thiết cho legacy blog filters (`category`, `topic`) khi chuyển sang route mới.
+- Cập nhật fallback links trong [src/pages/404.astro](/Users/nguyenhuuloc/Documents/blog/src/pages/404.astro) để không còn trỏ ngược về URL legacy.
+- Đồng thời chốt luôn fix language switch local ở [src/utils/languageSwitch.ts](/Users/nguyenhuuloc/Documents/blog/src/utils/languageSwitch.ts): khi chạy `localhost`/`127.0.0.1`, chuyển ngôn ngữ sẽ giữ nguyên `host:port` hiện tại thay vì nhảy sang `PUBLIC_SITE_URL`.
+
+Kiểm tra:
+
+- `npm run lint` pass.
+- `npm run build` pass.
+- Build output xác nhận route legacy vẫn được prerender nhưng giờ đóng vai trò redirect layer, trong khi canonical content nằm ở `/vi/...` và `/en/...`.
+
+Lợi ích đạt được:
+
+- Chấm dứt duplicate content giữa route cũ và route mới ở tầng routing.
+- Internal/external link cũ vẫn hoạt động, nhưng được canonicalize về URL path-based mới.
+- Migration i18n sạch hơn, an toàn hơn cho SEO và thuận tiện hơn cho các bước rebase/rollback sau này.

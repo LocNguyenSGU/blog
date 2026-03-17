@@ -1,71 +1,35 @@
 ---
-import type { MarkdownHeading } from 'astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
-import { getAllBlogPosts, getPostBySlug } from '../../lib/content/posts';
-import { getLocalizedPostAlternates } from '../../utils/localeRoute';
+import { getAllBlogPosts } from '../../lib/content/posts';
+import { buildLegacyRedirectUrl, getLegacyLocaleFromUrl } from '../../utils/legacyRedirect';
 import { getLocalizedBlogPostUrl } from '../../utils/routing';
 import { toPublicSlug } from '../../utils/slugs';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: toPublicSlug(post.slug, post.data.lang) } }));
-}
-
-// Get slug from URL params
 const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/404');
 
-let entry: CollectionEntry<'blog'> | null = null;
-let Content = null;
-let headings: MarkdownHeading[] = [];
-let canonicalUrl = '';
-let alternateUrls: { vi?: string; en?: string; default?: string } | undefined;
+const locale = getLegacyLocaleFromUrl(Astro.url);
+const allPosts = await getAllBlogPosts();
+const matchingPosts = allPosts.filter((post) => toPublicSlug(post.slug, post.data.lang) === slug);
 
-try {
-  entry = slug ? await getPostBySlug(slug) ?? null : null;
-
-  if (!entry) {
-    return Astro.redirect('/404');
-  }
-
-  const rendered = await entry.render();
-  Content = rendered.Content;
-  headings = rendered.headings; // Get headings from rendered content
-
-  const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
-  const allPosts = await getAllBlogPosts();
-  canonicalUrl = `${siteUrl}${getLocalizedBlogPostUrl(entry.data.lang, entry.slug)}`;
-  const translationKey = entry.data.translationKey;
-
-  if (translationKey) {
-    const translations = allPosts.filter(
-      (post) => post.data.translationKey === translationKey
-    );
-    const viPost = translations.find((post) => post.data.lang === 'vi');
-    const enPost = translations.find((post) => post.data.lang === 'en');
-
-    alternateUrls = getLocalizedPostAlternates(siteUrl, {
-      vi: viPost?.slug,
-      en: enPost?.slug,
-    });
-  }
-} catch (error) {
-  console.error('Error loading blog post:', error);
+if (matchingPosts.length === 0) {
   return Astro.redirect('/404');
 }
----
 
-<BlogPost
-  {...entry.data}
-  slug={entry.slug}
-  body={entry.body}
-  headings={headings}
-  lang={entry.data.lang}
-  tags={entry.data.tags}
-  canonicalUrl={canonicalUrl}
-  alternateUrls={alternateUrls}
->
-  <Content />
-</BlogPost>
+let targetPost = matchingPosts.find((post) => post.data.lang === locale) ?? null;
+
+if (!targetPost) {
+  const referencePost = matchingPosts[0];
+  targetPost = referencePost.data.translationKey
+    ? allPosts.find(
+        (post) =>
+          post.data.translationKey === referencePost.data.translationKey &&
+          post.data.lang === locale
+      ) ?? referencePost
+    : referencePost;
+}
+
+return Astro.redirect(
+  buildLegacyRedirectUrl(Astro.url, getLocalizedBlogPostUrl(targetPost.data.lang, targetPost.slug)),
+  301
+);
+---

@@ -1,71 +1,9 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import type { Locale } from '../utils/i18n';
-import { t } from '../utils/i18n';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import BookCard from '../components/BookCard.astro';
-import { getBooksByLocale } from '../lib/content/books';
+import { buildLegacyRedirectUrl, getLegacyLocaleFromUrl } from '../utils/legacyRedirect';
+import { getLocalizedBooksUrl } from '../utils/routing';
 
-const urlParams = Astro.url.searchParams;
-const langParam = urlParams.get('lang');
-const locale: Locale = (langParam === 'en' || langParam === 'vi') ? langParam : 'vi';
-
-let books: CollectionEntry<'books'>[] = [];
-let errorMessage = '';
-let booksSubtitle = '';
-
-try {
-  books = await getBooksByLocale(locale);
-  booksSubtitle = locale === 'vi'
-    ? `${books.length} cuốn sách đã hoàn thành`
-    : `${books.length} books completed`;
-} catch (error) {
-  console.error('Error loading books:', error);
-  errorMessage = locale === 'en' 
-    ? 'Unable to load books. Please try again later.'
-    : 'Không thể tải sách. Vui lòng thử lại sau.';
-  booksSubtitle = locale === 'vi'
-    ? 'Danh sách sách đã đọc'
-    : 'Reading list';
-}
+return Astro.redirect(
+  buildLegacyRedirectUrl(Astro.url, getLocalizedBooksUrl(getLegacyLocaleFromUrl(Astro.url))),
+  301
+);
 ---
-
-<BaseLayout title={t('books.title', locale)} description={booksSubtitle} locale={locale}>
-  <div class="space-y-12">
-    {/* Hero Section */}
-    <section class="text-center space-y-4 py-12">
-      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">
-        {t('books.title', locale)}
-      </h1>
-      
-      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-2xl mx-auto">
-        {booksSubtitle}
-      </p>
-    </section>
-
-    {/* Error State */}
-    {errorMessage && (
-      <div class="bg-red-50 dark:bg-red-900/20 sepia:bg-red-100 border border-red-200 dark:border-red-800 sepia:border-red-300 rounded-lg p-6 text-center">
-        <p class="text-red-600 dark:text-red-400 sepia:text-red-700">{errorMessage}</p>
-      </div>
-    )}
-
-    {/* Empty State */}
-    {!errorMessage && books.length === 0 && (
-      <div class="card p-8 text-center">
-        <p class="text-gray-700 dark:text-gray-200 sepia:text-sepia-900 text-lg mb-4">
-          {locale === 'vi' ? 'Chưa có sách nào.' : 'No books yet.'}
-        </p>
-      </div>
-    )}
-
-    {/* Books Grid */}
-    {books.length > 0 && (
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {books.map(book => (
-          <BookCard {...book.data} slug={book.slug} />
-        ))}
-      </section>
-    )}
-  </div>
-</BaseLayout>
