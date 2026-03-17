@@ -21,9 +21,34 @@ type Props = CollectionEntry<'blog'>['data'] & {
   body?: string;
   headings?: MarkdownHeading[];
   tags?: string[];
+  canonicalUrl?: string;
+  alternateUrls?: {
+    vi?: string;
+    en?: string;
+    default?: string;
+  };
 };
 
-const { title, description, pubDate, modifiedDate, faqs = [], author = 'Anonymous', category, coverImage, coverAlt, slug = '', body = '', headings: astroHeadings = [], lang = 'vi', translationKey, showTOC, tags = [] } = Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  modifiedDate,
+  faqs = [],
+  author = 'Anonymous',
+  category,
+  coverImage,
+  coverAlt,
+  slug = '',
+  body = '',
+  headings: astroHeadings = [],
+  lang = 'vi',
+  translationKey,
+  showTOC,
+  tags = [],
+  canonicalUrl,
+  alternateUrls,
+} = Astro.props;
 const readingTime = getReadingTime(body);
 const locale: Locale = lang as Locale;
 const effectiveModifiedDate = modifiedDate ?? pubDate;
@@ -122,6 +147,8 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
   image={coverImage} 
   imageAlt={coverAlt}
   type="article"
+  canonicalUrl={canonicalUrl}
+  alternateUrls={alternateUrls}
   article={{
     publishedTime: pubDate.toISOString(),
     modifiedTime: effectiveModifiedDate.toISOString(),

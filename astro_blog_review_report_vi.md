@@ -698,3 +698,32 @@ Ghi chú:
 
 - Hạng mục này mới xử lý phần lặp logic ở page/query layer.
 - `BaseLayout` và `BlogPost` vẫn còn logic nặng, sẽ tiếp tục ở các hạng mục sau nếu cần tách thêm.
+
+### Hạng mục 2: Sửa SEO detail pages, thêm RSS và fallback social image
+
+Trạng thái: **Đã hoàn thành**
+
+Đã thực hiện:
+
+- Sửa `canonicalUrl` và `alternateUrls` cho blog post detail dựa trên `translationKey` thật:
+  - [src/pages/blog/[slug].astro](/Users/nguyenhuuloc/Documents/blog/src/pages/blog/[slug].astro)
+  - [src/layouts/BlogPost.astro](/Users/nguyenhuuloc/Documents/blog/src/layouts/BlogPost.astro)
+- Cập nhật SEO component để:
+  - dùng fallback social image hợp lệ
+  - expose RSS discovery link
+  - file: [src/components/SEO.astro](/Users/nguyenhuuloc/Documents/blog/src/components/SEO.astro)
+- Thêm RSS feed route:
+  - [src/pages/rss.xml.ts](/Users/nguyenhuuloc/Documents/blog/src/pages/rss.xml.ts)
+- Thêm social preview image mặc định:
+  - [public/images/og-default.svg](/Users/nguyenhuuloc/Documents/blog/public/images/og-default.svg)
+- Thêm dependency:
+  - `@astrojs/rss` trong [package.json](/Users/nguyenhuuloc/Documents/blog/package.json)
+
+Kiểm tra:
+
+- `npm run build` pass sau khi thêm RSS và sửa props SEO.
+
+Ghi chú:
+
+- Hạng mục này sửa đúng lỗi `hreflang`/alternate trước đó ở bài viết bilingual.
+- Books detail vẫn chưa có structured data riêng kiểu `Book` / `Review`; có thể xử lý ở vòng tiếp theo nếu đưa vào phạm vi SEO sâu hơn.

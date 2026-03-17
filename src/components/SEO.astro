@@ -61,7 +61,7 @@ const enUrl = alternateUrls?.en || `${siteUrl}${currentPath}?lang=en`;
 const defaultUrl = alternateUrls?.default || `${siteUrl}${currentPath}`;
 
 // Full image URL for social sharing
-const ogImage = image ? `${siteUrl}${image}` : `${siteUrl}/images/og-default.jpg`;
+const ogImage = image ? `${siteUrl}${image}` : `${siteUrl}/images/og-default.svg`;
 
 // Site name
 const siteName = import.meta.env.PUBLIC_SITE_NAME || 'Personal Blog';
@@ -160,6 +160,7 @@ const additionalJsonLdScripts = additionalJsonLd.filter(Boolean);
 <link rel="alternate" hreflang="vi" href={viUrl} />
 <link rel="alternate" hreflang="en" href={enUrl} />
 <link rel="alternate" hreflang="x-default" href={defaultUrl} />
+<link rel="alternate" type="application/rss+xml" title={`${siteName} RSS`} href={`${siteUrl}/rss.xml`} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />

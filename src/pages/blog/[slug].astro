@@ -2,7 +2,7 @@
 import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { getPostBySlug } from '../../lib/content/posts';
+import { getAllBlogPosts, getPostBySlug } from '../../lib/content/posts';
 
 // Get slug from URL params
 const { slug } = Astro.params;
@@ -10,6 +10,8 @@ const { slug } = Astro.params;
 let entry: CollectionEntry<'blog'> | null = null;
 let Content = null;
 let headings: MarkdownHeading[] = [];
+let canonicalUrl = '';
+let alternateUrls: { vi?: string; en?: string; default?: string } | undefined;
 
 try {
   entry = slug ? await getPostBySlug(slug) ?? null : null;
@@ -21,12 +23,42 @@ try {
   const rendered = await entry.render();
   Content = rendered.Content;
   headings = rendered.headings; // Get headings from rendered content
+
+  const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
+  const allPosts = await getAllBlogPosts();
+  canonicalUrl = `${siteUrl}/blog/${entry.slug}?lang=${entry.data.lang}`;
+  const translationKey = entry.data.translationKey;
+
+  if (translationKey) {
+    const translations = allPosts.filter(
+      (post) => post.data.translationKey === translationKey
+    );
+    const viPost = translations.find((post) => post.data.lang === 'vi');
+    const enPost = translations.find((post) => post.data.lang === 'en');
+
+    alternateUrls = {
+      vi: viPost ? `${siteUrl}/blog/${viPost.slug}?lang=vi` : undefined,
+      en: enPost ? `${siteUrl}/blog/${enPost.slug}?lang=en` : undefined,
+      default: viPost
+        ? `${siteUrl}/blog/${viPost.slug}`
+        : `${siteUrl}/blog/${entry.slug}`,
+    };
+  }
 } catch (error) {
   console.error('Error loading blog post:', error);
   return Astro.redirect('/404');
 }
 ---
 
-<BlogPost {...entry.data} slug={entry.slug} body={entry.body} headings={headings} lang={entry.data.lang} tags={entry.data.tags}>
+<BlogPost
+  {...entry.data}
+  slug={entry.slug}
+  body={entry.body}
+  headings={headings}
+  lang={entry.data.lang}
+  tags={entry.data.tags}
+  canonicalUrl={canonicalUrl}
+  alternateUrls={alternateUrls}
+>
   <Content />
 </BlogPost>
