@@ -114,9 +114,9 @@ try {
     {!errorMessage && pillarTopics.length > 0 && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-serif text-3xl font-semibold tracking-tight">{locale === 'en' ? 'Start with Pillar Articles' : 'Bắt đầu với bài trụ cột'}</h2>
+          <h2 class="font-serif text-3xl font-semibold tracking-tight">{t('home.pillarTitle', locale)}</h2>
           <a href={getLocalizedTopicsUrl(locale)} class="ui-link font-medium">
-            {locale === 'en' ? 'See topic architecture →' : 'Xem cấu trúc chủ đề →'}
+            {t('home.pillarLink', locale)}
           </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -134,7 +134,7 @@ try {
                 </p>
               )}
               <p class="text-sm ui-link no-underline hover:no-underline font-medium">
-                {locale === 'en' ? 'Read pillar article →' : 'Đọc bài trụ cột →'}
+              {t('home.readPillar', locale)}
               </p>
             </a>
           ))}
@@ -145,9 +145,9 @@ try {
     {!errorMessage && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-serif text-3xl font-semibold tracking-tight">{locale === 'en' ? 'Browse by Category' : 'Đọc Theo Category'}</h2>
+          <h2 class="font-serif text-3xl font-semibold tracking-tight">{t('home.browseByCategory', locale)}</h2>
           <a href={getLocalizedCategoriesUrl(locale)} class="ui-link font-medium">
-            {locale === 'en' ? 'View category archives →' : 'Xem kho category →'}
+            {t('home.viewCategoryArchives', locale)}
           </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -161,9 +161,9 @@ try {
     {!errorMessage && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-serif text-3xl font-semibold tracking-tight">{locale === 'en' ? 'Explore by Topic' : 'Đọc Theo Chủ Đề'}</h2>
+          <h2 class="font-serif text-3xl font-semibold tracking-tight">{t('home.browseByTopic', locale)}</h2>
           <a href={getLocalizedTopicsUrl(locale)} class="ui-link font-medium">
-            {locale === 'en' ? 'View topic hubs →' : 'Xem các hub chủ đề →'}
+            {t('home.viewTopicHubs', locale)}
           </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import type { Locale } from '../../../utils/i18n';
+import { t, type Locale } from '../../../utils/i18n';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import CategoryCard from '../../../components/CategoryCard.astro';
 import { CATEGORIES, getCategoryDescription, getCategoryLabel, type CategoryKey } from '../../../utils/categories';
@@ -30,8 +30,8 @@ const pageUrl = `${baseUrl}${Astro.url.pathname}`;
 const categoriesCollectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: locale === 'en' ? 'Category Archives' : 'Kho category',
-  description: locale === 'en' ? 'Browse blog archives by category: programming, lifestyle, and personal.' : 'Duyệt blog theo category: lập trình, đời sống và cá nhân.',
+  name: t('category.archives', locale),
+  description: t('category.archivesSubtitle', locale),
   url: pageUrl,
   inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
   mainEntity: {
@@ -48,8 +48,8 @@ const categoriesCollectionSchema = {
 ---
 
 <BaseLayout
-  title={locale === 'en' ? 'Category Archives | Loc Nguyen' : 'Kho category | Lộc Nguyễn'}
-  description={locale === 'en' ? 'Browse blog archives by category: programming, lifestyle, and personal.' : 'Duyệt blog theo category: lập trình, đời sống và cá nhân.'}
+  title={t('category.archivesTitle', locale)}
+  description={t('category.archivesSubtitle', locale)}
   locale={locale}
   canonicalUrl={pageUrl}
   alternateUrls={getLocalizedPageAlternates(baseUrl, 'categories')}
@@ -58,8 +58,8 @@ const categoriesCollectionSchema = {
   <div class="space-y-12">
     <Breadcrumbs items={breadcrumbs} />
     <section class="text-center space-y-4 py-12">
-      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{locale === 'en' ? 'Category Archives' : 'Kho Category'}</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl mx-auto">{locale === 'en' ? 'Use category pages when you want a cleaner archive by intent, not just a long reverse-chronological list.' : 'Dùng các trang category khi bạn muốn duyệt nội dung theo ý định đọc, thay vì chỉ xem danh sách bài theo thời gian.'}</p>
+      <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{t('category.archives', locale)}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl mx-auto">{t('category.archivesDescription', locale)}</p>
     </section>
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">{categoryEntries.map((category) => <CategoryCard slug={category.slug} locale={locale} count={category.count} />)}</section>
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">

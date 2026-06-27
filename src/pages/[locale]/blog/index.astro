@@ -51,22 +51,16 @@ const buildBlogUrl = (params: { category?: string | null; topic?: string | null 
 };
 
 const archiveTitle = activeTopic
-  ? `${getTopicInfo(activeTopic, locale).name} | ${locale === 'en' ? 'Blog Archive' : 'Kho bài viết'}`
+  ? `${getTopicInfo(activeTopic, locale).name} | ${t('blog.archive', locale)}`
   : activeCategory
-    ? `${getCategoryLabel(activeCategory, locale)} | ${locale === 'en' ? 'Blog Archive' : 'Kho bài viết'}`
-    : (locale === 'en' ? 'Blog Archive | Loc Nguyen' : 'Kho bài viết | Lộc Nguyễn');
+    ? `${getCategoryLabel(activeCategory, locale)} | ${t('blog.archive', locale)}`
+    : t('blog.archiveTitle', locale);
 
 const archiveDescription = activeTopic
-  ? (locale === 'en'
-      ? `Browse blog posts related to ${getTopicInfo(activeTopic, locale).name}, including the core article cluster and supporting essays.`
-      : `Xem các bài viết thuộc cụm ${getTopicInfo(activeTopic, locale).name}, gồm bài trụ cột và các bài vệ tinh liên quan.`)
+  ? t('blog.archiveTopicSubtitle', locale).replace('{topic}', getTopicInfo(activeTopic, locale).name)
   : activeCategory
-    ? (locale === 'en'
-        ? `Browse ${getCategoryLabel(activeCategory, locale).toLowerCase()} posts from Loc Nguyen's blog.`
-        : `Xem các bài thuộc nhóm ${getCategoryLabel(activeCategory, locale)} trên blog của Lộc Nguyễn.`)
-    : (locale === 'en'
-        ? 'Browse all blog posts about programming, AI, learning, and personal growth.'
-        : 'Xem toàn bộ bài viết về lập trình, AI, học tập và phát triển bản thân.');
+    ? t('blog.archiveCategorySubtitle', locale).replace('{category}', getCategoryLabel(activeCategory, locale))
+    : t('blog.archiveSubtitle', locale);
 
 const noindex = !!activeTopic || !!activeCategory;
 
@@ -86,7 +80,7 @@ try {
   categoryCounts = getCategoryCounts(publishedPosts);
 } catch (error) {
   console.error('Error loading blog posts:', error);
-  errorMessage = locale === 'en' ? 'Unable to load blog posts. Please try again later.' : 'Không thể tải bài viết. Vui lòng thử lại sau.';
+  errorMessage = t('error.loadPosts', locale);
 }
 
 const canonicalUrl = `${siteUrl}${Astro.url.pathname}${Astro.url.search}`;
@@ -134,7 +128,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && publishedPosts.length === 0 && (
       <div class="card p-8 text-center">
         <p class="text-gray-700 dark:text-gray-200 sepia:text-sepia-900 text-lg mb-4">
-          {locale === 'en' ? 'No posts available in English yet.' : 'Chưa có bài viết bằng tiếng Việt.'}
+          {t(locale === 'en' ? 'blog.noPostsEn' : 'blog.noPostsVi', locale)}
         </p>
       </div>
     )}
@@ -144,7 +138,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         {(activeTopic || activeCategory) && (
           <div class="card p-6">
             <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-3">
-              {activeTopic ? (locale === 'en' ? 'Topic filter preview' : 'Bản xem trước theo topic') : (locale === 'en' ? 'Category filter preview' : 'Bản xem trước theo category')}
+              {activeTopic ? t('blog.topicFilter', locale) : t('blog.categoryFilter', locale)}
             </p>
             <h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">
               {activeTopic ? getTopicInfo(activeTopic, locale).name : getCategoryIntro(activeCategory!, locale).title}
@@ -153,16 +147,16 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
               {activeTopic ? getTopicInfo(activeTopic, locale).intro : getCategoryIntro(activeCategory!, locale).body}
             </p>
             <a href={activeTopic ? getLocalizedTopicUrl(locale, activeTopic) : getLocalizedCategoryUrl(locale, activeCategory!)} class="ui-link font-medium">
-              {activeTopic ? (locale === 'en' ? 'Open canonical topic hub →' : 'Mở topic hub chính thức →') : (locale === 'en' ? 'Open canonical category archive →' : 'Mở category archive chính thức →')}
+              {activeTopic ? t('blog.openTopicHub', locale) : t('blog.openCategoryArchive', locale)}
             </a>
           </div>
         )}
 
         <div>
-          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{locale === 'en' ? 'Filter by category' : 'Lọc theo category'}</h2>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{t('blog.filterByCategory', locale)}</h2>
           <div class="flex flex-wrap gap-3">
             <a href={buildBlogUrl({ category: null, topic: activeTopic })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": !activeCategory, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeCategory }]}>
-              {locale === 'en' ? 'All categories' : 'Tất cả category'}
+              {t('blog.allCategories', locale)}
             </a>
             {categoryCounts.map((category) => (
               <a href={buildBlogUrl({ category: category.slug, topic: activeTopic })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": activeCategory === category.slug, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeCategory !== category.slug }]}>
@@ -173,10 +167,10 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         </div>
 
         <div>
-          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{locale === 'en' ? 'Filter by topic' : 'Lọc theo topic'}</h2>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{t('blog.filterByTopic', locale)}</h2>
           <div class="flex flex-wrap gap-3">
             <a href={buildBlogUrl({ category: activeCategory, topic: null })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": !activeTopic, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeTopic }]}>
-              {locale === 'en' ? 'All topics' : 'Tất cả topic'}
+              {t('blog.allTopics', locale)}
             </a>
             {topicCounts.map((topic) => (
               <a href={buildBlogUrl({ category: activeCategory, topic: topic.slug })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": activeTopic === topic.slug, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeTopic !== topic.slug }]}>
@@ -191,10 +185,10 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && publishedPosts.length > 0 && filteredPosts.length === 0 && (
       <div class="bg-amber-50 dark:bg-amber-900/20 sepia:bg-amber-100 border border-amber-200 dark:border-amber-800 sepia:border-amber-300 rounded-lg p-8 text-center">
         <p class="text-amber-700 dark:text-amber-300 sepia:text-amber-800 text-lg mb-4">
-          {locale === 'en' ? 'No posts match the current category/topic filters.' : 'Không có bài nào khớp với bộ lọc category/topic hiện tại.'}
+          {t('blog.noPostsMatch', locale)}
         </p>
         <a href={buildBlogUrl({ category: null, topic: null })} class="ui-link font-medium">
-          {locale === 'en' ? 'Clear filters →' : 'Xóa bộ lọc →'}
+          {t('blog.clearFilters', locale)}
         </a>
       </div>
     )}
@@ -204,7 +198,7 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && otherPosts.length > 0 && (
       <section>
         <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">
-          {activeCategory || activeTopic ? (locale === 'en' ? 'Filtered posts' : 'Bài theo bộ lọc') : t('blog.allPosts', locale)}
+          {activeCategory || activeTopic ? t('blog.filteredPosts', locale) : t('blog.allPosts', locale)}
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {otherPosts.map((post) => <PostCard post={post} />)}
@@ -215,8 +209,8 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-serif text-2xl font-semibold tracking-tight">{locale === 'en' ? 'Category Archives' : 'Kho Category'}</h2>
-          <a href={getLocalizedCategoriesUrl(locale)} class="ui-link font-medium">{locale === 'en' ? 'Browse all categories →' : 'Xem tất cả category →'}</a>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight">{t('blog.categoryArchives', locale)}</h2>
+          <a href={getLocalizedCategoriesUrl(locale)} class="ui-link font-medium">{t('blog.browseCategories', locale)}</a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {categoryCounts.map((category) => <CategoryCard slug={category.slug} locale={locale} count={category.count} />)}
@@ -227,8 +221,8 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     {!errorMessage && (
       <section>
         <div class="flex justify-between items-center mb-6">
-          <h2 class="font-serif text-2xl font-semibold tracking-tight">{locale === 'en' ? 'Topic Hubs' : 'Hub Chủ Đề'}</h2>
-          <a href={getLocalizedTopicsUrl(locale)} class="ui-link font-medium">{locale === 'en' ? 'Browse all topics →' : 'Xem tất cả chủ đề →'}</a>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight">{t('blog.topicHubs', locale)}</h2>
+          <a href={getLocalizedTopicsUrl(locale)} class="ui-link font-medium">{t('blog.browseTopics', locale)}</a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {topicCounts.map((topic) => <TopicCard slug={topic.slug} locale={locale} count={topic.count} />)}

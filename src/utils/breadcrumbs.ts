@@ -1,5 +1,6 @@
 import { CATEGORIES } from './categories';
 import type { Locale } from './i18n';
+import { t } from './i18n';
 import { getTopicInfo, type TopicSlug } from './topics';
 import {
   getLocalizedBlogPostUrl,
@@ -30,6 +31,14 @@ export interface BreadcrumbListSchema {
   }>;
 }
 
+function homeCrumb(baseUrl: string, locale: Locale): BreadcrumbItem {
+  return {
+    name: t('breadcrumb.home', locale),
+    url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
+    position: 1,
+  };
+}
+
 /**
  * Generate breadcrumbs for blog posts
  * Structure: Home > Blog > Category > Post Title
@@ -42,13 +51,9 @@ export function generateBlogBreadcrumbs(
   locale: Locale
 ): BreadcrumbItem[] {
   const categoryInfo = CATEGORIES[category];
-  
+
   return [
-    {
-      name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
-      position: 1,
-    },
+    homeCrumb(baseUrl, locale),
     {
       name: 'Blog',
       url: `${baseUrl}${getLocalizedBlogUrl(locale)}`,
@@ -79,13 +84,9 @@ export function generateBookBreadcrumbs(
   locale: Locale
 ): BreadcrumbItem[] {
   return [
+    homeCrumb(baseUrl, locale),
     {
-      name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
-      position: 1,
-    },
-    {
-      name: locale === 'en' ? 'Books' : 'Sách',
+      name: t('breadcrumb.books', locale),
       url: `${baseUrl}${getLocalizedBooksUrl(locale)}`,
       position: 2,
     },
@@ -106,13 +107,9 @@ export function generateTopicsBreadcrumbs(
   locale: Locale
 ): BreadcrumbItem[] {
   return [
+    homeCrumb(baseUrl, locale),
     {
-      name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
-      position: 1,
-    },
-    {
-      name: locale === 'vi' ? 'Chủ đề' : 'Topics',
+      name: t('breadcrumb.topics', locale),
       url: `${baseUrl}${getLocalizedTopicsUrl(locale)}`,
       position: 2,
     },
@@ -124,13 +121,9 @@ export function generateCategoriesBreadcrumbs(
   locale: Locale
 ): BreadcrumbItem[] {
   return [
+    homeCrumb(baseUrl, locale),
     {
-      name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
-      position: 1,
-    },
-    {
-      name: locale === 'en' ? 'Categories' : 'Category',
+      name: t('breadcrumb.categories', locale),
       url: `${baseUrl}${getLocalizedCategoriesUrl(locale)}`,
       position: 2,
     },
@@ -145,13 +138,9 @@ export function generateCategoryBreadcrumbs(
   const categoryInfo = CATEGORIES[category];
 
   return [
+    homeCrumb(baseUrl, locale),
     {
-      name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
-      position: 1,
-    },
-    {
-      name: locale === 'en' ? 'Categories' : 'Category',
+      name: t('breadcrumb.categories', locale),
       url: `${baseUrl}${getLocalizedCategoriesUrl(locale)}`,
       position: 2,
     },
@@ -175,13 +164,9 @@ export function generateTopicBreadcrumbs(
   const topic = getTopicInfo(topicSlug, locale);
 
   return [
+    homeCrumb(baseUrl, locale),
     {
-      name: locale === 'en' ? 'Home' : 'Trang chủ',
-      url: `${baseUrl}${getLocalizedHomeUrl(locale)}`,
-      position: 1,
-    },
-    {
-      name: locale === 'vi' ? 'Chủ đề' : 'Topics',
+      name: t('breadcrumb.topics', locale),
       url: `${baseUrl}${getLocalizedTopicsUrl(locale)}`,
       position: 2,
     },

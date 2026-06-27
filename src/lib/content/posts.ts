@@ -6,17 +6,33 @@ import { toPublicSlug } from '@/utils/slugs';
 
 export type BlogEntry = CollectionEntry<'blog'>;
 
+// Module-level cache to avoid repeated getCollection calls
+let cachedAllPosts: BlogEntry[] | null = null;
+
+async function getAllBlogPostsCached(): Promise<BlogEntry[]> {
+  if (cachedAllPosts === null) {
+    cachedAllPosts = await getCollection('blog');
+  }
+  return cachedAllPosts;
+}
+
+export function clearBlogCache(): void {
+  cachedAllPosts = null;
+}
+
 export async function getAllBlogPosts(): Promise<BlogEntry[]> {
-  return getCollection('blog');
+  return getAllBlogPostsCached();
 }
 
 export async function getPublishedPosts(locale: Locale): Promise<BlogEntry[]> {
-  const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang === locale);
-  return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const posts = await getAllBlogPostsCached();
+  return posts
+    .filter(({ data }) => !data.draft && data.lang === locale)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
 export async function getPostBySlug(slug: string, locale?: Locale): Promise<BlogEntry | undefined> {
-  const posts = await getAllBlogPosts();
+  const posts = await getAllBlogPostsCached();
   return posts.find((post) => {
     if (locale && post.data.lang !== locale) return false;
     return toPublicSlug(post.slug, post.data.lang) === toPublicSlug(slug, locale ?? post.data.lang);

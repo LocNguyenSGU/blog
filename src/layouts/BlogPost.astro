@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import type { Locale } from '../utils/i18n';
+import { t, type Locale } from '../utils/i18n';
 import type { MarkdownHeading } from 'astro';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
@@ -116,7 +116,7 @@ const topicSeries = getTopicsForTranslationKey(translationKey).map((topicSlug) =
 });
 const seriesMembership = topicSeries.map(({ topicSlug, info }) => ({
   '@type': 'CreativeWorkSeries',
-  name: `${info.name} ${locale === 'en' ? 'topic cluster' : 'cụm chủ đề'}`,
+  name: `${info.name} ${t('topic.cluster', locale)}`,
   url: `${baseUrl}${getLocalizedTopicUrl(locale, topicSlug)}`,
 }));
 const seriesParts = topicSeries
@@ -131,7 +131,7 @@ const seriesParts = topicSeries
 const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) => ({
   '@context': 'https://schema.org',
   '@type': 'CreativeWorkSeries',
-  name: `${info.name} ${locale === 'en' ? 'topic cluster' : 'cụm chủ đề'}`,
+  name: `${info.name} ${t('topic.cluster', locale)}`,
   description: info.description,
   url: `${baseUrl}${getLocalizedTopicUrl(locale, topicSlug)}`,
   hasPart: relatedSeriesPosts.map((post) => ({
@@ -195,7 +195,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
           <>
             <span>•</span>
             <time datetime={effectiveModifiedDate.toISOString()}>
-              {locale === 'vi' ? `Cập nhật ${formattedModifiedDate}` : `Updated ${formattedModifiedDate}`}
+              {t('post.updated', locale).replace('{date}', formattedModifiedDate)}
             </time>
           </>
         )}
@@ -227,7 +227,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
     {relatedPosts.length > 0 && (
       <section class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
         <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">
-          {locale === 'vi' ? 'Đọc tiếp' : 'Related reading'}
+          {t('post.relatedReading', locale)}
         </h2>
         <div class="grid gap-4 md:grid-cols-3">
           {relatedPosts.map((post) => (
@@ -255,7 +255,7 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
     {relatedTopics.length > 0 && (
       <section class="mt-12">
         <h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">
-          {locale === 'vi' ? 'Khám phá theo cụm chủ đề' : 'Explore related topics'}
+          {t('post.exploreTopics', locale)}
         </h2>
         <div class="grid gap-4 md:grid-cols-2">
           {relatedTopics.map((topicSlug) => (

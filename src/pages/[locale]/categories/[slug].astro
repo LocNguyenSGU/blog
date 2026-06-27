@@ -1,5 +1,5 @@
 ---
-import type { Locale } from '../../../utils/i18n';
+import { t, type Locale } from '../../../utils/i18n';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import FeaturedPost from '../../../components/FeaturedPost.astro';
@@ -36,7 +36,7 @@ const pageUrl = `${baseUrl}${Astro.url.pathname}`;
 const categorySchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: `${getCategoryLabel(category, locale)} | ${locale === 'en' ? 'Category Archive' : 'Kho category'}`,
+  name: `${getCategoryLabel(category, locale)} | ${t('category.archive', locale)}`,
   description: getCategoryDescription(category, locale),
   url: pageUrl,
   inLanguage: locale === 'vi' ? 'vi-VN' : 'en-US',
@@ -45,17 +45,17 @@ const categorySchema = {
 };
 ---
 
-<BaseLayout title={`${getCategoryLabel(category, locale)} | ${locale === 'en' ? 'Category Archive' : 'Kho category'}`} description={getCategoryDescription(category, locale)} locale={locale} canonicalUrl={pageUrl} alternateUrls={getLocalizedCategoryAlternates(baseUrl, category)} additionalJsonLd={[categorySchema]}>
+<BaseLayout title={`${getCategoryLabel(category, locale)} | ${t('category.archive', locale)}`} description={getCategoryDescription(category, locale)} locale={locale} canonicalUrl={pageUrl} alternateUrls={getLocalizedCategoryAlternates(baseUrl, category)} additionalJsonLd={[categorySchema]}>
   <div class="space-y-12">
     <Breadcrumbs items={breadcrumbs} />
     <section class="space-y-4 py-12">
-      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700">{locale === 'en' ? 'Category archive' : 'Kho category'}</p>
+      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700">{t('category.archive', locale)}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{getCategoryLabel(category, locale)}</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl">{getCategoryDescription(category, locale)}</p>
       <div class="card p-6 max-w-4xl"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{intro.title}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{intro.body}</p></div>
     </section>
-    {featuredPost && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{locale === 'en' ? 'Featured in this category' : 'Bài nổi bật trong category này'}</h2><FeaturedPost post={featuredPost} /></section>}
-    {otherPosts.length > 0 && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{locale === 'en' ? 'More in this category' : 'Đọc thêm trong category này'}</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{otherPosts.map((post) => <PostCard post={post} />)}</div></section>}
-    {relatedTopics.length > 0 && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{locale === 'en' ? 'Related topic hubs' : 'Hub chủ đề liên quan'}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6">{relatedTopics.slice(0, 4).map((topicSlug) => <TopicCard slug={topicSlug} locale={locale} count={posts.filter((post) => !!post.data.translationKey && TOPICS[topicSlug].translationKeys.includes(post.data.translationKey)).length} />)}</div></section>}
+    {featuredPost && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('category.featured', locale)}</h2><FeaturedPost post={featuredPost} /></section>}
+    {otherPosts.length > 0 && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('category.more', locale)}</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{otherPosts.map((post) => <PostCard post={post} />)}</div></section>}
+    {relatedTopics.length > 0 && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('category.relatedHubs', locale)}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6">{relatedTopics.slice(0, 4).map((topicSlug) => <TopicCard slug={topicSlug} locale={locale} count={posts.filter((post) => !!post.data.translationKey && TOPICS[topicSlug].translationKeys.includes(post.data.translationKey)).length} />)}</div></section>}
   </div>
 </BaseLayout>
