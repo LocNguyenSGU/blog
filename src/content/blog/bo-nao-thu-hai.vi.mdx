@@ -1,6 +1,6 @@
 ---
 title: "Bộ Não Thứ Hai Của Tôi: Biến 2 Năm Nhật Ký Thành Đồ Thị Tri Thức Với AI"
-description: "Tôi biến 2 năm nhật ký thành bộ não thứ hai bằng Markdown, Obsidian và AI, không cần RAG. Kiến trúc, bài học, và con số làm tôi giật mình."
+description: "Tôi biến 2 năm nhật ký thành bộ não thứ hai bằng Markdown, Obsidian và AI, không cần RAG. Kiến trúc, cách làm, kết quả, và con số làm tôi giật mình."
 coverImage: "./_images/bo-nao-thu-hai.svg"
 coverAlt: "Sơ đồ các nút tri thức nối với nhau bên trái và một dòng thời gian có các mốc bên phải"
 pubDate: 2026-10-10
@@ -39,30 +39,55 @@ Rất hay. Nhưng khi tôi đo dữ liệu của mình: **27 file Markdown, kho�
 
 Với lượng dữ liệu đó, AI đọc hết trong một lần. Vấn đề của tôi không phải _tìm_ thông tin, mà là thông tin nằm lẫn trong văn xuôi, không nối với nhau.
 
-| Thành phần trong khoá học | Bản gọn của tôi             | Khi nào nâng cấp                  |
-| ------------------------- | --------------------------- | --------------------------------- |
-| Notion + crawl            | Markdown tự viết            | Khi có từ 2 nguồn tự động trở lên |
-| MongoDB                   | Git + file                  | Khi app khác cần truy vấn         |
-| Vector search, RAG        | Không cần                   | Khi repo vượt khoảng 1 MB         |
-| Agent                     | Claude Code + một file luật | Khi muốn hỏi từ điện thoại        |
-| Opik, ZenML               | Review định kỳ, chạy lệnh tay | Khi có việc chạy tự động        |
+| Thành phần trong khoá học | Bản gọn của tôi               | Khi nào nâng cấp                  |
+| ------------------------- | ----------------------------- | --------------------------------- |
+| Notion + crawl            | Markdown tự viết              | Khi có từ 2 nguồn tự động trở lên |
+| MongoDB                   | Git + file                    | Khi app khác cần truy vấn         |
+| Vector search, RAG        | Không cần                     | Khi repo vượt khoảng 1 MB         |
+| Agent                     | Claude Code + một file luật   | Khi muốn hỏi từ điện thoại        |
+| Opik, ZenML               | Review định kỳ, chạy lệnh tay | Khi có việc chạy tự động          |
 
 Tôi giữ khoá học làm **đích đến dài hạn**, và mỗi bước nâng cấp đều có điều kiện kích hoạt cụ thể. Chưa tới điều kiện thì chưa làm.
 
-## 2) Kiến trúc tinh gọn: mỗi thứ một file
+## 2) Kiến trúc hiện tại
 
-Nguồn sự thật là Markdown trong git. Không database. Mỗi thực thể là một file riêng, có frontmatter cố định:
+Nguyên tắc chỉ có một: **Markdown trong git là nguồn sự thật, mọi thứ khác là góc nhìn sinh ra từ đó.** Không database, không server.
 
-- **Mục tiêu**, **chặng** của lộ trình, **người**, **dự án**
-- **Điểm mạnh**, **điểm yếu**, **mốc**, **quyết định**
-- **Lời hứa** và **chỉ số** (thêm sau, xem phần 4)
+```text
+Tôi ── "cập nhật: …" ──▶ Claude Code (đọc CLAUDE.md: lệnh + luật)
+                              │ sửa đúng nút, rồi chạy script
+                              ▼
+   tri-thuc/  156 file .md (frontmatter + liên kết [[...]])   ◀── nhat-ky/ (lời văn gốc, không ai sửa)
+                              │
+           scripts/build_graph.py (Python, chỉ thư viện chuẩn)
+           ├─ graph/graph.json   → AI đọc để tra cứu theo quan hệ
+           ├─ graph/lint.md      → trễ hạn, link gãy, lời hứa tới hạn, đề xuất chờ duyệt
+           └─ goc-nhin/          → dòng thời gian, lộ trình, lời hứa, chỉ số (+ biểu đồ SVG)
+                              │
+   Obsidian (graph view, backlinks) + Dataview (dashboard.md)
+   git → GitHub private (sao lưu)
+```
 
-Quan hệ giữa chúng là liên kết `[[...]]`. Ví dụ một mục tiêu (minh hoạ):
+**Các loại nút**, mỗi nút là một file:
+
+| Loại      | Số nút | Ví dụ                                     |
+| --------- | ------ | ----------------------------------------- |
+| Lời hứa   | 41     | "Hè này all in vào tiếng anh"             |
+| Mục tiêu  | 34     | đang chạy, ý định, đã xong, đã bỏ         |
+| Mốc       | 20     | những sự kiện đã xảy ra, có ngày          |
+| Người     | 13     | ai liên quan tới mục tiêu nào             |
+| Điểm mạnh / yếu | 18 | mỗi điểm kèm bằng chứng và cách dùng / cách sửa |
+| Dự án, quyết định | 16 | trạng thái, lý do, khi nào xem lại |
+| Chỉ số    | 6      | chuỗi số đo theo ngày, tự vẽ biểu đồ      |
+| Chặng, tổ chức | 8 | 4 chặng của lộ trình tới năm 30 tuổi       |
+
+Giữa chúng có 457 quan hệ có tên: _thuộc chặng_, _phụ thuộc_, _bị cản bởi_ (điểm yếu), _được hỗ trợ bởi_ (điểm mạnh), _lặp lại của_ (lời hứa cũ), _bằng chứng_ (trỏ về nhật ký). Ví dụ một mục tiêu (minh hoạ):
 
 ```yaml
 type: muc-tieu
 title: "Viết 1 bài blog mỗi tháng"
 status: dang-chay
+nguon: loc
 deadline: 2027-06-30
 baseline: 0
 current: 2
@@ -72,16 +97,26 @@ bi_can_boi: ["[[han-tu-dat-thi-truot]]"]
 duoc_ho_tro_boi: ["[[ve-dich-khi-co-han-ngoai]]"]
 ```
 
-Từ đó, mọi thứ khác đều là **góc nhìn sinh tự động** từ cùng một bộ file:
+Tiến độ không ghi tay: script và bảng điều khiển tự tính từ `baseline → current → target`, nên không bao giờ lệch.
 
-- **Obsidian** để xem đồ thị và bấm qua lại giữa các nút.
-- **Dataview** dựng bảng điều khiển: mục tiêu đang chạy, cái nào trễ hạn, người cần liên lạc.
-- **Một script Python** (chỉ dùng thư viện chuẩn) dựng `graph.json`, kiểm tra link gãy và trường thiếu, rồi sinh dòng thời gian, lộ trình và biểu đồ.
-- **Một file luật cho AI** định nghĩa các lệnh như `tra cứu:`, `tiến độ`, `lộ trình`, `cập nhật:`.
+![Obsidian mở thư mục bộ não thứ hai: cây thư mục bên trái, graph view với các nút tô màu theo loại bên phải](./_images/bo-nao-thu-hai-obsidian.webp)
 
-Hiện bộ não có 156 nút và hơn 450 quan hệ. Tôi dựng bản đầu trong một buổi sáng.
+_Ảnh chụp thật trong Obsidian. Nhãn trên đồ thị đã được làm mờ vì có tên người thật và chuyện riêng._
 
-## 3) Đồ thị đẹp, nhưng không phải thứ tôi dùng nhiều nhất
+**AI làm việc qua một file luật.** Tôi gõ `tra cứu: …`, `tiến độ`, `lộ trình`, `cập nhật: …`, `review tuần`. Luật quan trọng nhất: không tự đánh dấu "xong" khi tôi chưa nói, không tự đoán con số, và không biến gợi ý của nó thành cam kết của tôi.
+
+## 3) Tôi đã làm thế nào
+
+Cả quá trình mất khoảng một tuần, còn phần dựng hệ thống gói trong một buổi sáng:
+
+1. **Đưa nhật ký cho AI và trả lời câu hỏi mở.** AI đọc hết rồi hỏi lại những chỗ còn thiếu. Tôi trả lời 4 lượt; mỗi lượt nó cập nhật hồ sơ và chỉ ra chỗ con số mâu thuẫn.
+2. **Viết kế hoạch trước khi viết code.** Một file `planning.md` với 7 quyết định thiết kế để tôi chốt: xem bằng Obsidian, mỗi thứ một file trong `tri-thuc/`, nút là nguồn sự thật, tên file không dấu, ghi cả chuyện riêng tư, chỉ commit local rồi đẩy lên repo private.
+3. **Tách văn xuôi thành nút.** AI viết một script chạy một lần, biến hồ sơ, mục tiêu, timeline thành 104 nút đầu tiên. Tôi duyệt lại các con số.
+4. **Script kiểm tra và bảng điều khiển.** Mỗi lần sửa, script báo link gãy, trường thiếu, việc trễ hạn.
+5. **Sửa khi thấy chưa ổn.** Đồ thị chưa giúp được gì, nên thêm dòng thời gian và lộ trình. Kế hoạch quá màu hồng, nên thêm lạm phát và kịch bản. AI ghi nhầm đề xuất thành cam kết, nên thêm trường nguồn gốc.
+6. **Thêm lời hứa và chỉ số**, rồi đẩy lên GitHub private. File phiếu điểm có số định danh thì giữ trên máy, không đưa vào git.
+
+## 4) Đồ thị đẹp, nhưng không phải thứ tôi dùng nhiều nhất
 
 Lúc mở graph view lần đầu, tôi thấy… đẹp. Rồi hết. Tôi muốn xem _những gì mình đã trải qua theo thời gian_, và đồ thị không trả lời được câu đó.
 
@@ -93,7 +128,7 @@ Bài học: **đồ thị chủ yếu là để AI đọc, còn người cần n
 
 Đồ thị vẫn có ích ở ba chỗ: xem toàn bộ bối cảnh quanh một người hay một việc trước khi hành động, biết một việc trễ sẽ kéo theo những gì, và để AI lần theo quan hệ khi trả lời.
 
-## 4) Tính năng đáng giá nhất: đếm lời hứa
+## 5) Tính năng đáng giá nhất: đếm lời hứa
 
 Câu hỏi về tiếng Anh dẫn tôi tới ý tưởng này: **mỗi lần tôi nói "sẽ làm X trước Y", đó là một nút.** Tới hạn thì chấm: giữ đúng hạn, trễ, một phần hay trượt.
 
@@ -108,7 +143,7 @@ Mục tiêu tiếng Anh xuất hiện **7 lần**, trượt 5. Có những câu 
 
 Con số đó đổi cách tôi đặt mục tiêu. Tôi không cần quyết tâm hơn. Tôi cần **biến mọi hạn tự đặt thành hạn bên ngoài**: đóng tiền thi trước, hẹn với một người, cam kết với người đồng hành. Lần duy nhất tôi thật sự đi thi là lần đã có ngày thi cố định.
 
-## 5) Đề xuất của AI không phải lời hứa của bạn
+## 6) Đề xuất của AI không phải lời hứa của bạn
 
 Có một lỗi tôi bắt được khá muộn. Khi tôi trả lời các câu hỏi của AI, nó đề xuất một loạt việc: tách quỹ dự phòng, nghe tiếng Anh trên xe buýt, liên lạc lại một người… Rồi nó ghi những việc đó vào bộ não như thể **tôi đã cam kết**.
 
@@ -118,7 +153,7 @@ Cách sửa là thêm một trường `nguon` cho mỗi mục tiêu: `loc` (tôi
 
 Nếu bạn để AI ghi vào bộ não của mình, hãy **giữ nguồn gốc của từng dòng**. Không thì sau vài tháng, bạn sẽ không còn phân biệt được đâu là ý mình, đâu là ý máy.
 
-## 6) Bắt AI bớt màu hồng
+## 7) Bắt AI bớt màu hồng
 
 Bản kế hoạch tài chính đầu tiên AI dựng cho tôi rất đẹp. Quá đẹp. Tôi yêu cầu tính lại với lạm phát và các cú sốc.
 
@@ -126,7 +161,16 @@ Chỉ riêng lạm phát 4%/năm đã làm một mốc thu nhập tôi đặt t�
 
 Giờ mọi kế hoạch tiền trong bộ não đều có 3 kịch bản: xấu, cơ sở, tốt. Tôi lập kế hoạch theo kịch bản cơ sở, phòng thủ cho kịch bản xấu, và coi kịch bản tốt là phần thưởng.
 
-## 7) Lộ trình nâng cấp, có điều kiện rõ ràng
+## 8) Kết quả sau một tuần
+
+- **Một bản đồ đầy đủ về chính mình:** 156 nút, 457 quan hệ, mọi con số trỏ về đúng dòng nhật ký đã viết ra nó.
+- **Một chẩn đoán thay cho lời tự trách:** câu "vì sao tiếng Anh mãi chưa lên" có 4 nguyên nhân kèm bằng chứng. Ví dụ một kỹ năng đứng yên suốt 21 tháng qua 3 lần thi, và công sức của tôi lại dồn vào kỹ năng khác.
+- **Một con số đổi cách đặt mục tiêu:** 77% so với 11%.
+- **Ranh giới rõ giữa tôi và AI:** 11 việc AI từng đề xuất đang nằm riêng ở mục "chờ duyệt", không còn lẫn vào việc tôi đang làm.
+- **Kế hoạch tiền có lạm phát và 3 kịch bản**, thay cho một con số đẹp.
+- **Dòng thời gian, lộ trình, bảng điều khiển** tự cập nhật mỗi khi tôi gõ một dòng `cập nhật:`.
+
+## 9) Lộ trình nâng cấp, và bước tiếp theo trên chính blog này
 
 | Giai đoạn           | Làm gì                                                             | Bật khi nào                                   |
 | ------------------- | ------------------------------------------------------------------ | --------------------------------------------- |
@@ -134,6 +178,12 @@ Giờ mọi kế hoạch tiền trong bộ não đều có 3 kịch bản: xấu
 | 1. Thói quen        | Cập nhật vài dòng mỗi tuần, review cuối tuần                       | Ngay bây giờ                                  |
 | 2. Chỉ mục trên máy | SQLite tìm kiếm toàn văn, embedding chạy local, một MCP server nhỏ | Repo vượt khoảng 1 MB, hoặc AI bắt đầu bỏ sót |
 | 3. Kiểu khoá học    | Nạp nhiều nguồn, vector search, agent, đánh giá, chạy tự động      | Có từ 2 nguồn tự động trở lên                 |
+
+**Bước tôi muốn làm tiếp: một mục "Hỏi tôi" ngay trên blog này.** Bạn đọc hỏi về hành trình của tôi (tôi học thế nào, chọn việc ra sao, đã sai ở đâu) và AI trả lời từ bộ não thứ hai. Đây mới là kế hoạch, chưa làm. Ba điều kiện tôi đặt ra trước:
+
+- **Chỉ một phần công khai.** Mỗi nút có thêm trường đánh dấu công khai; chỉ những nút tôi đã duyệt mới được xuất sang blog. Lương, tài sản, tên người thật và chuyện riêng không bao giờ rời repo riêng tư.
+- **Trả lời có dẫn nguồn**, trỏ về bài viết hoặc mốc cụ thể. Không có nguồn thì nói không biết.
+- **Đủ nhỏ để chưa cần RAG.** Phần công khai sẽ nhỏ hơn cả repo hiện tại, nên bắt đầu đơn giản trước, đúng tinh thần của cả hệ thống.
 
 Tôi giới hạn việc bảo trì ở **tối đa 1 giờ mỗi tuần**. Một công cụ để bớt dàn trải mà lại thành dự án phụ thứ ba thì thật trớ trêu.
 

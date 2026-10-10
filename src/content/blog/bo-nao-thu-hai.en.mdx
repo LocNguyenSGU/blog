@@ -1,6 +1,6 @@
 ---
 title: "My Second Brain: Turning Two Years of Journals Into a Knowledge Graph With AI"
-description: "How I turned two years of journals into a second brain with Markdown, Obsidian and AI, no RAG needed. The architecture, the lessons, and one number that surprised me."
+description: "How I turned two years of journals into a second brain with Markdown, Obsidian and AI, no RAG needed: the architecture, the process, the results, one surprising number."
 coverImage: "./_images/bo-nao-thu-hai.svg"
 coverAlt: "Connected knowledge nodes on the left and a timeline with milestones on the right"
 pubDate: 2026-10-10
@@ -39,30 +39,55 @@ Great work. Then I measured my own data: **27 Markdown files, about 150 KB**, al
 
 An AI can read that in one pass. My problem wasn't _finding_ information. It was that the information sat inside prose, disconnected.
 
-| Course component   | My lean version                 | Upgrade when                         |
-| ------------------ | ------------------------------- | ------------------------------------ |
-| Notion + crawling  | Hand-written Markdown           | Two or more automatic sources        |
-| MongoDB            | Git + files                     | Another app needs to query it        |
-| Vector search, RAG | Not needed                      | The repo grows past roughly 1 MB     |
-| Agent              | Claude Code + one rules file    | I want to ask from my phone          |
-| Opik, ZenML        | Periodic reviews, manual runs   | Something needs to run automatically |
+| Course component   | My lean version               | Upgrade when                         |
+| ------------------ | ----------------------------- | ------------------------------------ |
+| Notion + crawling  | Hand-written Markdown         | Two or more automatic sources        |
+| MongoDB            | Git + files                   | Another app needs to query it        |
+| Vector search, RAG | Not needed                    | The repo grows past roughly 1 MB     |
+| Agent              | Claude Code + one rules file  | I want to ask from my phone          |
+| Opik, ZenML        | Periodic reviews, manual runs | Something needs to run automatically |
 
 I keep the course as the **long-term destination**, and every upgrade step has a concrete trigger. No trigger, no upgrade.
 
-## 2) A lean architecture: one file per thing
+## 2) The architecture today
 
-The source of truth is Markdown in git. No database. Every entity is its own file with fixed frontmatter:
+One principle: **Markdown in git is the source of truth; everything else is a view generated from it.** No database, no server.
 
-- **Goals**, **stages** of the roadmap, **people**, **projects**
-- **Strengths**, **weaknesses**, **milestones**, **decisions**
-- **Promises** and **metrics** (added later, see section 4)
+```text
+Me ── "update: …" ──▶ Claude Code (reads CLAUDE.md: commands + rules)
+                           │ edits the right nodes, then runs the script
+                           ▼
+   knowledge/  156 .md files (frontmatter + [[...]] links)   ◀── journal/ (original writing, never edited)
+                           │
+          scripts/build_graph.py (Python, standard library only)
+          ├─ graph/graph.json   → read by the AI to answer through relationships
+          ├─ graph/lint.md      → overdue items, broken links, promises due, suggestions to review
+          └─ views/             → timeline, roadmap, promises, metrics (+ SVG charts)
+                           │
+   Obsidian (graph view, backlinks) + Dataview (dashboard.md)
+   git → private GitHub repo (backup)
+```
 
-Relationships are `[[...]]` links. An example goal (illustrative):
+**Node types**, one file each:
+
+| Type                   | Nodes | Examples                                          |
+| ---------------------- | ----- | ------------------------------------------------- |
+| Promises               | 41    | "This summer I'm going all in on English"         |
+| Goals                  | 34    | active, idea, done, dropped                       |
+| Milestones             | 20    | dated events that already happened                |
+| People                 | 13    | who is connected to which goal                    |
+| Strengths / weaknesses | 18    | each with evidence and how to use or fix it       |
+| Projects, decisions    | 16    | status, reasoning, when to revisit                |
+| Metrics                | 6     | dated measurements that chart themselves          |
+| Stages, organizations  | 8     | the 4 stages of my roadmap to age 30              |
+
+They're joined by 457 named relationships: _in stage_, _depends on_, _blocked by_ (a weakness), _supported by_ (a strength), _repeats_ (an older promise), _evidence_ (points back to the journal). An example goal (illustrative):
 
 ```yaml
 type: goal
 title: "Write one blog post a month"
 status: active
+source: me
 deadline: 2027-06-30
 baseline: 0
 current: 2
@@ -72,16 +97,26 @@ blocked_by: ["[[self-set-deadlines-slip]]"]
 supported_by: ["[[delivers-under-external-deadlines]]"]
 ```
 
-Everything else is a **generated view** of the same files:
+Progress is never typed by hand: the script and dashboard compute it from `baseline → current → target`, so it can't drift.
 
-- **Obsidian** to see the graph and click between nodes.
-- **Dataview** for a dashboard: active goals, what's overdue, who to contact.
-- **A Python script** (standard library only) that builds `graph.json`, checks for broken links and missing fields, and generates a timeline, a roadmap and charts.
-- **A rules file for the AI** defining commands like "look up", "progress", "roadmap" and "update".
+![Obsidian with the second-brain folder open: the file tree on the left, the graph view with nodes colored by type on the right](./_images/bo-nao-thu-hai-obsidian.webp)
 
-The brain now has 156 nodes and more than 450 relationships. I built the first version in one morning.
+_A real screenshot from Obsidian. Node labels are blurred because they include real names and private details._
 
-## 3) The graph looks great, but it's not what I use most
+**The AI works through a rules file.** I type "look up: …", "progress", "roadmap", "update: …", "weekly review". The most important rules: never mark something done unless I say so, never guess a number, and never turn its own suggestion into my commitment.
+
+## 3) How I built it
+
+The whole process took about a week; building the system itself fit into one morning:
+
+1. **Gave the AI my journals and answered open questions.** It read everything and asked about the gaps. I answered in 4 rounds; each round it updated my profile and flagged numbers that contradicted each other.
+2. **Planned before coding.** A `planning.md` with 7 design decisions for me to make: view in Obsidian, one file per thing in a knowledge folder, nodes as the source of truth, ASCII-only file names, record private matters too, commit locally and then push to a private repo.
+3. **Split prose into nodes.** The AI wrote a one-off script that turned my profile, goals and timeline into the first 104 nodes. I checked the numbers.
+4. **Validation script and dashboard.** Every edit reports broken links, missing fields and overdue items.
+5. **Fixed what didn't work.** The graph didn't help me, so I added a timeline and a roadmap. The plan was too rosy, so I added inflation and scenarios. The AI recorded suggestions as commitments, so I added a provenance field.
+6. **Added promises and metrics**, then pushed to a private GitHub repo. A document containing an ID number stays on my machine, outside git.
+
+## 4) The graph looks great, but it's not what I use most
 
 The first time I opened the graph view, I thought: nice. And that was it. I wanted to see _what I had been through over time_, and a graph can't answer that.
 
@@ -93,7 +128,7 @@ Lesson: **the graph is mostly for the AI to read. People need other views.** So 
 
 The graph still earns its place in three ways: seeing the full context around a person or task before acting, knowing what else slips when one thing slips, and letting the AI follow relationships when it answers.
 
-## 4) The most valuable feature: counting promises
+## 5) The most valuable feature: counting promises
 
 The English question led to this idea: **every time I say "I'll do X by Y", that's a node.** When the deadline passes, it gets scored: kept on time, kept late, partly kept, or missed.
 
@@ -108,7 +143,7 @@ My English goal appears **7 times**, missed 5. Some of those lines, like _"This 
 
 That number changed how I set goals. I don't need more willpower. I need to **turn every self-set deadline into an external one**: pay for the exam first, book a time with someone, commit to a partner. The only time I actually sat the exam was when I had a fixed date.
 
-## 5) An AI suggestion is not your promise
+## 6) An AI suggestion is not your promise
 
 I caught one mistake late. While I answered the AI's questions, it suggested a list of things: set up an emergency fund, listen to English on my commute, get back in touch with someone. Then it wrote them into my second brain as if **I had committed** to them.
 
@@ -118,7 +153,7 @@ The fix was a `source` field on every goal: me, AI-suggested and accepted, or AI
 
 If you let an AI write into your second brain, **keep the origin of every line**. Otherwise, a few months later, you won't be able to tell your intentions from the machine's.
 
-## 6) Making the AI less rosy
+## 7) Making the AI less rosy
 
 The first financial plan the AI built for me looked great. Too great. I asked it to redo it with inflation and shocks.
 
@@ -126,14 +161,29 @@ Inflation alone, at 4% a year, cut **about a third of the purchasing power** of 
 
 Now every money plan in the brain has three scenarios: bad, base and good. I plan on the base case, defend against the bad one, and treat the good one as a bonus.
 
-## 7) An upgrade path with clear triggers
+## 8) What I got after one week
 
-| Stage              | What                                                                  | Trigger                                          |
-| ------------------ | --------------------------------------------------------------------- | ------------------------------------------------ |
-| 0. Lean            | Markdown, Obsidian, Dataview, validation script, AI commands          | Done                                             |
-| 1. Habit           | A few lines of updates each week, a weekend review                    | Now                                              |
-| 2. Local index     | SQLite full-text search, local embeddings, a small MCP server         | Repo past roughly 1 MB, or the AI starts missing things |
-| 3. Course-level    | Multiple sources, vector search, agents, evaluation, automation       | Two or more automatic sources                    |
+- **A complete map of myself:** 156 nodes, 457 relationships, every number pointing back to the journal line that produced it.
+- **A diagnosis instead of self-blame:** "why hasn't my English improved?" now has 4 causes with evidence. For example, one skill stayed flat for 21 months across 3 tests, while my effort went into a different skill.
+- **One number that changed how I set goals:** 77% versus 11%.
+- **A clear line between me and the AI:** 11 things the AI suggested now sit in a separate "awaiting review" section instead of mixing with what I'm actually doing.
+- **A money plan with inflation and 3 scenarios**, instead of one pretty number.
+- **A timeline, a roadmap and a dashboard** that update themselves whenever I type an "update:" line.
+
+## 9) The upgrade path, and the next step on this blog
+
+| Stage           | What                                                          | Trigger                                                 |
+| --------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| 0. Lean         | Markdown, Obsidian, Dataview, validation script, AI commands  | Done                                                    |
+| 1. Habit        | A few lines of updates each week, a weekend review            | Now                                                     |
+| 2. Local index  | SQLite full-text search, local embeddings, a small MCP server | Repo past roughly 1 MB, or the AI starts missing things |
+| 3. Course-level | Multiple sources, vector search, agents, evaluation, automation | Two or more automatic sources                         |
+
+**What I want to build next: an "Ask me" section right here on this blog.** Readers ask about my journey (how I learn, how I choose work, where I got it wrong) and an AI answers from my second brain. This is a plan, not something I've built. Three conditions come first:
+
+- **Only a public subset.** Every node gets a public flag; only nodes I've approved get exported to the blog. Salary, assets, real names and private matters never leave the private repo.
+- **Answers cite their sources**, pointing to a specific post or milestone. No source, no answer.
+- **Small enough to skip RAG.** The public subset will be smaller than the current repo, so it starts simple, in the spirit of the whole system.
 
 I cap maintenance at **one hour a week**. A tool meant to stop me from spreading too thin becoming my third side project would be a little ironic.
 
