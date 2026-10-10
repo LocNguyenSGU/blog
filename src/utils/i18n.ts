@@ -11,7 +11,7 @@ export const translations = {
     'nav.about': 'About',
 
     // Homepage
-    'home.title': 'Welcome to My Blog',
+    'home.title': 'Welcome to Dev Journal',
     'home.subtitle': 'Sharing knowledge about programming, technology and life',
     'home.readBlog': 'Read Blog',
     'home.aboutMe': 'About Me',
@@ -112,7 +112,7 @@ export const translations = {
     'breadcrumb.categories': 'Categories',
 
     // Footer
-    'footer.copyright': 'My Blog. Built with Astro & Tailwind CSS.',
+    'footer.copyright': 'Dev Journal. Built with Astro & Tailwind CSS.',
     'footer.pillarArticles': 'Pillar articles',
     'footer.topicHubs': 'Topic hubs',
     'footer.categoryArchives': 'Category archives',
@@ -135,7 +135,7 @@ export const translations = {
     'nav.about': 'Giới thiệu',
 
     // Homepage
-    'home.title': 'Chào mừng đến với Blog của tôi',
+    'home.title': 'Chào mừng đến với Dev Journal',
     'home.subtitle': 'Chia sẻ kiến thức về lập trình, công nghệ và cuộc sống',
     'home.readBlog': 'Đọc Blog',
     'home.aboutMe': 'Về Tôi',
@@ -236,7 +236,7 @@ export const translations = {
     'breadcrumb.categories': 'Category',
 
     // Footer
-    'footer.copyright': 'My Blog. Được xây dựng với Astro & Tailwind CSS.',
+    'footer.copyright': 'Dev Journal. Được xây dựng với Astro & Tailwind CSS.',
     'footer.pillarArticles': 'Bài trụ cột',
     'footer.topicHubs': 'Hub chủ đề',
     'footer.categoryArchives': 'Kho category',

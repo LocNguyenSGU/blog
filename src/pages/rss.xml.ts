@@ -1,3 +1,4 @@
+import { SITE_NAME } from '../utils/site';
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { getLocalizedBlogPostUrl } from '../utils/routing';
@@ -7,7 +8,7 @@ export async function GET(context: { site: URL | undefined }) {
   const site = context.site?.toString() ?? 'https://devjournal.fun';
 
   return rss({
-    title: 'Loc Nguyen Blog',
+    title: SITE_NAME,
     description: 'Blog cá nhân về lập trình, AI, công việc và phát triển bản thân.',
     site,
     items: posts

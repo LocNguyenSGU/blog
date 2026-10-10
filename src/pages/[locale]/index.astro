@@ -1,4 +1,5 @@
 ---
+import { SITE_NAME } from '../../utils/site';
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../../utils/i18n';
 import { t } from '../../utils/i18n';
@@ -56,7 +57,7 @@ try {
 ---
 
 <BaseLayout
-  title={locale === 'en' ? 'Loc Nguyen Blog | Programming, AI, and Personal Growth' : 'Blog Lộc Nguyễn | Lập trình, AI và phát triển bản thân'}
+  title={locale === 'en' ? `${SITE_NAME} | Programming, AI, and Personal Growth` : `${SITE_NAME} | Lập trình, AI và phát triển bản thân`}
   description={locale === 'en'
     ? 'Essays and practical guides about programming, AI, work, and personal growth.'
     : 'Các bài viết và hướng dẫn thực tế về lập trình, AI, công việc và phát triển bản thân.'}
