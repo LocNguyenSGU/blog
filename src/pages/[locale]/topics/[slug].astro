@@ -51,12 +51,12 @@ const topicCollectionSchema = {
   <div class="space-y-12">
     <Breadcrumbs items={breadcrumbs} />
     <section class="space-y-4 py-12">
-      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700">{t('topic.hub', locale)}</p>
+      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">{t('topic.hub', locale)}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{topic.name}</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl">{topic.description}</p>
-      <div class="card p-6 max-w-4xl"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{t('topic.howToUse', locale)}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{topic.intro}</p></div>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl">{topic.description}</p>
+      <div class="card p-6 max-w-4xl"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{t('topic.howToUse', locale)}</h2><p class="text-gray-600 dark:text-gray-400">{topic.intro}</p></div>
     </section>
-    {pillarPost && <section class="space-y-5"><div><p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-2">{t('topic.pillar', locale)}</p><h2 class="font-serif text-3xl font-semibold tracking-tight mb-3">{t('topic.startHere', locale)}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl">{topic.pillarDescription}</p></div><FeaturedPost post={pillarPost} /></section>}
+    {pillarPost && <section class="space-y-5"><div><p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-2">{t('topic.pillar', locale)}</p><h2 class="font-serif text-3xl font-semibold tracking-tight mb-3">{t('topic.startHere', locale)}</h2><p class="text-gray-600 dark:text-gray-400 max-w-3xl">{topic.pillarDescription}</p></div><FeaturedPost post={pillarPost} /></section>}
     {featuredPost && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('topic.moreInTopic', locale)}</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><PostCard post={featuredPost} />{otherPosts.map((post) => <PostCard post={post} />)}</div></section>}
     <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('topic.exploreOther', locale)}</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-6">{otherTopics.map((topicSlug) => <TopicCard slug={topicSlug} locale={locale} />)}</div></section>
   </div>

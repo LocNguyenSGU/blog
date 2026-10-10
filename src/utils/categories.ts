@@ -20,8 +20,8 @@ export const CATEGORIES = {
       vi: 'Trang này gom các bài giúp người đọc đi từ học syntax sang làm project thật, viết nội dung kỹ thuật và xây tư duy kỹ thuật vững hơn.',
     },
     color: 'blue',
-    bgClass: 'bg-blue-500/20 text-blue-700 dark:text-blue-300',
-    borderClass: 'border-blue-500/30'
+    bgClass: 'bg-surface/90 text-ink border border-line',
+    borderClass: 'border-line'
   },
   lifestyle: {
     name: 'Lifestyle',
@@ -42,8 +42,8 @@ export const CATEGORIES = {
       vi: 'Trang này tập trung vào năng lượng, thói quen và mặt thực tế của việc duy trì hiệu suất mà không kiệt sức.',
     },
     color: 'green',
-    bgClass: 'bg-green-500/20 text-green-700 dark:text-green-300',
-    borderClass: 'border-green-500/30'
+    bgClass: 'bg-surface/90 text-ink border border-line',
+    borderClass: 'border-line'
   },
   personal: {
     name: 'Personal',
@@ -64,8 +64,8 @@ export const CATEGORIES = {
       vi: 'Trang này gom các bài viết thiên về chiêm nghiệm, phát triển bản thân và ra quyết định khi con đường còn chưa rõ ràng.',
     },
     color: 'purple',
-    bgClass: 'bg-purple-500/20 text-purple-700 dark:text-purple-300',
-    borderClass: 'border-purple-500/30'
+    bgClass: 'bg-surface/90 text-ink border border-line',
+    borderClass: 'border-line'
   }
 } as const;
 

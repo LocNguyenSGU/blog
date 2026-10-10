@@ -120,14 +120,14 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
   <div class="space-y-12">
     <div>
       <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight mb-2">{t('blog.title', locale)}</h1>
-      <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 text-lg">{t('blog.subtitle', locale)}</p>
+      <p class="text-gray-600 dark:text-gray-400 text-lg">{t('blog.subtitle', locale)}</p>
     </div>
 
-    {errorMessage && <div class="bg-red-50 dark:bg-red-900/20 sepia:bg-red-100 border border-red-200 dark:border-red-800 sepia:border-red-300 rounded-lg p-6 text-center"><p class="text-red-600 dark:text-red-400 sepia:text-red-700">{errorMessage}</p></div>}
+    {errorMessage && <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center"><p class="text-red-600 dark:text-red-400">{errorMessage}</p></div>}
 
     {!errorMessage && publishedPosts.length === 0 && (
       <div class="card p-8 text-center">
-        <p class="text-gray-700 dark:text-gray-200 sepia:text-sepia-900 text-lg mb-4">
+        <p class="text-gray-700 dark:text-gray-200 text-lg mb-4">
           {t(locale === 'en' ? 'blog.noPostsEn' : 'blog.noPostsVi', locale)}
         </p>
       </div>
@@ -137,13 +137,13 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
       <section class="space-y-6">
         {(activeTopic || activeCategory) && (
           <div class="card p-6">
-            <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700 mb-3">
+            <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-3">
               {activeTopic ? t('blog.topicFilter', locale) : t('blog.categoryFilter', locale)}
             </p>
             <h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">
               {activeTopic ? getTopicInfo(activeTopic, locale).name : getCategoryIntro(activeCategory!, locale).title}
             </h2>
-            <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-4">
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
               {activeTopic ? getTopicInfo(activeTopic, locale).intro : getCategoryIntro(activeCategory!, locale).body}
             </p>
             <a href={activeTopic ? getLocalizedTopicUrl(locale, activeTopic) : getLocalizedCategoryUrl(locale, activeCategory!)} class="ui-link font-medium">
@@ -155,11 +155,11 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         <div>
           <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{t('blog.filterByCategory', locale)}</h2>
           <div class="flex flex-wrap gap-3">
-            <a href={buildBlogUrl({ category: null, topic: activeTopic })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": !activeCategory, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeCategory }]}>
+            <a href={buildBlogUrl({ category: null, topic: activeTopic })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100": !activeCategory, "bg-transparent text-gray-600 dark:text-gray-300": activeCategory }]}>
               {t('blog.allCategories', locale)}
             </a>
             {categoryCounts.map((category) => (
-              <a href={buildBlogUrl({ category: category.slug, topic: activeTopic })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": activeCategory === category.slug, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeCategory !== category.slug }]}>
+              <a href={buildBlogUrl({ category: category.slug, topic: activeTopic })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100": activeCategory === category.slug, "bg-transparent text-gray-600 dark:text-gray-300": activeCategory !== category.slug }]}>
                 {getCategoryLabel(category.slug, locale)} ({category.count})
               </a>
             ))}
@@ -169,11 +169,11 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
         <div>
           <h2 class="font-serif text-2xl font-semibold tracking-tight mb-4">{t('blog.filterByTopic', locale)}</h2>
           <div class="flex flex-wrap gap-3">
-            <a href={buildBlogUrl({ category: activeCategory, topic: null })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": !activeTopic, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeTopic }]}>
+            <a href={buildBlogUrl({ category: activeCategory, topic: null })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100": !activeTopic, "bg-transparent text-gray-600 dark:text-gray-300": activeTopic }]}>
               {t('blog.allTopics', locale)}
             </a>
             {topicCounts.map((topic) => (
-              <a href={buildBlogUrl({ category: activeCategory, topic: topic.slug })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 sepia:bg-sepia-100 text-gray-900 dark:text-gray-100 sepia:text-sepia-900": activeTopic === topic.slug, "bg-transparent text-gray-600 dark:text-gray-300 sepia:text-sepia-800": activeTopic !== topic.slug }]}>
+              <a href={buildBlogUrl({ category: activeCategory, topic: topic.slug })} class:list={["px-4 py-2 rounded-full border text-sm font-medium transition-colors hairline", { "bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100": activeTopic === topic.slug, "bg-transparent text-gray-600 dark:text-gray-300": activeTopic !== topic.slug }]}>
                 {getTopicInfo(topic.slug, locale).name} ({topic.count})
               </a>
             ))}
@@ -183,8 +183,8 @@ const itemListSchema = !errorMessage && filteredPosts.length > 0
     )}
 
     {!errorMessage && publishedPosts.length > 0 && filteredPosts.length === 0 && (
-      <div class="bg-amber-50 dark:bg-amber-900/20 sepia:bg-amber-100 border border-amber-200 dark:border-amber-800 sepia:border-amber-300 rounded-lg p-8 text-center">
-        <p class="text-amber-700 dark:text-amber-300 sepia:text-amber-800 text-lg mb-4">
+      <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-8 text-center">
+        <p class="text-amber-700 dark:text-amber-300 text-lg mb-4">
           {t('blog.noPostsMatch', locale)}
         </p>
         <a href={buildBlogUrl({ category: null, topic: null })} class="ui-link font-medium">

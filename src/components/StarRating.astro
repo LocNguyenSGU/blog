@@ -11,7 +11,7 @@ const { rating } = Astro.props;
 <div class="flex items-center gap-1">
   {Array.from({ length: 5 }, (_, i) => (
     <Star
-      class={`w-4 h-4 ${i < rating ? 'text-yellow-500' : 'text-gray-300 dark:text-gray-600 sepia:text-sepia-400'}`}
+      class={`w-4 h-4 ${i < rating ? 'text-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
       aria-hidden="true"
       fill={i < rating ? 'currentColor' : 'none'}
       stroke="currentColor"

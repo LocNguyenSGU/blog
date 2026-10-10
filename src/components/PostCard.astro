@@ -40,12 +40,12 @@ const postUrl = getPostUrl(post);
       </h3>
       
       {post.data.description && (
-        <p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700 text-sm mb-4 line-clamp-3">
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
           {post.data.description}
         </p>
       )}
       
-      <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 sepia:text-sepia-600">
+      <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
         <time datetime={post.data.pubDate.toISOString()}>
           {formattedDate}
         </time>

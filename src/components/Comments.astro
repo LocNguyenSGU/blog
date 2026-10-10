@@ -11,12 +11,12 @@ const loadLabel = locale === 'vi' ? 'Tải bình luận' : 'Load comments';
 const loadingLabel = locale === 'vi' ? 'Đang tải bình luận...' : 'Loading comments...';
 ---
 
-<section class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700 sepia:border-sepia-300">
+<section class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <h2 class="font-serif text-2xl font-semibold tracking-tight">{t('post.comments', locale)}</h2>
     <button
       type="button"
-      class="inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-2 text-sm font-medium transition hover:border-gray-400 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-800 sepia:border-sepia-300 sepia:hover:border-sepia-500 sepia:hover:bg-sepia-100"
+      class="inline-flex items-center justify-center rounded-full border border-gray-300 px-4 py-2 text-sm font-medium transition hover:border-gray-400 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-800"
       data-comments-trigger
       data-loading-label={loadingLabel}
       data-locale={locale}

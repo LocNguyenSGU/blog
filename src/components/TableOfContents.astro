@@ -21,7 +21,7 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
       class="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto"
     >
       <div class="card p-6 shadow-sm">
-        <h2 class="font-serif font-semibold tracking-tight text-lg mb-4 text-gray-900 dark:text-white sepia:text-sepia-900">
+        <h2 class="font-serif font-semibold tracking-tight text-lg mb-4 text-gray-900 dark:text-white">
           {tocLabel}
         </h2>
         <ul class="space-y-2 text-sm">
@@ -35,7 +35,7 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
             >
               <a
                 href={`#${heading.slug}`}
-                class="block py-1 px-3 rounded transition-all duration-200 text-gray-700 dark:text-gray-300 sepia:text-sepia-800 hover:bg-gray-50 dark:hover:bg-gray-800 sepia:hover:bg-sepia-100"
+                class="block py-1 px-3 rounded transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
                 {heading.text}
               </a>
@@ -71,18 +71,18 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
         role="dialog"
         aria-modal="true"
         aria-labelledby="toc-mobile-title"
-        class="fixed inset-y-0 right-0 w-80 max-w-[90vw] bg-white dark:bg-gray-800 sepia:bg-sepia-50 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto"
+        class="fixed inset-y-0 right-0 w-80 max-w-[90vw] bg-white dark:bg-gray-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto"
       >
         <div class="p-6">
           <div class="flex items-center justify-between mb-6">
-            <h2 id="toc-mobile-title" class="font-serif font-semibold tracking-tight text-xl text-gray-900 dark:text-white sepia:text-sepia-900">
+            <h2 id="toc-mobile-title" class="font-serif font-semibold tracking-tight text-xl text-gray-900 dark:text-white">
               {tocLabel}
             </h2>
             <button
               id="toc-mobile-close"
               type="button"
               aria-label={locale === 'vi' ? 'Đóng' : 'Close'}
-              class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sepia:text-sepia-600 sepia:hover:text-sepia-900"
+              class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
               <X class="w-6 h-6" aria-hidden="true" />
             </button>
@@ -99,7 +99,7 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
               >
                 <a
                   href={`#${heading.slug}`}
-                  class="block py-2 px-3 rounded transition-all duration-200 text-gray-700 dark:text-gray-300 sepia:text-sepia-800 hover:bg-gray-50 dark:hover:bg-gray-700 sepia:hover:bg-sepia-200"
+                  class="block py-2 px-3 rounded transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   {heading.text}
                 </a>
@@ -113,64 +113,40 @@ const tocLabel = locale === 'vi' ? 'Mục lục' : 'Table of Contents';
 )}
 
 <style>
-  /* Active TOC item styling */
+  /* Mục đang đọc: viền trái và chữ màu nhấn */
   .toc-item.active a,
   .toc-item-mobile.active a {
-    @apply font-semibold text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 border-gray-900 dark:border-gray-100;
-    border-left-width: 3px;
-    padding-left: 0.625rem; /* Adjust for border */
+    font-weight: 600;
+    color: rgb(var(--accent));
+    background-color: rgb(var(--accent) / 0.08);
+    border-left: 2px solid rgb(var(--accent));
+    padding-left: 0.7rem;
   }
 
-  /* Sepia mode active state */
-  :global(.sepia) .toc-item.active a,
-  :global(.sepia) .toc-item-mobile.active a {
-    color: #6b5744; /* sepia-900 */
-    background-color: #f4ead5; /* sepia-200 */
-    border-left-color: #b2a57e; /* sepia-700 */
-  }
-
-  /* Heading highlight animation */
   @keyframes highlight-flash {
-    0%, 100% { background-color: transparent; }
-    50% { background-color: rgba(251, 191, 36, 0.3); }
+    0%,
+    100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgb(var(--accent) / 0.15);
+    }
   }
 
   :global(.heading-highlight) {
     animation: highlight-flash 1.5s ease-in-out;
   }
 
-  /* Smooth scrolling */
-  :global(html) {
-    scroll-behavior: smooth;
+  #toc-desktop {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--line)) transparent;
   }
-
-  /* Custom scrollbar for TOC */
   #toc-desktop::-webkit-scrollbar {
     width: 6px;
   }
-
-  #toc-desktop::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-gray-700  rounded;
-  }
-
-  :global(.sepia) #toc-desktop::-webkit-scrollbar-track {
-    background-color: #f4ead5; /* sepia-200 */
-  }
-
   #toc-desktop::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-600  rounded;
-  }
-
-  :global(.sepia) #toc-desktop::-webkit-scrollbar-thumb {
-    background-color: #e5d5b1; /* sepia-400 */
-  }
-
-  #toc-desktop::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400 dark:bg-gray-500;
-  }
-
-  :global(.sepia) #toc-desktop::-webkit-scrollbar-thumb:hover {
-    background-color: #d4c5a0; /* sepia-500 */
+    background-color: rgb(var(--line));
+    border-radius: 9999px;
   }
 </style>
 

@@ -105,25 +105,25 @@ document.addEventListener('DOMContentLoaded', () => {
       : document.documentElement.lang === 'vi'
         ? 'vi'
         : localStorage.getItem('locale') || 'vi';
-    const currentTheme = localStorage.getItem('theme') || 'sepia';
+    const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
     // Highlight language
     mobileLangButtons.forEach(btn => {
       const lang = btn.getAttribute('data-mobile-lang');
-      btn.classList.remove('bg-blue-600', 'text-white', 'dark:text-white');
+      btn.classList.remove('bg-accent', 'text-white', 'dark:text-gray-900');
 
       if (lang === currentLang) {
-        btn.classList.add('bg-blue-600', 'text-white', 'dark:text-white');
+        btn.classList.add('bg-accent', 'text-white', 'dark:text-gray-900');
       }
     });
 
     // Highlight theme
     mobileThemeButtons.forEach(btn => {
       const theme = btn.getAttribute('data-mobile-theme');
-      btn.classList.remove('ring-2', 'ring-blue-600', 'bg-blue-600', 'text-white', 'dark:text-white');
+      btn.classList.remove('ring-2', 'ring-accent', 'bg-accent', 'text-white', 'dark:text-gray-900');
 
       if (theme === currentTheme) {
-        btn.classList.add('bg-blue-600', 'text-white', 'dark:text-white');
+        btn.classList.add('bg-accent', 'text-white', 'dark:text-gray-900');
       }
     });
   }

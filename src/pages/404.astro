@@ -17,29 +17,29 @@ const blogButtonText = locale === 'en' ? 'Browse Blog' : 'Xem Blog';
   <section class="flex-grow container mx-auto px-4 py-16">
     <div class="max-w-2xl mx-auto text-center">
       <div class="mb-8">
-        <h1 class="text-9xl font-bold text-gray-300 dark:text-gray-700 sepia:text-sepia-400">
+        <h1 class="text-9xl font-bold text-gray-300 dark:text-gray-700">
           404
         </h1>
       </div>
       
-      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100 sepia:text-sepia-900">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">
         {title}
       </h2>
       
-      <p class="text-lg text-gray-600 dark:text-gray-400 sepia:text-sepia-700 mb-8">
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
         {description}
       </p>
       
       <div class="flex gap-4 justify-center">
         <a 
           href={getLocalizedHomeUrl(locale)}
-          class="px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 sepia:bg-sepia-600 sepia:hover:bg-sepia-700 text-white rounded-lg transition-colors font-medium"
+          class="px-6 py-3 bg-accent hover:bg-accent-strong text-white dark:text-gray-950 rounded-lg transition-colors font-medium"
         >
           {homeButtonText}
         </a>
         <a 
           href={getLocalizedBlogUrl(locale)}
-          class="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 sepia:bg-sepia-200 sepia:hover:bg-sepia-300 text-gray-900 dark:text-gray-100 sepia:text-sepia-900 rounded-lg transition-colors font-medium"
+          class="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-lg transition-colors font-medium"
         >
           {blogButtonText}
         </a>
