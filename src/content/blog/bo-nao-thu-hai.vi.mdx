@@ -1,0 +1,169 @@
+---
+title: "Bộ Não Thứ Hai Của Tôi: Biến 2 Năm Nhật Ký Thành Đồ Thị Tri Thức Với AI"
+description: "Tôi biến 2 năm nhật ký thành bộ não thứ hai bằng Markdown, Obsidian và AI, không cần RAG. Kiến trúc, bài học, và con số làm tôi giật mình."
+coverImage: "./_images/bo-nao-thu-hai.svg"
+coverAlt: "Sơ đồ các nút tri thức nối với nhau bên trái và một dòng thời gian có các mốc bên phải"
+pubDate: 2026-10-10
+faqs:
+  - question: "Xây bộ não thứ hai có cần biết lập trình không?"
+    answer: "Phần cốt lõi thì không: một thư mục Markdown, mỗi thứ một file, cộng Obsidian là đủ để xem đồ thị và tra cứu. Biết lập trình chỉ giúp thêm phần tự động như script kiểm tra hay vẽ biểu đồ."
+  - question: "Khi nào mới cần RAG hay vector database?"
+    answer: "Khi dữ liệu lớn đến mức AI không đọc hết được trong một lần, hoặc khi bạn nạp tự động từ nhiều nguồn chưa được kiểm chứng. Với vài chục file nhật ký đã tự viết, vấn đề là cấu trúc chứ không phải truy xuất."
+  - question: "Nên dùng Notion hay Markdown cho bộ não thứ hai?"
+    answer: "Notion tiện để ghi, nhưng Markdown trong git cho bạn toàn quyền dữ liệu, xem được lịch sử thay đổi, và AI hay script nào cũng đọc được trực tiếp. Nếu muốn AI làm việc sâu với dữ liệu, Markdown dễ bắt đầu hơn."
+category: "programming"
+topics: ["ai", "learning"]
+author: "Loc Nguyen"
+lang: "vi"
+translationKey: "bo-nao-thu-hai"
+draft: true
+---
+
+Năm 20 tuổi, tôi viết một bản kế hoạch 10 năm. Sau đó cứ vài tháng tôi lại mở ra viết tiếp: mình đang ở đâu, có bao nhiêu tiền, mục tiêu nào đạt, mục tiêu nào chưa.
+
+Hai năm trôi qua, file đó thành 8 lần check-in. Và tôi bắt đầu không đọc lại nữa. Trong một lần viết, tôi còn tự ghi: _"khá là vội và lười để đọc hết lại từ đầu"_.
+
+Rồi tôi đưa toàn bộ cho AI đọc và hỏi một câu đơn giản: vì sao tiếng Anh của tôi mãi chưa lên?
+
+AI trả lời bằng chính những dòng tôi đã viết, kèm ngày tháng. Có những việc tôi đã hứa, đã làm, mà tôi **không còn nhớ**. Đó là lúc tôi quyết định biến đống nhật ký thành một bộ não thứ hai thật sự.
+
+## Câu trả lời ngắn
+
+**Khi dữ liệu còn nhỏ, bộ não thứ hai không cần vector database hay RAG: một thư mục Markdown có cấu trúc, mỗi thứ một file, cộng một AI đọc được toàn bộ, đã đủ để thấy những pattern bạn không tự thấy.** Phần khó không phải công nghệ, mà là tách tri thức thành các mẩu có quan hệ rõ ràng, và tách bạch điều bạn thật sự cam kết với điều AI gợi ý.
+
+## 1) Vì sao tôi không làm theo kiến trúc "chuẩn"
+
+Tôi tham khảo khoá [Second Brain AI Assistant](https://github.com/decodingai-magazine/second-brain-ai-assistant-course) của Decoding AI. Đó là một hệ thống đầy đủ: nạp dữ liệu từ Notion và crawl hàng trăm link, lưu vào MongoDB, chunk và vector search, fine-tune Llama 3.1 8B để tóm tắt, agent trả lời bằng RAG, đánh giá bằng Opik, điều phối pipeline bằng ZenML.
+
+Rất hay. Nhưng khi tôi đo dữ liệu của mình: **27 file Markdown, khoảng 150 KB**, tất cả do tôi tự viết và tự kiểm chứng.
+
+Với lượng dữ liệu đó, AI đọc hết trong một lần. Vấn đề của tôi không phải _tìm_ thông tin, mà là thông tin nằm lẫn trong văn xuôi, không nối với nhau.
+
+| Thành phần trong khoá học | Bản gọn của tôi             | Khi nào nâng cấp                  |
+| ------------------------- | --------------------------- | --------------------------------- |
+| Notion + crawl            | Markdown tự viết            | Khi có từ 2 nguồn tự động trở lên |
+| MongoDB                   | Git + file                  | Khi app khác cần truy vấn         |
+| Vector search, RAG        | Không cần                   | Khi repo vượt khoảng 1 MB         |
+| Agent                     | Claude Code + một file luật | Khi muốn hỏi từ điện thoại        |
+| Opik, ZenML               | Review định kỳ, chạy lệnh tay | Khi có việc chạy tự động        |
+
+Tôi giữ khoá học làm **đích đến dài hạn**, và mỗi bước nâng cấp đều có điều kiện kích hoạt cụ thể. Chưa tới điều kiện thì chưa làm.
+
+## 2) Kiến trúc tinh gọn: mỗi thứ một file
+
+Nguồn sự thật là Markdown trong git. Không database. Mỗi thực thể là một file riêng, có frontmatter cố định:
+
+- **Mục tiêu**, **chặng** của lộ trình, **người**, **dự án**
+- **Điểm mạnh**, **điểm yếu**, **mốc**, **quyết định**
+- **Lời hứa** và **chỉ số** (thêm sau, xem phần 4)
+
+Quan hệ giữa chúng là liên kết `[[...]]`. Ví dụ một mục tiêu (minh hoạ):
+
+```yaml
+type: muc-tieu
+title: "Viết 1 bài blog mỗi tháng"
+status: dang-chay
+deadline: 2027-06-30
+baseline: 0
+current: 2
+target: 9
+thuoc_chang: "[[chang-1-on-dinh]]"
+bi_can_boi: ["[[han-tu-dat-thi-truot]]"]
+duoc_ho_tro_boi: ["[[ve-dich-khi-co-han-ngoai]]"]
+```
+
+Từ đó, mọi thứ khác đều là **góc nhìn sinh tự động** từ cùng một bộ file:
+
+- **Obsidian** để xem đồ thị và bấm qua lại giữa các nút.
+- **Dataview** dựng bảng điều khiển: mục tiêu đang chạy, cái nào trễ hạn, người cần liên lạc.
+- **Một script Python** (chỉ dùng thư viện chuẩn) dựng `graph.json`, kiểm tra link gãy và trường thiếu, rồi sinh dòng thời gian, lộ trình và biểu đồ.
+- **Một file luật cho AI** định nghĩa các lệnh như `tra cứu:`, `tiến độ`, `lộ trình`, `cập nhật:`.
+
+Hiện bộ não có 156 nút và hơn 450 quan hệ. Tôi dựng bản đầu trong một buổi sáng.
+
+## 3) Đồ thị đẹp, nhưng không phải thứ tôi dùng nhiều nhất
+
+Lúc mở graph view lần đầu, tôi thấy… đẹp. Rồi hết. Tôi muốn xem _những gì mình đã trải qua theo thời gian_, và đồ thị không trả lời được câu đó.
+
+Bài học: **đồ thị chủ yếu là để AI đọc, còn người cần những góc nhìn khác.** Tôi thêm:
+
+- **Dòng thời gian**: các mốc đã qua, xếp theo năm.
+- **Lộ trình**: biểu đồ gantt 12 tháng tới, việc nào sắp tới hạn thì đỏ.
+- **Bảng điều khiển**: tiến độ tính tự động từ con số, không ghi tay.
+
+Đồ thị vẫn có ích ở ba chỗ: xem toàn bộ bối cảnh quanh một người hay một việc trước khi hành động, biết một việc trễ sẽ kéo theo những gì, và để AI lần theo quan hệ khi trả lời.
+
+## 4) Tính năng đáng giá nhất: đếm lời hứa
+
+Câu hỏi về tiếng Anh dẫn tôi tới ý tưởng này: **mỗi lần tôi nói "sẽ làm X trước Y", đó là một nút.** Tới hạn thì chấm: giữ đúng hạn, trễ, một phần hay trượt.
+
+AI đọc lại 8 file nhật ký và tìm được 41 lời hứa. Tôi chia chúng theo một tiêu chí: **hạn do người khác đặt** (trường, công ty, ban tổ chức, ngày thi đã đăng ký) hay **hạn tự đặt** ("hè này", "trong năm nay", "tuần sau").
+
+Kết quả trên 31 lời hứa đã chấm được:
+
+- Hạn bên ngoài: **giữ đúng hạn 77%**.
+- Hạn tự đặt: **giữ đúng hạn 11%**.
+
+Mục tiêu tiếng Anh xuất hiện **7 lần**, trượt 5. Có những câu như _"Hè này all in vào tiếng anh"_ mà tôi viết rất quyết tâm, rồi quên mất.
+
+Con số đó đổi cách tôi đặt mục tiêu. Tôi không cần quyết tâm hơn. Tôi cần **biến mọi hạn tự đặt thành hạn bên ngoài**: đóng tiền thi trước, hẹn với một người, cam kết với người đồng hành. Lần duy nhất tôi thật sự đi thi là lần đã có ngày thi cố định.
+
+## 5) Đề xuất của AI không phải lời hứa của bạn
+
+Có một lỗi tôi bắt được khá muộn. Khi tôi trả lời các câu hỏi của AI, nó đề xuất một loạt việc: tách quỹ dự phòng, nghe tiếng Anh trên xe buýt, liên lạc lại một người… Rồi nó ghi những việc đó vào bộ não như thể **tôi đã cam kết**.
+
+Tôi phải nói rõ: "Mấy cái này tôi chưa hứa."
+
+Cách sửa là thêm một trường `nguon` cho mỗi mục tiêu: `loc` (tôi tự đặt), `ai-da-nhan` (AI đề xuất, tôi đã nhận), `ai` (AI đề xuất, tôi chưa nhận). Đề xuất chưa nhận chỉ được ở trạng thái "ý định", và bảng điều khiển có riêng một mục để tôi duyệt.
+
+Nếu bạn để AI ghi vào bộ não của mình, hãy **giữ nguồn gốc của từng dòng**. Không thì sau vài tháng, bạn sẽ không còn phân biệt được đâu là ý mình, đâu là ý máy.
+
+## 6) Bắt AI bớt màu hồng
+
+Bản kế hoạch tài chính đầu tiên AI dựng cho tôi rất đẹp. Quá đẹp. Tôi yêu cầu tính lại với lạm phát và các cú sốc.
+
+Chỉ riêng lạm phát 4%/năm đã làm một mốc thu nhập tôi đặt từ năm 20 tuổi **mất khoảng một phần ba sức mua** sau 10 năm. Thêm các khoản "một lần" mà năm nào cũng có (Tết, đám cưới, thiết bị hỏng, lệ phí thi), số tiền thật sự dư mỗi tháng nhỏ hơn hẳn con số trên giấy.
+
+Giờ mọi kế hoạch tiền trong bộ não đều có 3 kịch bản: xấu, cơ sở, tốt. Tôi lập kế hoạch theo kịch bản cơ sở, phòng thủ cho kịch bản xấu, và coi kịch bản tốt là phần thưởng.
+
+## 7) Lộ trình nâng cấp, có điều kiện rõ ràng
+
+| Giai đoạn           | Làm gì                                                             | Bật khi nào                                   |
+| ------------------- | ------------------------------------------------------------------ | --------------------------------------------- |
+| 0. Bản gọn          | Markdown, Obsidian, Dataview, script kiểm tra, lệnh cho AI         | Đã xong                                       |
+| 1. Thói quen        | Cập nhật vài dòng mỗi tuần, review cuối tuần                       | Ngay bây giờ                                  |
+| 2. Chỉ mục trên máy | SQLite tìm kiếm toàn văn, embedding chạy local, một MCP server nhỏ | Repo vượt khoảng 1 MB, hoặc AI bắt đầu bỏ sót |
+| 3. Kiểu khoá học    | Nạp nhiều nguồn, vector search, agent, đánh giá, chạy tự động      | Có từ 2 nguồn tự động trở lên                 |
+
+Tôi giới hạn việc bảo trì ở **tối đa 1 giờ mỗi tuần**. Một công cụ để bớt dàn trải mà lại thành dự án phụ thứ ba thì thật trớ trêu.
+
+## Bắt đầu trong một buổi sáng
+
+1. Gom mọi ghi chép về bản thân vào **một thư mục Markdown**, đưa vào git.
+2. Chọn 5–6 loại thực thể quan trọng với bạn (mục tiêu, người, dự án…), **mỗi thứ một file**, có vài trường cố định.
+3. Mở thư mục bằng **Obsidian**, cài **Dataview**, dựng một bảng mục tiêu đang chạy.
+4. Viết một file luật cho AI: nó được sửa gì, không được sửa gì, và **không được tự biến gợi ý thành cam kết của bạn**.
+5. Hỏi AI một câu bạn đã né từ lâu.
+
+Việc nhỏ nhất bạn có thể làm ngay hôm nay: **viết ra 5 lời hứa gần nhất bạn từng nói với chính mình**, đánh dấu giữ hay trượt, và đếm xem cái nào có hạn do người khác đặt. Con số đó có thể nói với bạn nhiều hơn bất kỳ bộ công cụ nào.
+
+## Câu hỏi thường gặp
+
+### Xây bộ não thứ hai có cần biết lập trình không?
+
+Phần cốt lõi thì không: một thư mục Markdown, mỗi thứ một file, cộng Obsidian là đủ để xem đồ thị và tra cứu. Biết lập trình chỉ giúp thêm phần tự động như script kiểm tra hay vẽ biểu đồ.
+
+### Khi nào mới cần RAG hay vector database?
+
+Khi dữ liệu lớn đến mức AI không đọc hết được trong một lần, hoặc khi bạn nạp tự động từ nhiều nguồn chưa được kiểm chứng. Với vài chục file nhật ký đã tự viết, vấn đề là cấu trúc chứ không phải truy xuất.
+
+### Nên dùng Notion hay Markdown cho bộ não thứ hai?
+
+Notion tiện để ghi, nhưng Markdown trong git cho bạn toàn quyền dữ liệu, xem được lịch sử thay đổi, và AI hay script nào cũng đọc được trực tiếp. Nếu muốn AI làm việc sâu với dữ liệu, Markdown dễ bắt đầu hơn.
+
+## Nguồn tham khảo
+
+- [Second Brain AI Assistant course, Decoding AI](https://github.com/decodingai-magazine/second-brain-ai-assistant-course)
+- [Obsidian](https://obsidian.md)
+- [Obsidian Dataview](https://github.com/blacksmithgu/obsidian-dataview)
+- [Mermaid: timeline và gantt](https://mermaid.js.org)
