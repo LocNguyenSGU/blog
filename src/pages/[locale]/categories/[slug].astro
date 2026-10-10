@@ -49,10 +49,10 @@ const categorySchema = {
   <div class="space-y-12">
     <Breadcrumbs items={breadcrumbs} />
     <section class="space-y-4 py-12">
-      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 sepia:text-sepia-700">{t('category.archive', locale)}</p>
+      <p class="text-sm uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">{t('category.archive', locale)}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{getCategoryLabel(category, locale)}</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl">{getCategoryDescription(category, locale)}</p>
-      <div class="card p-6 max-w-4xl"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{intro.title}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{intro.body}</p></div>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl">{getCategoryDescription(category, locale)}</p>
+      <div class="card p-6 max-w-4xl"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{intro.title}</h2><p class="text-gray-600 dark:text-gray-400">{intro.body}</p></div>
     </section>
     {featuredPost && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('category.featured', locale)}</h2><FeaturedPost post={featuredPost} /></section>}
     {otherPosts.length > 0 && <section><h2 class="font-serif text-2xl font-semibold tracking-tight mb-6">{t('category.more', locale)}</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{otherPosts.map((post) => <PostCard post={post} />)}</div></section>}

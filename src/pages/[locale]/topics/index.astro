@@ -43,8 +43,8 @@ const topicsCollectionSchema = {
     <Breadcrumbs items={breadcrumbs} />
     <section class="text-center space-y-4 py-12">
       <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{t('topic.hubs', locale)}</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-3xl mx-auto">{t('topic.hubsDescription', locale)}</p>
-      <div class="card p-6 max-w-4xl mx-auto text-left"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{t('topic.whatHubsFor', locale)}</h2><p class="text-gray-600 dark:text-gray-400 sepia:text-sepia-700">{locale === 'en' ? 'Each topic page is a curated entry point for searchers who want a pillar article, the supporting essays around it, and a cleaner reading path through the site.' : 'Mỗi topic page là một điểm vào được biên tập lại cho người tìm kiếm: có bài trụ cột, các bài vệ tinh xung quanh và một lộ trình đọc gọn hơn xuyên suốt site.'}</p></div>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">{t('topic.hubsDescription', locale)}</p>
+      <div class="card p-6 max-w-4xl mx-auto text-left"><h2 class="font-serif text-2xl font-semibold tracking-tight mb-3">{t('topic.whatHubsFor', locale)}</h2><p class="text-gray-600 dark:text-gray-400">{locale === 'en' ? 'Each topic page is a curated entry point for searchers who want a pillar article, the supporting essays around it, and a cleaner reading path through the site.' : 'Mỗi topic page là một điểm vào được biên tập lại cho người tìm kiếm: có bài trụ cột, các bài vệ tinh xung quanh và một lộ trình đọc gọn hơn xuyên suốt site.'}</p></div>
     </section>
     <section class="grid grid-cols-1 md:grid-cols-2 gap-6">{topicEntries.map((topic) => <TopicCard slug={topic.slug as keyof typeof TOPICS} locale={locale} count={topic.count} />)}</section>
   </div>

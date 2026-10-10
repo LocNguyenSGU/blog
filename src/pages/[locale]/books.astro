@@ -47,18 +47,18 @@ try {
   <div class="space-y-12">
     <section class="text-center space-y-4 py-12">
       <h1 class="font-serif text-5xl md:text-6xl font-semibold tracking-tight">{t('books.title', locale)}</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 sepia:text-sepia-700 max-w-2xl mx-auto">{booksSubtitle}</p>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{booksSubtitle}</p>
     </section>
 
     {errorMessage && (
-      <div class="bg-red-50 dark:bg-red-900/20 sepia:bg-red-100 border border-red-200 dark:border-red-800 sepia:border-red-300 rounded-lg p-6 text-center">
-        <p class="text-red-600 dark:text-red-400 sepia:text-red-700">{errorMessage}</p>
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
+        <p class="text-red-600 dark:text-red-400">{errorMessage}</p>
       </div>
     )}
 
     {!errorMessage && books.length === 0 && (
       <div class="card p-8 text-center">
-        <p class="text-gray-700 dark:text-gray-200 sepia:text-sepia-900 text-lg mb-4">
+        <p class="text-gray-700 dark:text-gray-200 text-lg mb-4">
           {t('books.noBooks', locale)}
         </p>
       </div>

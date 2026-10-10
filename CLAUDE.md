@@ -39,6 +39,9 @@ gh pr create --fill   # rồi sửa mô tả theo mẫu ở cuối file
 ```
 
 `npm run build` trên máy Lộc có thể lỗi vì thư viện ảnh `sharp` cài không được; CI trên GitHub và Vercel vẫn build. Đừng sửa cấu hình build để né lỗi này.
+Muốn xem trang trên máy dù `sharp` lỗi: `ASTRO_IMAGE_PASSTHROUGH=1 npm run dev` (ảnh không được tối ưu, chỉ để xem).
+
+**Giao diện:** màu khai báo một lần bằng biến CSS trong `src/styles/global.css` (nền zinc + một màu nhấn teal; dùng class `accent`, `surface`, `ink`, `line`). Không thêm màu trang trí khác. Font duy nhất là Be Vietnam Pro (code: JetBrains Mono). Mục "Câu hỏi thường gặp" tự thành khối đóng/mở nhờ `src/lib/markdown/rehypeFaqAccordion.mjs`, cứ viết H2 + các H3 như cũ.
 
 ## File và frontmatter
 
