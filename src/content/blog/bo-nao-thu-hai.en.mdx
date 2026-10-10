@@ -1,0 +1,169 @@
+---
+title: "My Second Brain: Turning Two Years of Journals Into a Knowledge Graph With AI"
+description: "How I turned two years of journals into a second brain with Markdown, Obsidian and AI, no RAG needed. The architecture, the lessons, and one number that surprised me."
+coverImage: "./_images/bo-nao-thu-hai.svg"
+coverAlt: "Connected knowledge nodes on the left and a timeline with milestones on the right"
+pubDate: 2026-10-10
+faqs:
+  - question: "Do I need to know how to code to build a second brain?"
+    answer: "Not for the core. A folder of Markdown files, one file per thing, plus Obsidian is enough to see the graph and look things up. Coding only adds the automation, such as validation scripts and charts."
+  - question: "When do I actually need RAG or a vector database?"
+    answer: "When your data is too large for the AI to read in one pass, or when you ingest automatically from several unverified sources. With a few dozen journal files you wrote yourself, the problem is structure, not retrieval."
+  - question: "Should I use Notion or Markdown for a second brain?"
+    answer: "Notion is convenient for writing, but Markdown in git gives you full ownership of the data, a change history, and files any AI or script can read directly. If you want an AI to work deeply with your data, Markdown is the easier start."
+category: "programming"
+topics: ["ai", "learning"]
+author: "Loc Nguyen"
+lang: "en"
+translationKey: "bo-nao-thu-hai"
+draft: true
+---
+
+At 20, I wrote a 10-year plan. Every few months I opened it again and added a check-in: where I was, how much money I had, which goals I hit and which I missed.
+
+Two years later the file held 8 check-ins, and I had stopped rereading it. In one entry I even wrote that I was _"too rushed and too lazy to read it all again from the start."_
+
+So I gave the whole thing to an AI and asked one simple question: why has my English never improved?
+
+The AI answered with my own sentences, dated. There were promises I had made, and things I had done, that **I no longer remembered**. That was the moment I decided to turn the journals into a real second brain.
+
+## Short answer
+
+**When your data is small, a second brain doesn't need a vector database or RAG: a structured folder of Markdown, one file per thing, plus an AI that can read all of it, is enough to surface patterns you can't see yourself.** The hard part isn't the technology. It's splitting knowledge into small pieces with clear relationships, and separating what you actually committed to from what the AI suggested.
+
+## 1) Why I didn't copy the "proper" architecture
+
+I studied Decoding AI's [Second Brain AI Assistant course](https://github.com/decodingai-magazine/second-brain-ai-assistant-course). It's a complete system: ingest from Notion and crawl hundreds of links, store in MongoDB, chunk and vector-search, fine-tune Llama 3.1 8B for summaries, answer through an agentic RAG pipeline, evaluate with Opik, orchestrate with ZenML.
+
+Great work. Then I measured my own data: **27 Markdown files, about 150 KB**, all written and verified by me.
+
+An AI can read that in one pass. My problem wasn't _finding_ information. It was that the information sat inside prose, disconnected.
+
+| Course component   | My lean version                 | Upgrade when                         |
+| ------------------ | ------------------------------- | ------------------------------------ |
+| Notion + crawling  | Hand-written Markdown           | Two or more automatic sources        |
+| MongoDB            | Git + files                     | Another app needs to query it        |
+| Vector search, RAG | Not needed                      | The repo grows past roughly 1 MB     |
+| Agent              | Claude Code + one rules file    | I want to ask from my phone          |
+| Opik, ZenML        | Periodic reviews, manual runs   | Something needs to run automatically |
+
+I keep the course as the **long-term destination**, and every upgrade step has a concrete trigger. No trigger, no upgrade.
+
+## 2) A lean architecture: one file per thing
+
+The source of truth is Markdown in git. No database. Every entity is its own file with fixed frontmatter:
+
+- **Goals**, **stages** of the roadmap, **people**, **projects**
+- **Strengths**, **weaknesses**, **milestones**, **decisions**
+- **Promises** and **metrics** (added later, see section 4)
+
+Relationships are `[[...]]` links. An example goal (illustrative):
+
+```yaml
+type: goal
+title: "Write one blog post a month"
+status: active
+deadline: 2027-06-30
+baseline: 0
+current: 2
+target: 9
+stage: "[[stage-1-stabilize]]"
+blocked_by: ["[[self-set-deadlines-slip]]"]
+supported_by: ["[[delivers-under-external-deadlines]]"]
+```
+
+Everything else is a **generated view** of the same files:
+
+- **Obsidian** to see the graph and click between nodes.
+- **Dataview** for a dashboard: active goals, what's overdue, who to contact.
+- **A Python script** (standard library only) that builds `graph.json`, checks for broken links and missing fields, and generates a timeline, a roadmap and charts.
+- **A rules file for the AI** defining commands like "look up", "progress", "roadmap" and "update".
+
+The brain now has 156 nodes and more than 450 relationships. I built the first version in one morning.
+
+## 3) The graph looks great, but it's not what I use most
+
+The first time I opened the graph view, I thought: nice. And that was it. I wanted to see _what I had been through over time_, and a graph can't answer that.
+
+Lesson: **the graph is mostly for the AI to read. People need other views.** So I added:
+
+- **A timeline**: past milestones, grouped by year.
+- **A roadmap**: a 12-month gantt chart, with anything due soon in red.
+- **A dashboard**: progress computed from numbers, never typed by hand.
+
+The graph still earns its place in three ways: seeing the full context around a person or task before acting, knowing what else slips when one thing slips, and letting the AI follow relationships when it answers.
+
+## 4) The most valuable feature: counting promises
+
+The English question led to this idea: **every time I say "I'll do X by Y", that's a node.** When the deadline passes, it gets scored: kept on time, kept late, partly kept, or missed.
+
+The AI reread my 8 journal entries and found 41 promises. I split them by one question: **was the deadline set by someone else** (school, work, organizers, an exam date I'd booked) or **set by me** ("this summer", "this year", "next week")?
+
+Across the 31 promises that could be scored:
+
+- External deadlines: **kept on time 77%** of the time.
+- Self-set deadlines: **kept on time 11%** of the time.
+
+My English goal appears **7 times**, missed 5. Some of those lines, like _"This summer I'm going all in on English"_, I wrote with total conviction, then forgot.
+
+That number changed how I set goals. I don't need more willpower. I need to **turn every self-set deadline into an external one**: pay for the exam first, book a time with someone, commit to a partner. The only time I actually sat the exam was when I had a fixed date.
+
+## 5) An AI suggestion is not your promise
+
+I caught one mistake late. While I answered the AI's questions, it suggested a list of things: set up an emergency fund, listen to English on my commute, get back in touch with someone. Then it wrote them into my second brain as if **I had committed** to them.
+
+I had to say it plainly: "I never promised these."
+
+The fix was a `source` field on every goal: me, AI-suggested and accepted, or AI-suggested and not accepted. Unaccepted suggestions can only be "ideas", and the dashboard has a separate section for me to review them.
+
+If you let an AI write into your second brain, **keep the origin of every line**. Otherwise, a few months later, you won't be able to tell your intentions from the machine's.
+
+## 6) Making the AI less rosy
+
+The first financial plan the AI built for me looked great. Too great. I asked it to redo it with inflation and shocks.
+
+Inflation alone, at 4% a year, cut **about a third of the purchasing power** of an income milestone I set at 20, over ten years. Add the "one-off" costs that happen every single year (holidays, weddings, broken devices, exam fees), and the money actually left each month was far smaller than the number on paper.
+
+Now every money plan in the brain has three scenarios: bad, base and good. I plan on the base case, defend against the bad one, and treat the good one as a bonus.
+
+## 7) An upgrade path with clear triggers
+
+| Stage              | What                                                                  | Trigger                                          |
+| ------------------ | --------------------------------------------------------------------- | ------------------------------------------------ |
+| 0. Lean            | Markdown, Obsidian, Dataview, validation script, AI commands          | Done                                             |
+| 1. Habit           | A few lines of updates each week, a weekend review                    | Now                                              |
+| 2. Local index     | SQLite full-text search, local embeddings, a small MCP server         | Repo past roughly 1 MB, or the AI starts missing things |
+| 3. Course-level    | Multiple sources, vector search, agents, evaluation, automation       | Two or more automatic sources                    |
+
+I cap maintenance at **one hour a week**. A tool meant to stop me from spreading too thin becoming my third side project would be a little ironic.
+
+## Start in one morning
+
+1. Put every note about yourself into **one Markdown folder** and add it to git.
+2. Pick 5–6 entity types that matter to you (goals, people, projects…), **one file per thing**, with a few fixed fields.
+3. Open the folder in **Obsidian**, install **Dataview**, and build one table of active goals.
+4. Write a rules file for the AI: what it may change, what it may not, and that it **must never turn a suggestion into your commitment**.
+5. Ask the AI a question you've been avoiding.
+
+The smallest thing you can do today: **write down the last 5 promises you made to yourself**, mark each one kept or missed, and count how many had a deadline set by someone else. That number may tell you more than any toolset.
+
+## Frequently asked questions
+
+### Do I need to know how to code to build a second brain?
+
+Not for the core. A folder of Markdown files, one file per thing, plus Obsidian is enough to see the graph and look things up. Coding only adds the automation, such as validation scripts and charts.
+
+### When do I actually need RAG or a vector database?
+
+When your data is too large for the AI to read in one pass, or when you ingest automatically from several unverified sources. With a few dozen journal files you wrote yourself, the problem is structure, not retrieval.
+
+### Should I use Notion or Markdown for a second brain?
+
+Notion is convenient for writing, but Markdown in git gives you full ownership of the data, a change history, and files any AI or script can read directly. If you want an AI to work deeply with your data, Markdown is the easier start.
+
+## References
+
+- [Second Brain AI Assistant course, Decoding AI](https://github.com/decodingai-magazine/second-brain-ai-assistant-course)
+- [Obsidian](https://obsidian.md)
+- [Obsidian Dataview](https://github.com/blacksmithgu/obsidian-dataview)
+- [Mermaid: timeline and gantt](https://mermaid.js.org)
