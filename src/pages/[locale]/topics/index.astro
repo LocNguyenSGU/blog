@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { t, type Locale } from '../../../utils/i18n';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import TopicCard from '../../../components/TopicCard.astro';
-import { TOPICS, getTopicInfo } from '../../../utils/topics';
+import { TOPICS, getTopicInfo, postHasTopic } from '../../../utils/topics';
 import { generateTopicsBreadcrumbs } from '../../../utils/breadcrumbs';
 import { getPublishedPosts } from '../../../lib/content/posts';
 import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../../utils/localeRoute';
@@ -23,7 +23,7 @@ const baseUrl = import.meta.env.PUBLIC_SITE_URL || Astro.url.origin;
 const breadcrumbs = generateTopicsBreadcrumbs(baseUrl, locale);
 const topicEntries = Object.keys(TOPICS).map((slug) => ({
   slug,
-  count: allPosts.filter((post) => !!post.data.translationKey && TOPICS[slug as keyof typeof TOPICS].translationKeys.includes(post.data.translationKey)).length,
+  count: allPosts.filter((post) => postHasTopic(post, slug as keyof typeof TOPICS)).length,
   info: getTopicInfo(slug as keyof typeof TOPICS, locale),
 }));
 const pageUrl = `${baseUrl}${Astro.url.pathname}`;

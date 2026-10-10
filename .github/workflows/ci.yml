@@ -1,0 +1,41 @@
+name: CI
+
+# Chạy trên mỗi PR (kể cả PR bài viết do AI tạo) và khi merge vào main.
+# Vercel vẫn tự tạo bản xem trước cho PR; CI này chặn lỗi trước khi bạn merge.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Kiểm tra nội dung (cặp song ngữ, topics, ảnh, draft)
+        run: npm run validate:content
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      - name: Build (gồm astro check)
+        run: npm run build

@@ -1,4 +1,5 @@
 import { z, defineCollection } from 'astro:content';
+import { TOPIC_SLUGS } from '../utils/topicSlugs';
 
 const blogCollection = defineCollection({
   type: 'content',
@@ -13,6 +14,7 @@ const blogCollection = defineCollection({
     })).optional(),
     author: z.string().default('Anonymous'),
     category: z.enum(['programming', 'lifestyle', 'personal']),
+    topics: z.array(z.enum(TOPIC_SLUGS)).default([]), // Topic hubs, xem src/utils/topics.ts
     tags: z.array(z.string()).optional(),
     coverImage: image(),
     coverAlt: z.string().default('Cover image'),
