@@ -1,78 +1,50 @@
-# Hướng dẫn viết blog post mới
+# Hướng dẫn viết bài mới
 
-## Bước 1: Chuẩn bị ảnh cover
+> Cập nhật 10/2026. Bản đầy đủ (giọng văn, luật riêng tư, mẫu PR) ở [CLAUDE.md](../CLAUDE.md).
 
-1. Tạo hoặc tìm ảnh cover cho bài viết (khuyến nghị: 1200x675px, tỷ lệ 16:9)
-2. Lưu ảnh vào thư mục `public/images/posts/`
-3. Đặt tên file có ý nghĩa (ví dụ: `my-awesome-post.jpg`)
-
-## Bước 2: Tạo file blog post
-
-1. Tạo file `.mdx` mới trong `src/content/blog/`
-2. Đặt tên file theo slug bài viết (ví dụ: `my-awesome-post.mdx`)
-
-## Bước 3: Viết frontmatter
-
-```mdx
----
-title: "Tiêu đề bài viết của bạn"
-description: "Mô tả ngắn gọn về bài viết"
-pubDate: 2026-02-13
-author: "Tên của bạn"
-category: "programming"  # hoặc "lifestyle" hoặc "personal"
-tags: ["tag1", "tag2", "tag3"]
-coverImage: "/images/posts/my-awesome-post.jpg"
-coverAlt: "Mô tả ảnh cho accessibility"
----
-```
-
-## Bước 4: Viết nội dung
-
-Sau frontmatter, viết nội dung bằng Markdown thuần:
-
-```mdx
-# Heading chính
-
-Đoạn văn bản của bạn...
-
-## Subheading
-
-- Bullet point 1
-- Bullet point 2
-
-### Code example
-
-​```javascript
-const hello = "world";
-console.log(hello);
-​```
-
-## Kết luận
-
-Tổng kết bài viết...
-```
-
-## Categories có sẵn
-
-- `programming` - Màu xanh dương (lập trình, code, tutorial)
-- `lifestyle` - Màu xanh lá (đời sống, tips, productivity)
-- `personal` - Màu tím (cá nhân, suy nghĩ, chia sẻ)
-
-## Ví dụ hoàn chỉnh
-
-Xem các file trong `src/content/blog/` để tham khảo:
-- `first-post.mdx`
-- `markdown-guide.mdx`
-- `coding-journey.mdx`
-
-## Preview
+## 1. Tạo khung bài
 
 ```bash
-npm run dev
+git checkout -b post/<slug>
+npm run new-post -- <slug> --category personal --topics career,learning \
+  --title-vi "Tiêu Đề Tiếng Việt" --title-en "English Title"
 ```
 
-Mở http://localhost:4321 để xem blog của bạn!
+Lệnh tạo **cặp** file, luôn ở `draft: true`:
 
-## Deploy
+- `src/content/blog/<slug>.vi.mdx`
+- `src/content/blog/<slug>.en.mdx`
 
-Khi push lên GitHub và connect với Vercel, mỗi commit sẽ tự động deploy.
+Hai file dùng chung `translationKey` (mặc định bằng slug), `pubDate`, `category`, `topics`.
+
+## 2. Viết nội dung
+
+Thay mọi chỗ `[[VIẾT …]]` / `[[WRITE …]]`. Cấu trúc gợi ý đã có sẵn trong khung: mở bài, "Câu trả lời ngắn", các mục chính, kết, "Câu hỏi thường gặp" (khớp `faqs` trong frontmatter).
+
+## 3. Ảnh bìa
+
+- Đặt ảnh vào `src/content/blog/_images/` (không dùng `public/images/` nữa).
+- 1200×675, ≤ 500 KB, ưu tiên `.webp` hoặc `.jpg`.
+- Sửa `coverImage: "./_images/<file>"` và `coverAlt` ở **cả hai** file.
+
+## 4. Kiểm tra
+
+```bash
+npm run validate:content   # cặp vi/en, topics, ảnh, mô tả, draft
+npm run verify             # + astro check, lint, test
+```
+
+## 5. Đăng
+
+1. Push nhánh, mở PR. CI chạy kiểm tra + build; Vercel tạo bản preview.
+2. Xem preview. Duyệt xong thì đổi `draft: false` ở **cả hai** file, commit.
+3. Merge vào `main` → Vercel deploy production.
+
+## Tham khảo nhanh
+
+| Field         | Giá trị                                                                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------------------- |
+| `category`    | `programming` · `lifestyle` · `personal`                                                                    |
+| `topics`      | `ai` · `career` · `programming` · `learning` (thêm mới ở `src/utils/topicSlugs.ts` + `src/utils/topics.ts`) |
+| `description` | 50–170 ký tự                                                                                                |
+| `lang`        | `vi` / `en`, khớp đuôi file                                                                                 |

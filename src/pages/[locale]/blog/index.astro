@@ -7,7 +7,7 @@ import FeaturedPost from '../../../components/FeaturedPost.astro';
 import PostCard from '../../../components/PostCard.astro';
 import TopicCard from '../../../components/TopicCard.astro';
 import CategoryCard from '../../../components/CategoryCard.astro';
-import { TOPICS, getTopicInfo, isTopicSlug, type TopicSlug } from '../../../utils/topics';
+import { getTopicInfo, isTopicSlug, type TopicSlug, postHasTopic } from '../../../utils/topics';
 import { CATEGORIES, getCategoryIntro, getCategoryLabel, type CategoryKey } from '../../../utils/categories';
 import { getCategoryCounts, getPublishedPosts, getTopicCounts } from '../../../lib/content/posts';
 import { getLocaleStaticPaths, getLocalizedPageAlternates } from '../../../utils/localeRoute';
@@ -69,7 +69,7 @@ try {
   filteredPosts = publishedPosts.filter((post) => {
     const matchCategory = activeCategory ? post.data.category === activeCategory : true;
     const matchTopic = activeTopic
-      ? !!post.data.translationKey && TOPICS[activeTopic].translationKeys.includes(post.data.translationKey)
+      ? postHasTopic(post, activeTopic)
       : true;
     return matchCategory && matchTopic;
   });

@@ -1,8 +1,9 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Locale } from '@/utils/i18n';
-import { TOPICS, getTopicPillarPost, type TopicSlug } from '@/utils/topics';
+import { TOPICS, getTopicPillarPost, postHasTopic, type TopicSlug } from '@/utils/topics';
 import { CATEGORIES, type CategoryKey } from '@/utils/categories';
 import { toPublicSlug } from '@/utils/slugs';
+import { isVisiblePost } from '@/utils/drafts';
 
 export type BlogEntry = CollectionEntry<'blog'>;
 
@@ -27,7 +28,7 @@ export async function getAllBlogPosts(): Promise<BlogEntry[]> {
 export async function getPublishedPosts(locale: Locale): Promise<BlogEntry[]> {
   const posts = await getAllBlogPostsCached();
   return posts
-    .filter(({ data }) => !data.draft && data.lang === locale)
+    .filter(({ data }) => isVisiblePost(data) && data.lang === locale)
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
@@ -52,11 +53,7 @@ export async function getPostsByTopic(
   topic: TopicSlug
 ): Promise<BlogEntry[]> {
   const posts = await getPublishedPosts(locale);
-  const translationKeys = new Set(TOPICS[topic].translationKeys);
-
-  return posts.filter(
-    (post) => !!post.data.translationKey && translationKeys.has(post.data.translationKey)
-  );
+  return posts.filter((post) => postHasTopic(post, topic));
 }
 
 export function getCategoryCounts(posts: BlogEntry[]): Array<{ slug: CategoryKey; count: number }> {
@@ -69,9 +66,7 @@ export function getCategoryCounts(posts: BlogEntry[]): Array<{ slug: CategoryKey
 export function getTopicCounts(posts: BlogEntry[]): Array<{ slug: TopicSlug; count: number }> {
   return (Object.keys(TOPICS) as TopicSlug[]).map((slug) => ({
     slug,
-    count: posts.filter(
-      (post) => !!post.data.translationKey && TOPICS[slug].translationKeys.includes(post.data.translationKey)
-    ).length,
+    count: posts.filter((post) => postHasTopic(post, slug)).length,
   }));
 }
 

@@ -15,8 +15,9 @@ import { getReadingTime, formatReadingTime } from '../utils/readingTime';
 import { shouldShowTOC } from '../utils/toc';
 import { generateBlogBreadcrumbs } from '../utils/breadcrumbs';
 import type { Heading } from '../utils/toc';
-import { TOPICS, getTopicInfo, getTopicPosts, getTopicsForTranslationKey } from '../utils/topics';
+import { TOPICS, getTopicInfo, getTopicPosts, getTopicsForPost } from '../utils/topics';
 import { getLocalizedBlogPostUrl, getLocalizedTopicUrl } from '../utils/routing';
+import { isVisiblePost } from '../utils/drafts';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   slug?: string;
@@ -46,6 +47,8 @@ const {
   headings: astroHeadings = [],
   lang = 'vi',
   translationKey,
+  topics = [],
+  draft = false,
   showTOC,
   tags = [],
   canonicalUrl,
@@ -83,7 +86,7 @@ const breadcrumbs = generateBlogBreadcrumbs(title, category, slug, baseUrl, loca
 const allPosts = await getCollection('blog');
 const relatedPosts = allPosts
   .filter((post) => {
-    if (post.slug === slug || post.data.draft || post.data.lang !== lang) return false;
+    if (post.slug === slug || !isVisiblePost(post.data) || post.data.lang !== lang) return false;
     if (translationKey && post.data.translationKey === translationKey) return false;
     return true;
   })
@@ -101,8 +104,8 @@ const relatedPosts = allPosts
   })
   .slice(0, 3)
   .map(({ post }) => post);
-const relatedTopics = getTopicsForTranslationKey(translationKey).slice(0, 2);
-const topicSeries = getTopicsForTranslationKey(translationKey).map((topicSlug) => {
+const relatedTopics = getTopicsForPost(topics).slice(0, 2);
+const topicSeries = getTopicsForPost(topics).map((topicSlug) => {
   const seriesPosts = getTopicPosts(allPosts, topicSlug, locale);
   const isPillar = translationKey === TOPICS[topicSlug].pillarTranslationKey;
   const relatedSeriesPosts = seriesPosts.filter((post) => post.slug !== slug);
@@ -187,6 +190,11 @@ const seriesSchemas = topicSeries.map(({ topicSlug, info, relatedSeriesPosts }) 
 
     {/* Post Header */}
     <header class="mb-8">
+      {draft && (
+        <p role="note" class="mb-4 rounded-md border border-amber-400 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900 dark:border-amber-500 dark:bg-amber-950 dark:text-amber-100">
+          {locale === 'vi' ? 'BẢN NHÁP: chỉ hiện ở bản xem trước, chưa đăng.' : 'DRAFT: visible in previews only, not published.'}
+        </p>
+      )}
       <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight mb-4">{title}</h1>
       
       <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 sepia:text-sepia-700">

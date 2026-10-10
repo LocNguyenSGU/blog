@@ -1,6 +1,8 @@
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from './i18n';
 import { getLocalizedTopicUrl } from './routing';
+import type { TopicSlugValue } from './topicSlugs';
+import { isVisiblePost } from './drafts';
 
 interface TopicDefinition {
   en: {
@@ -15,11 +17,10 @@ interface TopicDefinition {
     pillarDescription: string;
     intro: string;
   };
-  translationKeys: string[];
   pillarTranslationKey: string;
 }
 
-export const TOPICS: Record<'ai' | 'career' | 'programming' | 'learning', TopicDefinition> = {
+export const TOPICS: Record<TopicSlugValue, TopicDefinition> = {
   ai: {
     en: {
       name: 'AI',
@@ -33,7 +34,6 @@ export const TOPICS: Record<'ai' | 'career' | 'programming' | 'learning', TopicD
       pillarDescription: 'Bài trụ cột của cụm này giải thích cách AI tái cấu trúc công việc ở quy mô lớn, không chỉ tăng tốc từng tác vụ riêng lẻ.',
       intro: 'Hub này phù hợp nếu bạn muốn nhìn AI như một thay đổi mang tính hệ thống: từ project cá nhân, cách học, tới cách tổ chức công việc.',
     },
-    translationKeys: ['building-blog-with-ai', 'ai-phong-ban-ao', 'learning-in-ai-era'],
     pillarTranslationKey: 'ai-phong-ban-ao',
   },
   career: {
@@ -49,7 +49,6 @@ export const TOPICS: Record<'ai' | 'career' | 'programming' | 'learning', TopicD
       pillarDescription: 'Bài trụ cột của cụm này đặt nền cho chuyện phát triển nghề nghiệp bằng tự chèo lái thay vì chờ điều kiện hoàn hảo.',
       intro: 'Cụm này dành cho người phải tiến lên trước khi có đủ chỉ dẫn, đủ tự tin hoặc đủ điều kiện hoàn hảo.',
     },
-    translationKeys: ['self-mentored-young-developer', 'quan-ly-nang-luong-sau-8-tieng-van-phong', 'learning-in-ai-era'],
     pillarTranslationKey: 'self-mentored-young-developer',
   },
   programming: {
@@ -65,7 +64,6 @@ export const TOPICS: Record<'ai' | 'career' | 'programming' | 'learning', TopicD
       pillarDescription: 'Bài trụ cột của cụm này cho thấy lập trình nên gắn với việc build và ship project thật, không chỉ học syntax riêng lẻ.',
       intro: 'Hãy đọc cụm này nếu bạn quan tâm tới lập trình như một quá trình thực hành: xây thứ thật, viết lại rõ ràng và học qua việc ship.',
     },
-    translationKeys: ['coding-journey', 'markdown-guide', 'building-blog-with-ai', 'self-mentored-young-developer'],
     pillarTranslationKey: 'building-blog-with-ai',
   },
   learning: {
@@ -81,7 +79,6 @@ export const TOPICS: Record<'ai' | 'career' | 'programming' | 'learning', TopicD
       pillarDescription: 'Bài trụ cột ở đây nêu luận điểm nền: học vẫn quan trọng vì nó biến đổi chính người học, không chỉ tạo ra đầu ra.',
       intro: 'Cụm này dành cho người muốn học có chiều sâu trong thời đại AI có thể tạo output nhanh hơn tốc độ con người thật sự hiểu vấn đề.',
     },
-    translationKeys: ['coding-journey', 'learning-in-ai-era', 'self-mentored-young-developer', 'markdown-guide'],
     pillarTranslationKey: 'learning-in-ai-era',
   },
 };
@@ -105,10 +102,8 @@ export function getTopicPosts(
   slug: TopicSlug,
   locale: Locale
 ): CollectionEntry<'blog'>[] {
-  const keys = new Set(TOPICS[slug].translationKeys);
-
   return posts
-    .filter((post) => !post.data.draft && post.data.lang === locale && !!post.data.translationKey && keys.has(post.data.translationKey))
+    .filter((post) => isVisiblePost(post.data) && post.data.lang === locale && postHasTopic(post, slug))
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
@@ -121,18 +116,22 @@ export function getTopicPillarPost(
 
   return posts.find(
     (post) =>
-      !post.data.draft &&
+      isVisiblePost(post.data) &&
       post.data.lang === locale &&
       post.data.translationKey === pillarTranslationKey
   );
 }
 
-export function getTopicsForTranslationKey(translationKey?: string): TopicSlug[] {
-  if (!translationKey) {
+/** Bài có thuộc topic này không (khai báo bằng trường `topics` trong frontmatter). */
+export function postHasTopic(post: CollectionEntry<'blog'>, slug: TopicSlug): boolean {
+  return (post.data.topics ?? []).includes(slug);
+}
+
+/** Các topic của một bài, theo thứ tự khai báo trong TOPICS. */
+export function getTopicsForPost(topics?: readonly string[]): TopicSlug[] {
+  if (!topics || topics.length === 0) {
     return [];
   }
 
-  return (Object.keys(TOPICS) as TopicSlug[]).filter((slug) =>
-    TOPICS[slug].translationKeys.includes(translationKey)
-  );
+  return (Object.keys(TOPICS) as TopicSlug[]).filter((slug) => topics.includes(slug));
 }
